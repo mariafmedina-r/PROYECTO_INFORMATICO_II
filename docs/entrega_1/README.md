@@ -1,6 +1,6 @@
 # PROYECTO INFORMATICO II
 
-## 📌 Descripción
+##  Descripción
 Este proyecto corresponde al desarrollo de un sistema tipo marketplace cafetero, cuyo objetivo es conectar productores de café colombiano con consumidores finales mediante una plataforma digital.
 
 ## 👥 Equipo de trabajo
