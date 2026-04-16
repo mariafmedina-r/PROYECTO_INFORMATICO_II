@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+
+<html lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@700;800;900&amp;family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-nav {
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        .editorial-shadow {
+            box-shadow: 0 10px 30px rgba(54, 31, 26, 0.05), 0 4px 8px rgba(54, 31, 26, 0.03);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface-container-low": "#f4f4f0",
+                        "on-primary": "#ffffff",
+                        "surface-container-high": "#e8e8e4",
+                        "surface-bright": "#faf9f5",
+                        "surface-variant": "#e2e3df",
+                        "inverse-on-surface": "#f1f1ed",
+                        "outline": "#827471",
+                        "surface-container": "#eeeeea",
+                        "surface": "#faf9f5",
+                        "error": "#ba1a1a",
+                        "secondary-fixed": "#a3f69c",
+                        "inverse-primary": "#e5beb5",
+                        "on-secondary-fixed-variant": "#005312",
+                        "on-tertiary-container": "#aca29f",
+                        "surface-tint": "#755750",
+                        "error-container": "#ffdad6",
+                        "on-primary-fixed": "#2b1611",
+                        "on-error-container": "#93000a",
+                        "tertiary": "#292421",
+                        "surface-dim": "#dadad6",
+                        "primary-container": "#4e342e",
+                        "tertiary-fixed": "#ece0dc",
+                        "on-secondary-container": "#217128",
+                        "on-tertiary-fixed-variant": "#4c4542",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-fixed": "#002204",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "tertiary-fixed-dim": "#cfc4c0",
+                        "outline-variant": "#d4c3bf",
+                        "secondary-fixed-dim": "#88d982",
+                        "on-primary-container": "#c19c94",
+                        "tertiary-container": "#403936",
+                        "primary-fixed-dim": "#e5beb5",
+                        "on-tertiary-fixed": "#201a18",
+                        "primary": "#361f1a",
+                        "primary-fixed": "#ffdad2",
+                        "background": "#faf9f5",
+                        "on-background": "#1a1c1a",
+                        "secondary-container": "#a0f399",
+                        "on-surface-variant": "#504442",
+                        "on-surface": "#1a1c1a",
+                        "inverse-surface": "#2f312e",
+                        "on-primary-fixed-variant": "#5c403a",
+                        "secondary": "#1b6d24",
+                        "surface-container-highest": "#e2e3df",
+                        "on-error": "#ffffff"
+                    },
+                    fontFamily: {
+                        "headline": ["Noto Serif"],
+                        "body": ["Manrope"],
+                        "label": ["Manrope"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-surface font-body text-primary">
+<!-- Top Navigation Bar -->
+<header class="bg-[#faf9f5]/80 dark:bg-[#361f1a]/80 backdrop-blur-md w-full top-0 sticky z-50 bg-[#f4f4f0] dark:bg-[#4e342e] flat no shadows">
+<div class="max-w-7xl mx-auto px-8 flex justify-between items-center h-20">
+<div class="text-2xl font-black text-[#361f1a] dark:text-[#faf9f5]">The Artisanal Connection</div>
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-[#1b6d24] font-bold border-b-2 border-[#1b6d24] pb-1 Noto Serif font-bold tracking-tight" href="#">Catálogo</a>
+<a class="text-[#361f1a]/70 dark:text-[#faf9f5]/70 hover:text-[#361f1a] dark:hover:text-[#faf9f5] transition-colors duration-300 Noto Serif font-bold tracking-tight" href="#">Productores</a>
+<a class="text-[#361f1a]/70 dark:text-[#faf9f5]/70 hover:text-[#361f1a] dark:hover:text-[#faf9f5] transition-colors duration-300 Noto Serif font-bold tracking-tight" href="#">Origen</a>
+<a class="text-[#361f1a]/70 dark:text-[#faf9f5]/70 hover:text-[#361f1a] dark:hover:text-[#faf9f5] transition-colors duration-300 Noto Serif font-bold tracking-tight" href="#">Pedidos</a>
+</nav>
+<div class="flex items-center gap-6">
+<button class="flex items-center justify-center p-2 rounded-full hover:bg-[#f4f4f0]/50 active:scale-95 transition-all" title="Ver carrito">
+<span class="material-symbols-outlined" data-icon="shopping_bag">shopping_bag</span>
+</button>
+<div class="w-10 h-10 rounded-full overflow-hidden bg-surface-container-high border-2 border-primary/10">
+<img alt="Perfil del Productor o Consumidor" data-alt="portrait of a focused coffee professional wearing a minimalist canvas apron in a brightly lit modern studio environment" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAK7NfjFyQWGI5EFKLN9HO7bpgIkiHmdZ1tHBBw9n7njXVvp6eJODhKddj-e8K18NoJWYouvPYHCpPpFB5b6-GYJm9PlDM1iLcPLuQBevJH9doD9RvFz2DIJRohknPe48ib7cReAs96aXANSTQmWJN44DQmWnLHBwksuLVfNTtPSRnl7-_20GQSoZjAkNDbdZ6RnJcJGyajZLFi2PM6ROMkykriZ6CPcwaC0oTC8abLcqxCKgCUQoL4UjGgNpsRctfYrRjksBNl1Izv"/>
+</div>
+</div>
+</div>
+</header>
+<main class="max-w-7xl mx-auto px-8 py-12">
+<!-- Hero Search Section -->
+<div class="mb-16 space-y-6">
+<h1 class="font-headline text-5xl md:text-6xl font-black tracking-tight text-primary max-w-2xl leading-tight">
+                Haciendas Curadas, <br/><span class="text-secondary italic font-normal">Origen Directo.</span>
+</h1>
+<div class="relative max-w-xl group">
+<div class="absolute inset-y-0 left-4 flex items-center pointer-events-none text-primary/40">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+</div>
+<input class="w-full bg-surface-container-low border-b-2 border-outline-variant/20 focus:border-secondary focus:ring-0 transition-all pl-12 pr-6 py-4 text-lg font-medium placeholder:text-primary/30" placeholder="Buscar por tueste, origen o notas de sabor..." type="text"/>
+</div>
+</div>
+<div class="flex flex-col md:flex-row gap-12">
+<!-- Sidebar Filters -->
+<aside class="w-full md:w-64 space-y-10 shrink-0">
+<section>
+<h3 class="font-headline text-lg mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="filter_list">filter_list</span>
+                        Filtros
+                    </h3>
+<div class="space-y-8">
+<!-- Origin Filter -->
+<div>
+<span class="font-label text-[0.7rem] uppercase tracking-widest text-primary/40 block mb-4">Origen</span>
+<div class="space-y-3">
+<label class="flex items-center gap-3 cursor-pointer group">
+<input class="w-5 h-5 rounded border-outline-variant text-secondary focus:ring-secondary/20" type="checkbox"/>
+<span class="text-sm font-medium group-hover:text-secondary transition-colors">Huila, Colombia</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input checked="" class="w-5 h-5 rounded border-outline-variant text-secondary focus:ring-secondary/20" type="checkbox"/>
+<span class="text-sm font-medium group-hover:text-secondary transition-colors">Antigua, Guatemala</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input class="w-5 h-5 rounded border-outline-variant text-secondary focus:ring-secondary/20" type="checkbox"/>
+<span class="text-sm font-medium group-hover:text-secondary transition-colors">Sidamo, Etiopía</span>
+</label>
+</div>
+</div>
+<!-- Sensory Notes -->
+<div>
+<span class="font-label text-[0.7rem] uppercase tracking-widest text-primary/40 block mb-4">Notas Sensoriales</span>
+<div class="flex flex-wrap gap-2">
+<button class="px-4 py-2 bg-secondary text-on-secondary rounded-full text-xs font-bold transition-all">Floral</button>
+<button class="px-4 py-2 bg-surface-container text-primary rounded-full text-xs font-bold hover:bg-surface-container-high transition-all">Frutal</button>
+<button class="px-4 py-2 bg-surface-container text-primary rounded-full text-xs font-bold hover:bg-surface-container-high transition-all">Nuez</button>
+<button class="px-4 py-2 bg-surface-container text-primary rounded-full text-xs font-bold hover:bg-surface-container-high transition-all">Chocolate</button>
+<button class="px-4 py-2 bg-surface-container text-primary rounded-full text-xs font-bold hover:bg-surface-container-high transition-all">Caramelo</button>
+</div>
+</div>
+<!-- Price Range -->
+<div>
+<span class="font-label text-[0.7rem] uppercase tracking-widest text-primary/40 block mb-4">Rango de Precio</span>
+<div class="px-2">
+<input class="w-full h-1 bg-surface-container-high rounded-lg appearance-none cursor-pointer accent-secondary" type="range"/>
+<div class="flex justify-between mt-2 text-[0.7rem] font-bold text-primary/60">
+<span>$15</span>
+<span>$80+</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<div class="pt-8 border-t border-outline-variant/10">
+<button class="w-full py-3 bg-surface-container-highest text-primary font-label text-[0.7rem] uppercase tracking-widest font-bold rounded hover:bg-surface-container-high transition-all active:scale-95">
+                        Limpiar Filtros
+                    </button>
+</div>
+</aside>
+<!-- Product Grid -->
+<div class="flex-1">
+<div class="flex justify-between items-center mb-8">
+<span class="text-sm font-medium text-primary/50">Mostrando 24 de 142 variedades</span>
+<div class="flex items-center gap-2 text-sm font-bold">
+<span class="text-primary/40">Ordenar por:</span>
+<select class="bg-transparent border-none text-primary focus:ring-0 cursor-pointer font-bold py-0">
+<option>Cosecha Reciente</option>
+<option>Precio: Menor a Mayor</option>
+<option>Calificación</option>
+</select>
+</div>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16">
+<!-- Product Card 1 -->
+<div class="group">
+<div class="relative mb-6 overflow-hidden aspect-[4/5] bg-surface-container-low rounded-lg transition-all duration-500 group-hover:editorial-shadow">
+<img alt="Granos de Café" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-alt="top down view of roasted coffee beans and a single burlap sack on a rustic wooden surface with moody warm lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDaqc4nJ3Ua_41jmA350tilK9tAmxWytH2faiGyqp6Bjes8TjvNdsRM1PHhQbRPmcSgGasUKdU70z_SIYJfxFPSwkOdxcD4lbS2YRQAwoocUkK2tH2-_9wAh3CUSDgXbgCVg7353-SjNEZFM_7FtvNHPhOltfyiCxOFKh-WCLZiSB2yC5kfYB5ZA5ophank50s_weo9M6PtlyXx057ROl5P4hck9V-sFYJMRkJilO5YMc8vrqZnq85vaA2vCkkJFhWalqroG5ByfNCi"/>
+<div class="absolute bottom-4 left-4">
+<span class="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full text-[0.65rem] font-bold uppercase tracking-widest">Región Antigua</span>
+</div>
+<button class="absolute bottom-4 right-4 w-12 h-12 bg-white/90 backdrop-blur rounded-full flex items-center justify-center text-primary opacity-0 translate-y-4 transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0 active:scale-90" title="Agregar al Carrito">
+<span class="material-symbols-outlined" data-icon="add_shopping_cart">add_shopping_cart</span>
+</button>
+</div>
+<div class="space-y-1">
+<div class="flex justify-between items-start">
+<h4 class="font-headline text-xl leading-tight group-hover:text-secondary transition-colors cursor-pointer">Gesha Tueste de Media Noche</h4>
+<span class="font-bold text-lg">$34.00</span>
+</div>
+<p class="text-sm text-primary/60 font-medium">Hacienda: Finca La Esperanza</p>
+<div class="flex gap-2 pt-2">
+<span class="text-[0.6rem] font-bold uppercase tracking-tighter text-primary/40 px-2 py-0.5 border border-outline-variant/30 rounded">Jazmín</span>
+<span class="text-[0.6rem] font-bold uppercase tracking-tighter text-primary/40 px-2 py-0.5 border border-outline-variant/30 rounded">Miel</span>
+</div>
+</div>
+</div>
+<!-- Product Card 2 (Asymmetric Shift) -->
+<div class="group md:mt-8">
+<div class="relative mb-6 overflow-hidden aspect-[4/5] bg-surface-container-low rounded-lg transition-all duration-500 group-hover:editorial-shadow">
+<img alt="Café de Goteo" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-alt="elegant ceramic pour-over coffee dripper on a minimalist wooden counter with soft natural morning light and steam rising" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCPoNc3h_AzSZiyb_qLX9SEnMZcdFzm0MHEdz-0sPMvS0pRJfjZ9D0a2pBhgzbJ1x3jihDo63gf2UeOm5JXC2EIkVpOSb0qQ7TdIc8sve3CghzB0_Va9nQuf_8szGzUdr_Kso8PAVyIRs6IvpO3vV3oGSoU4UleUVwWinvxMCkS4DNUCLbNPsdzToYiZoE6dPhn07L6DvD8CTSlopZCnNUtt9wiiPat6bfwPODM4dXTiYYNfXfxoSPt79T_U7Ef5aHG7IN7colUZns_"/>
+<div class="absolute bottom-4 left-4">
+<span class="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full text-[0.65rem] font-bold uppercase tracking-widest">Sidamo Lavado</span>
+</div>
+<button class="absolute bottom-4 right-4 w-12 h-12 bg-white/90 backdrop-blur rounded-full flex items-center justify-center text-primary opacity-0 translate-y-4 transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0 active:scale-90" title="Agregar al Carrito">
+<span class="material-symbols-outlined" data-icon="add_shopping_cart">add_shopping_cart</span>
+</button>
+</div>
+<div class="space-y-1">
+<div class="flex justify-between items-start">
+<h4 class="font-headline text-xl leading-tight group-hover:text-secondary transition-colors cursor-pointer">Heirloom Secado al Sol</h4>
+<span class="font-bold text-lg">$28.50</span>
+</div>
+<p class="text-sm text-primary/60 font-medium">Productor: Abeba Bekele</p>
+<div class="flex gap-2 pt-2">
+<span class="text-[0.6rem] font-bold uppercase tracking-tighter text-primary/40 px-2 py-0.5 border border-outline-variant/30 rounded">Bergamota</span>
+<span class="text-[0.6rem] font-bold uppercase tracking-tighter text-primary/40 px-2 py-0.5 border border-outline-variant/30 rounded">Durazno</span>
+</div>
+</div>
+</div>
+<!-- Product Card 3 -->
+<div class="group">
+<div class="relative mb-6 overflow-hidden aspect-[4/5] bg-surface-container-low rounded-lg transition-all duration-500 group-hover:editorial-shadow">
+<img alt="Taza de Café" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-alt="a minimalist cup of black coffee on a textured stone table with artistic shadows from a nearby tropical plant leaf" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCffdNJFBRgwPVntm8rOcc6JXxQajgFeK-q_t39X851tZ0jjuOycbtYuTzg7fJCvbaNXOqvGJgPA9z2Rhlt5--Ewd0M2Am03tPEQYnJuffXWwTTfnG4hJzSlBMhuIBACqgE7a8Axs2luE-HTlJ_JnLrkDmiepW3VZaKwZxHhxwCLofyu1AqNeH5j9yqX5zT2R9FY7SpInARtPj5IAxAjCNTaQsDaxTi2q49-cuw1RVEBz8n93F80gfS9IUdj9sSBK-pIP6VXFTtKGGC"/>
+<div class="absolute bottom-4 left-4">
+<span class="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full text-[0.65rem] font-bold uppercase tracking-widest">Reserva Huila</span>
+</div>
+<button class="absolute bottom-4 right-4 w-12 h-12 bg-white/90 backdrop-blur rounded-full flex items-center justify-center text-primary opacity-0 translate-y-4 transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0 active:scale-90" title="Agregar al Carrito">
+<span class="material-symbols-outlined" data-icon="add_shopping_cart">add_shopping_cart</span>
+</button>
+</div>
+<div class="space-y-1">
+<div class="flex justify-between items-start">
+<h4 class="font-headline text-xl leading-tight group-hover:text-secondary transition-colors cursor-pointer">Caturra Caracolillo</h4>
+<span class="font-bold text-lg">$42.00</span>
+</div>
+<p class="text-sm text-primary/60 font-medium">Hacienda: El Diviso</p>
+<div class="flex gap-2 pt-2">
+<span class="text-[0.6rem] font-bold uppercase tracking-tighter text-primary/40 px-2 py-0.5 border border-outline-variant/30 rounded">Toffee</span>
+<span class="text-[0.6rem] font-bold uppercase tracking-tighter text-primary/40 px-2 py-0.5 border border-outline-variant/30 rounded">Manzana Roja</span>
+</div>
+</div>
+</div>
+<!-- Skeleton Loading Placeholders (Row 2) -->
+<div class="animate-pulse">
+<div class="aspect-[4/5] bg-surface-container rounded-lg mb-6"></div>
+<div class="h-6 bg-surface-container rounded w-3/4 mb-2"></div>
+<div class="h-4 bg-surface-container rounded w-1/2"></div>
+</div>
+<div class="animate-pulse md:mt-8">
+<div class="aspect-[4/5] bg-surface-container rounded-lg mb-6"></div>
+<div class="h-6 bg-surface-container rounded w-3/4 mb-2"></div>
+<div class="h-4 bg-surface-container rounded w-1/2"></div>
+</div>
+<div class="animate-pulse">
+<div class="aspect-[4/5] bg-surface-container rounded-lg mb-6"></div>
+<div class="h-6 bg-surface-container rounded w-3/4 mb-2"></div>
+<div class="h-4 bg-surface-container rounded w-1/2"></div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<footer class="bg-[#f4f4f0] dark:bg-[#361f1a] w-full py-12 px-8 mt-24">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-12 max-w-7xl mx-auto">
+<div class="col-span-1 md:col-span-2">
+<div class="text-xl font-bold text-[#361f1a] dark:text-[#faf9f5] mb-4">The Artisanal Connection</div>
+<p class="font-body text-sm text-[#361f1a]/60 dark:text-[#faf9f5]/60 max-w-sm">
+                    Acortando la distancia entre los micro-lotes de gran altitud y su ritual matutino. Priorizamos la trazabilidad, la compensación justa y una calidad inigualable.
+                </p>
+</div>
+<div>
+<h4 class="font-headline text-lg mb-6">Explorar</h4>
+<nav class="flex flex-col gap-3">
+<a class="text-sm font-body text-[#361f1a]/60 dark:text-[#faf9f5]/60 hover:underline decoration-[#1b6d24] decoration-2 underline-offset-4" href="#">Sostenibilidad</a>
+<a class="text-sm font-body text-[#361f1a]/60 dark:text-[#faf9f5]/60 hover:underline decoration-[#1b6d24] decoration-2 underline-offset-4" href="#">Comercio Directo</a>
+<a class="text-sm font-body text-[#361f1a]/60 dark:text-[#faf9f5]/60 hover:underline decoration-[#1b6d24] decoration-2 underline-offset-4" href="#">Logística</a>
+<a class="text-sm font-body text-[#361f1a]/60 dark:text-[#faf9f5]/60 hover:underline decoration-[#1b6d24] decoration-2 underline-offset-4" href="#">Términos</a>
+</nav>
+</div>
+<div>
+<h4 class="font-headline text-lg mb-6">Síguenos</h4>
+<div class="flex gap-4">
+<span class="material-symbols-outlined text-[#361f1a]/60 hover:text-secondary cursor-pointer" data-icon="share">share</span>
+<span class="material-symbols-outlined text-[#361f1a]/60 hover:text-secondary cursor-pointer" data-icon="language">language</span>
+<span class="material-symbols-outlined text-[#361f1a]/60 hover:text-secondary cursor-pointer" data-icon="mail">mail</span>
+</div>
+</div>
+</div>
+<div class="max-w-7xl mx-auto mt-12 pt-8 border-t border-outline-variant/10 text-center">
+<p class="font-body text-sm text-[#361f1a]/60 dark:text-[#faf9f5]/60">© 2024 The Artisanal Connection. Cultivando haciendas digitales.</p>
+</div>
+</footer>
+</body></html>

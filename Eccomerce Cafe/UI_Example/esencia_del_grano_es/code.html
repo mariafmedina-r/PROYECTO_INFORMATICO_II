@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700;900&amp;family=Manrope:wght@300;400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-container-low": "#f4f4f0",
+              "on-primary": "#ffffff",
+              "surface-container-high": "#e8e8e4",
+              "surface-bright": "#faf9f5",
+              "surface-variant": "#e2e3df",
+              "inverse-on-surface": "#f1f1ed",
+              "outline": "#827471",
+              "surface-container": "#eeeeea",
+              "surface": "#faf9f5",
+              "error": "#ba1a1a",
+              "secondary-fixed": "#a3f69c",
+              "inverse-primary": "#e5beb5",
+              "on-secondary-fixed-variant": "#005312",
+              "on-tertiary-container": "#aca29f",
+              "surface-tint": "#755750",
+              "error-container": "#ffdad6",
+              "on-primary-fixed": "#2b1611",
+              "on-error-container": "#93000a",
+              "tertiary": "#292421",
+              "surface-dim": "#dadad6",
+              "primary-container": "#4e342e",
+              "tertiary-fixed": "#ece0dc",
+              "on-secondary-container": "#217128",
+              "on-tertiary-fixed-variant": "#4c4542",
+              "surface-container-lowest": "#ffffff",
+              "on-secondary-fixed": "#002204",
+              "on-secondary": "#ffffff",
+              "on-tertiary": "#ffffff",
+              "tertiary-fixed-dim": "#cfc4c0",
+              "outline-variant": "#d4c3bf",
+              "secondary-fixed-dim": "#88d982",
+              "on-primary-container": "#c19c94",
+              "tertiary-container": "#403936",
+              "primary-fixed-dim": "#e5beb5",
+              "on-tertiary-fixed": "#201a18",
+              "primary": "#361f1a",
+              "primary-fixed": "#ffdad2",
+              "background": "#faf9f5",
+              "on-background": "#1a1c1a",
+              "secondary-container": "#a0f399",
+              "on-surface-variant": "#504442",
+              "on-surface": "#1a1c1a",
+              "inverse-surface": "#2f312e",
+              "on-primary-fixed-variant": "#5c403a",
+              "secondary": "#1b6d24",
+              "surface-container-highest": "#e2e3df",
+              "on-error": "#ffffff"
+            },
+            fontFamily: {
+              "headline": ["Noto Serif"],
+              "body": ["Manrope"],
+              "label": ["Manrope"]
+            },
+            borderRadius: {"DEFAULT": "0.5rem", "lg": "0.75rem", "xl": "1rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .asymmetric-overlap {
+            margin-top: -4rem;
+        }
+        .editorial-shadow {
+            box-shadow: 0 10px 30px rgba(54, 31, 26, 0.05), 0 4px 8px rgba(54, 31, 26, 0.03);
+        }
+        .glass-header {
+            background-color: rgba(250, 249, 245, 0.8);
+            backdrop-filter: blur(12px);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body selection:bg-secondary-container selection:text-on-secondary-container">
+<!-- Top Navigation -->
+<header class="sticky top-0 z-50 w-full glass-header">
+<nav class="max-w-7xl mx-auto px-8 flex justify-between items-center h-20">
+<div class="text-2xl font-black text-primary font-headline tracking-tight">The Artisanal Connection</div>
+<div class="hidden md:flex gap-8 items-center">
+<a class="text-secondary font-bold border-b-2 border-secondary pb-1 font-label uppercase tracking-wider text-xs" href="#">Catálogo</a>
+<a class="text-primary/70 hover:text-primary transition-colors duration-300 font-label uppercase tracking-wider text-xs" href="#">Productores</a>
+<a class="text-primary/70 hover:text-primary transition-colors duration-300 font-label uppercase tracking-wider text-xs" href="#">Origen</a>
+<a class="text-primary/70 hover:text-primary transition-colors duration-300 font-label uppercase tracking-wider text-xs" href="#">Pedidos</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 rounded-full hover:bg-surface-container-low transition-colors duration-300">
+<span class="material-symbols-outlined text-primary">shopping_bag</span>
+</button>
+<div class="w-10 h-10 rounded-full overflow-hidden bg-surface-container">
+<img alt="Perfil del Productor" data-alt="Close-up portrait of a smiling artisan coffee producer with weathered skin and kind eyes in warm natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDu8J5k_-qdAOv9hM09d-DwhbW8_cuAXgGlPucVXSJQkmzuVUVgQYONydbE3E49gYvL1ZOGV10-S_B6P9PVyK2QG-qIMDQC9OdFQ4XoOra_Z7nigwdGzrKLbU_9r-t0Tme-8m7qU4e_A-1Ca4eNkpQdscFxTeRCPZMEttmdbW8lXOBdTRvcgC67wB_7wGt04pZ9pkIF5hmFvA32oVLqUppITVsxEX9UqH5XKCQWZY2jvVskcosZ3J-RMEFhwyWoqjTDjrBzInO2sGfS"/>
+</div>
+</div>
+</nav>
+</header>
+<main class="max-w-7xl mx-auto px-8 py-12">
+<!-- Back Button -->
+<a class="inline-flex items-center gap-2 mb-12 text-primary/60 hover:text-primary transition-colors group" href="#">
+<span class="material-symbols-outlined text-sm group-hover:-translate-x-1 transition-transform">arrow_back</span>
+<span class="font-label uppercase tracking-widest text-xs">Volver al Catálogo</span>
+</a>
+<!-- Product Hero Section (Asymmetric Grid) -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-16 mb-24">
+<!-- Image Gallery (Bento-style layout) -->
+<div class="lg:col-span-7 grid grid-cols-2 gap-4 h-fit">
+<div class="col-span-2 rounded-lg overflow-hidden h-[500px]">
+<img alt="Granos de café" class="w-full h-full object-cover" data-alt="Macro shot of freshly roasted organic coffee beans with rich oily texture and deep chocolate tones under soft ambient light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAdC1HyMu3tESwxPmRRrfVp65uPnQCWqCGvqqBX38ndxPkvad6xpHA_KQMnYYufORfckZl5htsoKnB1oxpl38nvGShmIZmXKbh8msu47jM-MGSTOvKg_bq5mS5cZHBzusG_NtZM7RoIiD779OxdXs2ANsBFJRFywvq8rFAdS-duC4cxpVczNZGcJZyav_j3quHJF-ocFBj-G5_NHhJFVQcPeIIi5tqMUdqnd7JYVzEgdr2apCp-t-nfySwDfUl6y3xnzLrJUs0omFmV"/>
+</div>
+<div class="rounded-lg overflow-hidden h-64">
+<img alt="Finca del Productor" class="w-full h-full object-cover" data-alt="Breathtaking morning mist over a lush coffee plantation in the Huila mountains of Colombia with vibrant green leaves and soft dawn light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAUUS2Ul0Vsed8T9Xsd7jr70E0l_NmJOp63inULohpHM1HUb2YMHCC_f_SMzun6SpULUSLu9rVZnynx-Fs6YY8ByxwlGlU3HYEHf5BJriPx72OwkOwrCEIE4u9GUZUxf0yjG8wl3RpJZrV2CQePm2tFV5xN6hUrtJ-fuYuxLqtuAawvlolwBBo0_N_V0yuQ1ADACf_Rdsu3wrtqBT3_ibm7JCpX6uwia1B3FG_-pLfXD0EEqfsIIX-76z4w-2TA_GpyLclR4yL4TLqh"/>
+</div>
+<div class="rounded-lg overflow-hidden h-64">
+<img alt="Preparación" class="w-full h-full object-cover" data-alt="Close-up of professional barista hand-pouring coffee into a glass carafe with steam rising in a minimalist, sun-drenched studio" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCaxmm-HAr5K4zjEzxbi63OOjwGeU_rX6KaA0Rfj46kdUqG3-VRSePbGbN73579e1pp7OWvuyhZe5wGoAOfRO6hVJVZWmKP-mODqxstijEgOgkk4dQFQiQsfyr0j3d4n72RRHC5my3dDeeFzS8-A5QIrmKA81EjdOxOxS0QrLTI85lJ5AIGtuBD7S7VsZVUhNrCUg5KjAEHMiuzCaiGZ4vvzW6anTVoAUHFmHRNmmd0PdLARY5n47MbkRZBHqQ21byAEH7FvHwj4ZEN"/>
+</div>
+</div>
+<!-- Product Info -->
+<div class="lg:col-span-5 flex flex-col justify-center">
+<div class="mb-6 flex gap-2">
+<span class="bg-secondary-container text-on-secondary-container px-4 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest">Origen Único</span>
+<span class="bg-surface-container-high text-primary/70 px-4 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest">Huila, Colombia</span>
+</div>
+<h1 class="font-headline text-5xl font-black text-primary mb-4 leading-tight">Monteverde Gesha Reserva</h1>
+<p class="text-2xl text-secondary font-headline mb-8">$42.00 <span class="text-sm font-body text-primary/50 font-normal">/ bolsa de 250g</span></p>
+<div class="space-y-8 mb-12">
+<div>
+<h3 class="font-label uppercase tracking-widest text-xs text-primary/60 mb-3">Perfil Sensorial</h3>
+<div class="flex flex-wrap gap-3">
+<div class="bg-surface-container-lowest editorial-shadow px-4 py-2 rounded flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-sm">local_florist</span>
+<span class="text-sm font-medium">Jazmín</span>
+</div>
+<div class="bg-surface-container-lowest editorial-shadow px-4 py-2 rounded flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-sm">filter_vintage</span>
+<span class="text-sm font-medium">Bergamota</span>
+</div>
+<div class="bg-surface-container-lowest editorial-shadow px-4 py-2 rounded flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-sm">eco</span>
+<span class="text-sm font-medium">Miel</span>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-8 border-l-2 border-outline-variant/30 pl-6">
+<div>
+<p class="font-label uppercase tracking-widest text-[10px] text-primary/50">Altitud</p>
+<p class="font-bold text-primary">1,950 msnm</p>
+</div>
+<div>
+<p class="font-label uppercase tracking-widest text-[10px] text-primary/50">Proceso</p>
+<p class="font-bold text-primary">Lavado Honey</p>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-6 mb-12">
+<div class="flex items-center bg-surface-container rounded-lg px-4 py-3">
+<button class="text-primary hover:text-secondary transition-colors"><span class="material-symbols-outlined">remove</span></button>
+<span class="mx-6 font-bold w-4 text-center">1</span>
+<button class="text-primary hover:text-secondary transition-colors"><span class="material-symbols-outlined">add</span></button>
+</div>
+<button class="flex-grow bg-gradient-to-br from-primary to-primary-container text-on-primary font-label uppercase tracking-widest text-xs py-4 rounded-lg shadow-lg hover:scale-[0.98] transition-transform flex items-center justify-center gap-2">
+                        Añadir al Carrito
+                        <span class="material-symbols-outlined text-sm">shopping_cart</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Detailed Info & Producer Story -->
+<div class="bg-surface-container-low -mx-8 px-8 py-24 mb-24">
+<div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-24">
+<div class="space-y-8">
+<h2 class="font-headline text-3xl font-bold text-primary">Esencia del Producto</h2>
+<p class="text-lg leading-relaxed text-primary/80 font-light italic">
+                        "Una iteración excepcional de la variedad Gesha, cosechada en su punto óptimo de madurez en los microclimas de gran altitud de San Agustín. Este lote representa el pináculo de la producción artesanal de café colombiano."
+                    </p>
+<p class="text-primary/70 leading-relaxed">
+                        La finca Monteverde utiliza una fermentación anaeróbica precisa de 48 horas seguida de un delicado proceso honey, preservando los delicados aromas florales y realzando la dulzura natural de la cereza. Cada grano se clasifica a mano dos veces para asegurar que solo la calidad de exportación Grado A llegue a su taza.
+                    </p>
+</div>
+<div class="bg-surface-container-lowest p-12 rounded-lg editorial-shadow relative overflow-hidden">
+<div class="absolute top-0 right-0 p-8 opacity-10">
+<span class="material-symbols-outlined text-9xl">agriculture</span>
+</div>
+<h3 class="font-label uppercase tracking-widest text-xs text-secondary font-bold mb-6">Conoce al Productor</h3>
+<h2 class="font-headline text-3xl font-bold text-primary mb-6">Mateo Rivera</h2>
+<div class="space-y-6 relative z-10">
+<p class="text-primary/80">
+                            Mateo es un productor de café de tercera generación cuya familia ha cultivado las montañas del Huila desde 1945. Su enfoque combina el conocimiento ancestral tradicional con procesos experimentales modernos.
+                        </p>
+<p class="text-primary/80">
+                            Al centrarse en la producción de especialidad en lotes pequeños, Mateo ha convertido su finca de 5 hectáreas en un destino de renombre mundial para las variedades Gesha y Pink Bourbon de alta calidad.
+                        </p>
+<a class="inline-block text-primary font-bold border-b-2 border-secondary pb-1 text-sm" href="#">Leer la historia completa del origen</a>
+</div>
+</div>
+</div>
+</div>
+<!-- Related Products -->
+<section class="mb-24">
+<div class="flex justify-between items-end mb-12">
+<div>
+<h4 class="font-label uppercase tracking-widest text-xs text-primary/50 mb-2">Continúa el Viaje</h4>
+<h2 class="font-headline text-4xl font-black text-primary">También te podría gustar</h2>
+</div>
+<a class="text-secondary font-bold hover:underline underline-offset-4 font-label text-sm uppercase" href="#">Explorar Más</a>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+<!-- Related Item 1 -->
+<div class="group cursor-pointer">
+<div class="bg-surface-container-low aspect-[4/5] rounded-lg mb-4 overflow-hidden relative">
+<img alt="Bolsa de café" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Elegant minimalist white coffee bag packaging with dark typography and a textured paper finish on a warm wood surface" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBoFg5wySV_J6PlNM4yc6uuZBi6S5afmup-amVrXoIrTwy9oFB2TOSjXQrEdANeFLhtLnMLLlDpi05bKIhDFyyYWveZKLiznMhFLjdkM0nfTdnfZQ9tgMgnLDbSri0P3kuw8Rce2WIzdDNzVAkAyQ7KV9PYDu4TEV1hg9cijgWerY_YOF9Ua4oEoUtTANskOFOL6b6mf-VYju4ANPbSdyDVLYpWQk1MW17XJepZqenKgR0QhofguHQicXvnYKXmsOSkXCq-1-mXwGGn"/>
+<div class="absolute bottom-4 left-4">
+<span class="bg-surface-container-lowest/90 backdrop-blur-sm text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full">Antioquia</span>
+</div>
+</div>
+<h3 class="font-headline text-lg font-bold text-primary mb-1">Caturra Peaberry</h3>
+<p class="text-primary/60 text-sm mb-2">Productor: Elena Gómez</p>
+<p class="text-secondary font-bold">$28.00</p>
+</div>
+<!-- Related Item 2 -->
+<div class="group cursor-pointer">
+<div class="bg-surface-container-low aspect-[4/5] rounded-lg mb-4 overflow-hidden relative">
+<img alt="Granos verdes" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Raw unroasted green coffee beans in a wooden bowl with beautiful natural textures and soft side lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBkp1AvLeXSOVoh_c4T7zs8sjL0O4ohaf9Rg50Px0opz7SO4_sefou4fPXcJw8tCRi6FqjHbhR62OFAaxJJkVE7BnofTlIpJ09SJtPemRNnNSiJ75ZM0n9IEOHTvDfvHiBrTGJHMVYsMqBNH6MP_hviA--vIYpW-7PpVtQpmSw_SY-ntuGpsIg0fACK2rFAJoVUdCyQspafN420QYdLYbfbV0Auku9Pf3-CqIfiKF2KEunQw-KdhfoU2HYhH9MWCoc-4cumfrEH6CrN"/>
+<div class="absolute bottom-4 left-4">
+<span class="bg-surface-container-lowest/90 backdrop-blur-sm text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full">Quindío</span>
+</div>
+</div>
+<h3 class="font-headline text-lg font-bold text-primary mb-1">Sidra Natural</h3>
+<p class="text-primary/60 text-sm mb-2">Productor: Javier Ruiz</p>
+<p class="text-secondary font-bold">$36.00</p>
+</div>
+<!-- Related Item 3 -->
+<div class="group cursor-pointer">
+<div class="bg-surface-container-low aspect-[4/5] rounded-lg mb-4 overflow-hidden relative">
+<img alt="Espresso" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Rich dark espresso shot in a ceramic cup with thick golden crema and artistic presentation" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCMVci8Cl9K52RP-A3HCT36zt6l6a5h_nnPWTraZLbCpLSaSSDRnhMDYKSjplgQi1Cqz8gHilgNyGrSSfxZZ1bOq1jTmuBPJD9AyYwphOv8O8Hfw3EGg9kHf67Hcw-ONbz9onixFj3FAyqhNmDEzMIcBL-WpmD8NXzS-gAF-sxu2sEHJbhkhGOjH5kIt7QJ_9HZxbKGNNY8MrvIRWDyLCSCC5gOzwr7QKx6SCkQLZDE5pgPhzSFweOf3Ixh9GXGUfjzy7HlYHlEqL0n"/>
+<div class="absolute bottom-4 left-4">
+<span class="bg-surface-container-lowest/90 backdrop-blur-sm text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full">Tolima</span>
+</div>
+</div>
+<h3 class="font-headline text-lg font-bold text-primary mb-1">Tabi Lavado</h3>
+<p class="text-primary/60 text-sm mb-2">Productor: Clara Díaz</p>
+<p class="text-secondary font-bold">$31.00</p>
+</div>
+<!-- Related Item 4 -->
+<div class="group cursor-pointer">
+<div class="bg-surface-container-low aspect-[4/5] rounded-lg mb-4 overflow-hidden relative">
+<img alt="Preparación V60" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Artisanal pour-over coffee setup with a crystal dripper and steaming coffee in a cozy rustic kitchen setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD3m3sb6WNYypXsaaF5MkBVeL-y83XVPGTEpb-y_-vyxBhw-z0hKZSe1br6Al3WIcQejrZsDzSq44L2jgKqfxK0s3z1-qEeTTN6djMyOHZODwNOzC4fKBR84O9ssMeeiW_64stmPxekXBKvf64Bg0dQbd6AU4UGcbUFU0BlZQixvv3vjLN8nbVPlJJyFx52-dzg4pAqryWuJTdyR6Y98XQaIiMmCUWKt9pdS6o-a8AXzf9rW35Ql--L3Ws9HyeX5GDKhAAJGo1UvFec"/>
+<div class="absolute bottom-4 left-4">
+<span class="bg-surface-container-lowest/90 backdrop-blur-sm text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full">Nariño</span>
+</div>
+</div>
+<h3 class="font-headline text-lg font-bold text-primary mb-1">Pink Bourbon</h3>
+<p class="text-primary/60 text-sm mb-2">Productor: Andrés Solís</p>
+<p class="text-secondary font-bold">$40.00</p>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="w-full bg-surface-container-low py-16 px-8 mt-auto border-t border-outline-variant/10">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-12 max-w-7xl mx-auto">
+<div class="space-y-6">
+<div class="text-xl font-bold text-primary font-headline">The Artisanal Connection</div>
+<p class="text-primary/60 text-sm leading-relaxed max-w-xs">
+                    Cerrando la brecha entre las fincas de gran altitud y su ritual diario a través del comercio ético y directo.
+                </p>
+</div>
+<div class="space-y-4">
+<h4 class="font-headline text-lg text-primary">Descubrir</h4>
+<div class="flex flex-col gap-3">
+<a class="text-primary/60 hover:text-secondary hover:underline decoration-secondary decoration-2 underline-offset-4 text-sm font-body transition-all" href="#">Sostenibilidad</a>
+<a class="text-primary/60 hover:text-secondary hover:underline decoration-secondary decoration-2 underline-offset-4 text-sm font-body transition-all" href="#">Comercio Directo</a>
+</div>
+</div>
+<div class="space-y-4">
+<h4 class="font-headline text-lg text-primary">Compañía</h4>
+<div class="flex flex-col gap-3">
+<a class="text-primary/60 hover:text-secondary hover:underline decoration-secondary decoration-2 underline-offset-4 text-sm font-body transition-all" href="#">Logística</a>
+<a class="text-primary/60 hover:text-secondary hover:underline decoration-secondary decoration-2 underline-offset-4 text-sm font-body transition-all" href="#">Términos</a>
+</div>
+</div>
+<div class="space-y-6">
+<h4 class="font-headline text-lg text-primary">Suscríbete al Boletín</h4>
+<div class="flex">
+<input class="bg-surface-container-lowest border-none rounded-l-lg w-full focus:ring-0 text-sm" placeholder="Correo electrónico" type="email"/>
+<button class="bg-primary text-on-primary px-4 py-2 rounded-r-lg">
+<span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<div class="max-w-7xl mx-auto mt-16 pt-8 border-t border-outline-variant/20 flex flex-col md:flex-row justify-between items-center gap-4 text-xs font-label text-primary/40 uppercase tracking-widest">
+<p>© 2024 The Artisanal Connection. Cultivando fincas digitales.</p>
+<div class="flex gap-8">
+<span>Instagram</span>
+<span>Vimeo</span>
+<span>Spotify</span>
+</div>
+</div>
+</footer>
+</body></html>

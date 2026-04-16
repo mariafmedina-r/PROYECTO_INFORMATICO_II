@@ -1,0 +1,125 @@
+<html class="light" lang="es"><head></head><body class="bg-surface text-on-surface font-body antialiased">```html
+
+
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700;900&amp;family=Manrope:wght@300;400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-variant": "#e2e3df",
+              "primary-fixed-dim": "#e5beb5",
+              "on-secondary-fixed": "#002204",
+              "on-error": "#ffffff",
+              "on-secondary-container": "#217128",
+              "on-primary-fixed": "#2b1611",
+              "on-primary-container": "#c19c94",
+              "on-primary-fixed-variant": "#5c403a",
+              "error": "#ba1a1a",
+              "on-primary": "#ffffff",
+              "on-tertiary-fixed": "#201a18",
+              "tertiary-fixed": "#ece0dc",
+              "surface": "#faf9f5",
+              "on-tertiary": "#ffffff",
+              "surface-container-lowest": "#ffffff",
+              "surface-container-high": "#e8e8e4",
+              "secondary": "#1b6d24",
+              "on-surface-variant": "#504442",
+              "inverse-on-surface": "#f1f1ed",
+              "tertiary-container": "#403936",
+              "surface-tint": "#755750",
+              "on-error-container": "#93000a",
+              "error-container": "#ffdad6",
+              "primary": "#361f1a",
+              "secondary-fixed-dim": "#88d982",
+              "on-background": "#1a1c1a",
+              "surface-container-low": "#f4f4f0",
+              "on-surface": "#1a1c1a",
+              "inverse-primary": "#e5beb5",
+              "tertiary-fixed-dim": "#cfc4c0",
+              "primary-fixed": "#ffdad2",
+              "surface-container": "#eeeeea",
+              "on-tertiary-container": "#aca29f",
+              "on-secondary": "#ffffff",
+              "inverse-surface": "#2f312e",
+              "outline-variant": "#d4c3bf",
+              "surface-bright": "#faf9f5",
+              "secondary-fixed": "#a3f69c",
+              "on-tertiary-fixed-variant": "#4c4542",
+              "tertiary": "#292421",
+              "surface-dim": "#dadad6",
+              "primary-container": "#4e342e",
+              "surface-container-highest": "#e2e3df",
+              "background": "#faf9f5",
+              "secondary-container": "#a0f399",
+              "on-secondary-fixed-variant": "#005312",
+              "outline": "#827471"
+            },
+            fontFamily: {
+              "headline": ["Noto Serif"],
+              "body": ["Manrope"],
+              "label": ["Manrope"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .editorial-shadow {
+            box-shadow: 0 10px 30px rgba(54, 31, 26, 0.05), 0 4px 8px rgba(54, 31, 26, 0.03);
+        }
+    </style>
+<!-- TopNavBar -->
+<nav class="bg-[#faf9f5]/80 dark:bg-[#361f1a]/80 backdrop-blur-md w-full top-0 sticky z-50">
+<div class="max-w-7xl mx-auto px-8 flex justify-between items-center h-20">
+<div class="text-2xl font-black text-[#361f1a] dark:text-[#faf9f5] font-headline">The Artisanal Connection</div>
+<div class="hidden md:flex items-center gap-8">
+<a class="text-[#361f1a]/70 dark:text-[#faf9f5]/70 hover:text-[#361f1a] dark:hover:text-[#faf9f5] font-label uppercase tracking-wider text-sm transition-colors duration-300" href="#">Catalog</a>
+<a class="text-[#361f1a]/70 dark:text-[#faf9f5]/70 hover:text-[#361f1a] dark:hover:text-[#faf9f5] font-label uppercase tracking-wider text-sm transition-colors duration-300" href="#">Producers</a>
+<a class="text-[#1b6d24] font-bold border-b-2 border-[#1b6d24] pb-1 font-label uppercase tracking-wider text-sm" href="#">Origen Colombia</a>
+<a class="text-[#361f1a]/70 dark:text-[#faf9f5]/70 hover:text-[#361f1a] dark:hover:text-[#faf9f5] font-label uppercase tracking-wider text-sm transition-colors duration-300" href="#">Orders</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 hover:bg-[#f4f4f0]/50 dark:hover:bg-[#4e342e]/50 rounded-full transition-all active:scale-95">
+<span class="material-symbols-outlined text-[#361f1a] dark:text-[#faf9f5]">shopping_bag</span>
+</button>
+<div class="w-10 h-10 rounded-full overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover" data-alt="Portrait of a coffee producer in a sunlit plantation setting, warm natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDp8WdR0DUq7A2QLyzBD_Tj2YbaRwMGbmzZ-RfbuPZcQjXcEYsQ961G3Y8prhHTwHlY7WyUKK9lKOl-TRTWZi2f9i-hZ1yilrdujVueTlt7DBgmHGndi40zbWgWt7FqyHmtjcsodA_Qa46LqTyYYLze9uorqoltbMz7RvwTUclxhmM_ESj60PCAd7REwiEK_z-2hqhq9D61kTxjyviUEwhFkpVydNP40ARatxRtogXNyTskIy-bOeOpVePVQBSOUdXSk8jGJrfkQ6_F"/>
+</div>
+</div>
+</div>
+</nav>
+<main class="min-h-screen">
+<!-- Hero Section: Corazón del Café Colombiano -->
+<section class="relative h-[614px] flex items-center overflow-hidden bg-surface">
+<div class="absolute inset-0 z-0">
+<img class="w-full h-full object-cover opacity-20" data-alt="Vast coffee plantation landscape in Colombia under a misty morning sky with lush green rolling hills" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAubZD_iwR0klbgnvPGMgzziTXuZebdPTJSA7uvbhmie-4SAD5qkbG4gkI-Ba5CAJe1kbbC-LVBHC10PCP-OzOfeXt1O2qydQ6MsskTdm5ExGkyygeZzorLuERaegmjI1-v4het0wkeZ8-0sxox-R7KbOX6rFRej9eNQp4R6u2Z9xkB1awME_wp_3AlBI7-r4sTWrdEQh_5RYduWyPj35MhzDqgNFffdFrPLq5_MVEaRutO4TuJOZhRORb0nNINDwgcyWNVutUcyNbq"/>
+<div class="absolute inset-0 bg-gradient-to-b from-surface/0 via-surface/40 to-surface"></div>
+</div>
+<div class="max-w-7xl mx-auto px-8 w-full relative z-10">
+<div class="max-w-3xl">
+<span class="inline-block px-4 py-1 rounded-full bg-secondary-container text-on-secondary-container font-label text-xs font-bold uppercase tracking-widest mb-6">El Terroir de los Andes</span>
+<h1 class="text-6xl md:text-8xl font-headline font-black text-primary leading-tight mb-8">Colombia: Tierra de Gracia</h1>
+<p class="text-xl md:text-2xl text-on-surface-variant font-light leading-relaxed max-w-2xl">
+                        Descubre la diversidad inigualable del café colombiano. Desde las cumbres nevadas del norte hasta las laderas volcánicas del Eje Cafetero.
+                    </p>
+</div>
+</div>
+</section>
+<!-- Colombian Map Visual Guide -->
+<section class="py-24 bg-surface-container-low">
+<div class="max-w-7xl mx-auto px-8">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
+<!-- Map Graphic: Focus on Colombia -->
+<div class="lg:col-span-7 relative">
+<div class="aspect-[16/12] bg-surface rounded-xl editorial-shadow overflow-hidden p-8 flex items-center justify-center border border-outline-variant/10">
+</div></div></div></div></section></main></body></html>

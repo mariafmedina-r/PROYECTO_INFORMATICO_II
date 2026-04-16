@@ -1,0 +1,50 @@
+﻿Documento de Arquitectura Organizado: Coffee Commerce
+
+
+El siguiente es un resumen organizado de la arquitectura propuesta, enfocado en el stack, los módulos del backend, el plan de desarrollo y las recomendaciones clave.1. Stack Tecnológico Principal
+* Frontend: React (Vite) + Tailwind CSS. Maneja la interfaz de usuario (UI) y el estado local del carrito.
+* Backend: FastAPI (Python). Se encarga de validar reglas de negocio, impuestos y stock.
+* Autenticación y Sesión: Firebase Auth, utilizando el Admin SDK en el backend.
+* Persistencia (Doble):
+   * PostgreSQL: Para datos relacionales críticos: Productos, Variantes, Productores e Historial de Órdenes.
+   * Firestore: Para el Shopping Cart (persistencia rápida y en tiempo real).
+* Pagos: API Externa (Sandbox).
+2. Módulos del Backend (Clean Architecture)
+
+
+El proyecto se estructurará siguiendo el patrón de Clean Architecture, con capas de Router, Service y Repository.A. Módulo de Identidad (Auth & Roles)
+* Lógica: FastAPI intercepta el Authorization: Bearer <token> de Firebase.
+* Roles y Permisos:
+   * Customer: Acceso a compra y perfil.
+   * Productor: Solo lectura de sus ventas y edición de sus productos (creado por Admin).
+   * Admin: Creación de cuentas de productor.
+B. Módulo de Catálogo (Productos y Variantes)
+* Estructura: Relación Uno a Muchos entre Producto y Variante.
+* Lógica de Stock ("Gris"): Un producto se marca como out_of_stock si la suma de los stock de todas sus variantes es $0$.
+* Soft Delete: Los productos borrados se marcan con un campo deleted_at. El backend los filtra automáticamente de la tienda, pero los mantiene para el historial del productor.
+C. Módulo de Ventas y Checkout
+* Lógica de Reserva: Al iniciar el pago, se implementa un "Lock" temporal en el stock de PostgreSQL para evitar sobreventas.
+* Impuestos: El backend calcula el subtotal y suma el IVA definido en la variante del producto.
+* Proceso de Pago: Un Webhook en el endpoint /payments/webhook recibe la confirmación de la pasarela y dispara la actualización de la orden.
+3. Fases de Desarrollo (Plan Semanal)
+1. Fase 1: Cimientos y Autenticación (Semana 1)
+   * Configurar Firebase Admin SDK y el Middleware de validación de tokens en FastAPI.
+   * Definición de Base de Datos PostgreSQL (SQLAlchemy/SQLModel).
+   * Frontend: Login con Firebase y persistencia del token.
+2. Fase 2: CRUD de Productos y Variantes (Semana 2)
+   * Creación de Endpoints para que el Productor gestione (cree/edite/borre - soft delete) sus productos.
+   * Implementación de la lógica de variantes (múltiples moliendas/pesos/precios).
+   * Frontend: Dashboard del productor para la gestión de inventario.
+3. Fase 3: Carrito y Ordenes (Semana 3)
+   * Integración de FastAPI con Firestore para la lectura del carrito del usuario.
+   * Endpoint de "Checkout": Valida stock, calcula Totales + IVA, y crea la Orden en estado PENDING.
+   * Integración inicial con la API de Pagos (Redirección al checkout externo).
+4. Fase 4: Logística, Notificaciones e Historial (Semana 4)
+   * Implementación del Webhook de pago: Si el estado es SUCCESS, se actualiza Order.status = 'PAID'.
+   * Notificaciones: Envío de correo/notificación al Productor al confirmar el pago.
+   * Generación del JSON de Logística con datos de envío y productos.
+   * Frontend: Vistas de historial de compras (Cliente) y ventas (Productor).
+4. Recomendaciones de Seguridad y Escalabilidad
+* Validación Crítica: Nunca confiar en el precio que envíe el Frontend. FastAPI debe siempre consultar su propia base de datos de productos para calcular el total.
+* Variables de Entorno: Usar archivos .env para gestionar las llaves de Firebase y de la pasarela de pagos.
+* CORS: Configurar correctamente los orígenes permitidos en FastAPI para restringir el consumo de la API solo a la aplicación de React.

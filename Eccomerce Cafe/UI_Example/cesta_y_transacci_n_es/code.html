@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Pago Seguro | The Artisanal Connection</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@700;900&amp;family=Manrope:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-container-low": "#f4f4f0",
+              "on-primary": "#ffffff",
+              "surface-container-high": "#e8e8e4",
+              "surface-bright": "#faf9f5",
+              "surface-variant": "#e2e3df",
+              "inverse-on-surface": "#f1f1ed",
+              "outline": "#827471",
+              "surface-container": "#eeeeea",
+              "surface": "#faf9f5",
+              "error": "#ba1a1a",
+              "secondary-fixed": "#a3f69c",
+              "inverse-primary": "#e5beb5",
+              "on-secondary-fixed-variant": "#005312",
+              "on-tertiary-container": "#aca29f",
+              "surface-tint": "#755750",
+              "error-container": "#ffdad6",
+              "on-primary-fixed": "#2b1611",
+              "on-error-container": "#93000a",
+              "tertiary": "#292421",
+              "surface-dim": "#dadad6",
+              "primary-container": "#4e342e",
+              "tertiary-fixed": "#ece0dc",
+              "on-secondary-container": "#217128",
+              "on-tertiary-fixed-variant": "#4c4542",
+              "surface-container-lowest": "#ffffff",
+              "on-secondary-fixed": "#002204",
+              "on-secondary": "#ffffff",
+              "on-tertiary": "#ffffff",
+              "tertiary-fixed-dim": "#cfc4c0",
+              "outline-variant": "#d4c3bf",
+              "secondary-fixed-dim": "#88d982",
+              "on-primary-container": "#c19c94",
+              "tertiary-container": "#403936",
+              "primary-fixed-dim": "#e5beb5",
+              "on-tertiary-fixed": "#201a18",
+              "primary": "#361f1a",
+              "primary-fixed": "#ffdad2",
+              "background": "#faf9f5",
+              "on-background": "#1a1c1a",
+              "secondary-container": "#a0f399",
+              "on-surface-variant": "#504442",
+              "on-surface": "#1a1c1a",
+              "inverse-surface": "#2f312e",
+              "on-primary-fixed-variant": "#5c403a",
+              "secondary": "#1b6d24",
+              "surface-container-highest": "#e2e3df",
+              "on-error": "#ffffff"
+            },
+            fontFamily: {
+              "headline": ["Noto Serif"],
+              "body": ["Manrope"],
+              "label": ["Manrope"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .editorial-shadow {
+            box-shadow: 0 10px 30px rgba(54, 31, 26, 0.05), 0 4px 8px rgba(54, 31, 26, 0.03);
+        }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface">
+<!-- TopNavBar -->
+<nav class="bg-[#faf9f5]/80 dark:bg-[#361f1a]/80 backdrop-blur-md sticky top-0 z-50 tonal-shift-no-borders bg-[#f4f4f0] dark:bg-[#4e342e] w-full">
+<div class="max-w-7xl mx-auto px-8 flex justify-between items-center h-20">
+<div class="text-2xl font-black text-[#361f1a] dark:text-[#faf9f5] font-headline uppercase tracking-tight">
+            The Artisanal Connection
+        </div>
+<div class="hidden md:flex gap-8 items-center">
+<a class="text-[#361f1a]/70 dark:text-[#faf9f5]/70 hover:text-[#361f1a] dark:hover:text-[#faf9f5] font-label uppercase tracking-wider text-xs" href="#">Catálogo</a>
+<a class="text-[#361f1a]/70 dark:text-[#faf9f5]/70 hover:text-[#361f1a] dark:hover:text-[#faf9f5] font-label uppercase tracking-wider text-xs" href="#">Productores</a>
+<a class="text-[#361f1a]/70 dark:text-[#faf9f5]/70 hover:text-[#361f1a] dark:hover:text-[#faf9f5] font-label uppercase tracking-wider text-xs" href="#">Origen</a>
+<a class="text-[#1b6d24] font-bold border-b-2 border-[#1b6d24] pb-1 font-label uppercase tracking-wider text-xs" href="#">Pedidos</a>
+</div>
+<div class="flex items-center gap-6">
+<button class="material-symbols-outlined text-[#361f1a] dark:text-[#faf9f5] transition-transform active:scale-95">shopping_bag</button>
+<div class="w-10 h-10 rounded-full bg-surface-container overflow-hidden">
+<img alt="Perfil del Productor" class="w-full h-full object-cover" data-alt="Close-up portrait of a coffee producer with a warm smile and weather-worn features against a blurred plantation background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB1nglgBM28tTiKU9eAa4troBLcDoIXmfje-6gbAmSBJs05AyuTJlxMym7Fa-DFd9Af3bW8UB3VXBd6w0dYtRT3DYAM4k2m90wT1iTNTVswuUyCzsK9sCx0gsjmuctEa_ScwHhELPTybAgxKM8nTWsSHNCD2Kzbnnmldkr1UceP7Pzv8FbyPe_3fdnOQiOEp-is2QTk-azBHrXwYweFj-E8LaHK8TuHk-Q3olX8W05le3i78r3gjFLjUBiZzLrUy3LI4Ge0d8acsC9O"/>
+</div>
+</div>
+</div>
+</nav>
+<main class="max-w-7xl mx-auto px-8 py-12">
+<header class="mb-16">
+<h1 class="font-headline text-5xl text-primary tracking-tight mb-4">Pago Seguro</h1>
+<p class="text-on-surface-variant font-body text-lg">Tu conexión directa con las mejores cosechas del mundo.</p>
+</header>
+<!-- Checkout Steps Indicator -->
+<div class="flex items-center mb-16 gap-4">
+<div class="flex items-center gap-3">
+<span class="w-8 h-8 rounded-full bg-secondary text-on-secondary flex items-center justify-center font-bold text-sm">1</span>
+<span class="font-label uppercase tracking-widest text-xs font-bold text-secondary">Revisión de Cesta</span>
+</div>
+<div class="h-[1px] w-12 bg-outline-variant"></div>
+<div class="flex items-center gap-3">
+<span class="w-8 h-8 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center font-bold text-sm">2</span>
+<span class="font-label uppercase tracking-widest text-xs font-medium text-on-surface-variant">Envío</span>
+</div>
+<div class="h-[1px] w-12 bg-outline-variant"></div>
+<div class="flex items-center gap-3">
+<span class="w-8 h-8 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center font-bold text-sm">3</span>
+<span class="font-label uppercase tracking-widest text-xs font-medium text-on-surface-variant">Pago</span>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-16">
+<!-- Left Column: Checkout Modules -->
+<div class="lg:col-span-8 space-y-16">
+<!-- Section 1: Cart Review -->
+<section>
+<div class="flex justify-between items-baseline mb-8">
+<h2 class="font-headline text-3xl text-primary">Tu Selección</h2>
+<span class="text-sm font-label uppercase tracking-wider text-secondary">2 Artículos</span>
+</div>
+<div class="space-y-6">
+<!-- Cart Item 1 -->
+<div class="group relative flex gap-6 p-6 bg-surface-container-lowest rounded-lg editorial-shadow transition-transform hover:-translate-y-1">
+<div class="w-24 h-32 bg-surface-container rounded overflow-hidden flex-shrink-0">
+<img alt="Bolsa de Café" class="w-full h-full object-cover" data-alt="A minimalist craft paper coffee bag with a premium label, placed on a clean wooden surface with soft shadows" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBR9-Xg-DdiqQhIV4DcoaurgQ4JvuypvC4hv40mqfzVrKqcjDwZgr6duB68bHjxW4GNiyZRB8ojrqniywLE1op3hxAJQbSsql1jfASiMZek1nIr6d88RNoZu5lsSAfp8VZ73CvTWmM4YKLCiDGMnrLeKvvcyND-p5VdTNcrFKM-QN9is5jy_YLbbmu9JTEHYXO5biRjovxzWTcx9R3EI4LJVGLhAG8cqN_aNgr655hVmghKRqQ59tIvH2uhLsz7XnS3L1D2L0U9UTmR"/>
+</div>
+<div class="flex flex-col justify-between flex-grow">
+<div>
+<div class="flex justify-between items-start">
+<h3 class="font-headline text-xl text-primary">Gesha Village Selection</h3>
+<span class="font-bold text-primary">$45.00</span>
+</div>
+<p class="text-sm text-on-surface-variant mt-1">Origen: Bench Maji, Etiopía</p>
+<div class="mt-2 inline-block px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full text-[10px] font-bold uppercase tracking-widest">
+                                    Tostado Ligero
+                                </div>
+</div>
+<div class="flex items-center justify-between mt-4">
+<div class="flex items-center border-2 border-outline-variant rounded-lg overflow-hidden">
+<button class="px-3 py-1 hover:bg-surface-container transition-colors">—</button>
+<span class="px-4 py-1 font-bold">1</span>
+<button class="px-3 py-1 hover:bg-surface-container transition-colors">+</button>
+</div>
+<button class="text-error text-xs font-bold uppercase tracking-widest hover:underline underline-offset-4">Eliminar</button>
+</div>
+</div>
+</div>
+<!-- Cart Item 2 -->
+<div class="group relative flex gap-6 p-6 bg-surface-container-lowest rounded-lg editorial-shadow transition-transform hover:-translate-y-1">
+<div class="w-24 h-32 bg-surface-container rounded overflow-hidden flex-shrink-0">
+<img alt="Bolsa de Café" class="w-full h-full object-cover" data-alt="A dark-toned coffee bag with elegant gold foil typography, sitting in dramatic side lighting on a slate surface" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBnOBO51UbdJl69dLhC2SpE0LZo8Nd53eOlwCZxYqrp7SNjObPWG7WUGBrJRkVpDhKHBlArORj_gjAxc2rmjAb3BOw3ve_ncSU1Ct0eIS1cRdnlQoKioY8wt2ysR0i7pdXEePY5LwsNuRMrV8zCsovRAkCuO_LZKd9k8_PBZ24Z_7X0Eym5SVd9PLy3rPRsu2yeI95P46wIQvfhTAkQtuBDkXsHz8-b06Smq1K6W5mTsC8xmkjJP6Eim2c-rVye-oVoCX_oqRxzie4F"/>
+</div>
+<div class="flex flex-col justify-between flex-grow">
+<div>
+<div class="flex justify-between items-start">
+<h3 class="font-headline text-xl text-primary">Huila Reserva Special</h3>
+<span class="font-bold text-primary">$32.00</span>
+</div>
+<p class="text-sm text-on-surface-variant mt-1">Origen: Huila, Colombia</p>
+<div class="mt-2 inline-block px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full text-[10px] font-bold uppercase tracking-widest">
+                                    Tostado Medio
+                                </div>
+</div>
+<div class="flex items-center justify-between mt-4">
+<div class="flex items-center border-2 border-outline-variant rounded-lg overflow-hidden">
+<button class="px-3 py-1 hover:bg-surface-container transition-colors">—</button>
+<span class="px-4 py-1 font-bold">1</span>
+<button class="px-3 py-1 hover:bg-surface-container transition-colors">+</button>
+</div>
+<button class="text-error text-xs font-bold uppercase tracking-widest hover:underline underline-offset-4">Eliminar</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 2: Logistics & Shipping -->
+<section class="bg-surface-container-low rounded-xl p-8">
+<h2 class="font-headline text-3xl text-primary mb-8">Logística y Envío</h2>
+<div class="grid md:grid-cols-2 gap-8 mb-12">
+<!-- Address Selection -->
+<div class="space-y-4">
+<label class="font-label uppercase tracking-widest text-xs font-bold text-primary">Dirección de Entrega</label>
+<div class="relative bg-surface-container-lowest p-4 rounded-lg border-2 border-secondary group cursor-pointer">
+<div class="flex justify-between items-start">
+<p class="font-bold text-sm">Hacienda Principal</p>
+<span class="material-symbols-outlined text-secondary text-sm" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<p class="text-xs text-on-surface-variant mt-1 leading-relaxed">Carrera 7 # 71-21, Torre B<br/>Bogotá, D.C. 110221, Colombia</p>
+</div>
+<div class="relative bg-surface-container-lowest p-4 rounded-lg border-2 border-transparent hover:border-outline-variant transition-colors cursor-pointer opacity-70">
+<p class="font-bold text-sm">Estudio de Diseño</p>
+<p class="text-xs text-on-surface-variant mt-1 leading-relaxed">Calle 10 # 36-14, El Poblado<br/>Medellín, Antioquia 050021, Colombia</p>
+</div>
+<button class="flex items-center gap-2 text-secondary text-xs font-bold uppercase tracking-widest mt-2 hover:underline">
+<span class="material-symbols-outlined text-sm">add</span> Añadir Nueva Dirección
+                        </button>
+</div>
+<!-- Courier Selection -->
+<div class="space-y-4">
+<label class="font-label uppercase tracking-widest text-xs font-bold text-primary">Servicio de Transportadora</label>
+<div class="space-y-3">
+<label class="flex items-center justify-between p-4 bg-surface-container-lowest rounded-lg cursor-pointer border-2 border-transparent hover:border-outline-variant">
+<div class="flex items-center gap-3">
+<input checked="" class="text-secondary focus:ring-secondary border-outline-variant" name="carrier" type="radio"/>
+<span class="text-sm font-medium">Estate Express (Directo)</span>
+</div>
+<span class="font-bold text-sm">$12.00</span>
+</label>
+<label class="flex items-center justify-between p-4 bg-surface-container-lowest rounded-lg cursor-pointer border-2 border-transparent hover:border-outline-variant">
+<div class="flex items-center gap-3">
+<input class="text-secondary focus:ring-secondary border-outline-variant" name="carrier" type="radio"/>
+<span class="text-sm font-medium">Logística Estándar</span>
+</div>
+<span class="font-bold text-sm">$6.50</span>
+</label>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 3: Payment Gateway -->
+<section>
+<h2 class="font-headline text-3xl text-primary mb-8">Método de Pago</h2>
+<div class="bg-surface-container-lowest p-8 rounded-xl editorial-shadow">
+<div class="grid md:grid-cols-2 gap-8">
+<div class="space-y-6">
+<div>
+<label class="block font-label uppercase tracking-widest text-[10px] font-bold text-on-surface-variant mb-2">Nombre del Titular</label>
+<input class="w-full bg-surface-container-low border-none border-b-2 border-outline-variant focus:border-secondary focus:ring-0 text-sm py-3 px-4 transition-colors" placeholder="JULIAN ESTATE" type="text"/>
+</div>
+<div>
+<label class="block font-label uppercase tracking-widest text-[10px] font-bold text-on-surface-variant mb-2">Número de Tarjeta</label>
+<div class="relative">
+<input class="w-full bg-surface-container-low border-none border-b-2 border-outline-variant focus:border-secondary focus:ring-0 text-sm py-3 px-4 pr-12 transition-colors" placeholder="•••• •••• •••• 4412" type="text"/>
+<span class="absolute right-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline">credit_card</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div>
+<label class="block font-label uppercase tracking-widest text-[10px] font-bold text-on-surface-variant mb-2">Fecha de Expiración</label>
+<input class="w-full bg-surface-container-low border-none border-b-2 border-outline-variant focus:border-secondary focus:ring-0 text-sm py-3 px-4 transition-colors" placeholder="MM/AA" type="text"/>
+</div>
+<div>
+<label class="block font-label uppercase tracking-widest text-[10px] font-bold text-on-surface-variant mb-2">CVV</label>
+<input class="w-full bg-surface-container-low border-none border-b-2 border-outline-variant focus:border-secondary focus:ring-0 text-sm py-3 px-4 transition-colors" placeholder="•••" type="text"/>
+</div>
+</div>
+</div>
+<div class="flex flex-col justify-center items-center p-8 bg-primary rounded-lg text-on-primary text-center relative overflow-hidden group">
+<!-- Background visual -->
+<div class="absolute inset-0 opacity-10 pointer-events-none">
+<img alt="Granos de Café" class="w-full h-full object-cover" data-alt="Abstract artistic shot of roasted coffee beans in high contrast, emphasizing texture and deep brown tones" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBgdrccVIGi1lQJzSyPNk58OnucVhFRYkPMceAuiTSsvHHvV4lLS6pbNwgxLY1eBo2ajBGEqMwRiHA1WN7Xxw954cBizuFjK47KnnJk9_ztzb16kEfux8FOV0ghisYUoz8TIUz1cohaydtO_IjT6KRhZVD-R_bMflmaUX8pfhAy4RXCzKH82_LwsUKH_kelnD9BoD6ImyUgQ6HG3-OYm3zSWFStgbEqj0V2zs3vI0dCMgO26U4R0kPERW_drXRgOvI-KNr9SKDabglh"/>
+</div>
+<span class="material-symbols-outlined text-4xl mb-4" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+<h4 class="font-headline text-lg mb-2">Pago Encriptado</h4>
+<p class="text-xs text-on-primary-container leading-relaxed">Tu transacción está asegurada con encriptación de nivel bancario para proteger tus datos y el pago del artesano.</p>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Right Column: Summary Sidebar -->
+<aside class="lg:col-span-4">
+<div class="sticky top-32 space-y-8">
+<div class="bg-surface-container-low p-8 rounded-xl">
+<h3 class="font-headline text-2xl text-primary mb-8">Resumen del Pedido</h3>
+<div class="space-y-4 mb-8">
+<div class="flex justify-between text-sm">
+<span class="text-on-surface-variant">Subtotal</span>
+<span class="font-bold">$77.00</span>
+</div>
+<div class="flex justify-between text-sm">
+<span class="text-on-surface-variant">Envío (Express)</span>
+<span class="font-bold">$12.00</span>
+</div>
+<div class="flex justify-between text-sm">
+<span class="text-on-surface-variant">Estimación de Impuestos</span>
+<span class="font-bold">$6.16</span>
+</div>
+<div class="pt-4 border-t border-outline-variant flex justify-between items-baseline">
+<span class="font-headline text-lg text-primary">Total</span>
+<span class="font-headline text-2xl text-secondary">$95.16</span>
+</div>
+</div>
+<div class="space-y-4">
+<div class="relative">
+<input class="w-full bg-surface-container-lowest border-none border-b-2 border-outline-variant focus:border-secondary focus:ring-0 text-xs py-3 px-4 transition-colors uppercase tracking-widest" placeholder="CÓDIGO PROMOCIONAL" type="text"/>
+<button class="absolute right-4 top-1/2 -translate-y-1/2 text-secondary text-[10px] font-bold uppercase tracking-widest">Aplicar</button>
+</div>
+<button class="w-full bg-gradient-to-br from-primary to-primary-container text-on-primary py-4 rounded font-label uppercase tracking-[0.2em] text-xs font-black shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all">
+                            Completar Compra
+                        </button>
+</div>
+<p class="mt-6 text-[10px] text-center text-on-surface-variant leading-relaxed">
+                        Al hacer clic en 'Completar Compra', aceptas nuestros Términos de Comercio Directo y acuerdos de Logística.
+                    </p>
+</div>
+<div class="p-6 bg-surface-container rounded-lg border-2 border-dashed border-outline-variant">
+<h4 class="font-bold text-xs uppercase tracking-widest mb-2">Garantía de Comercio Directo</h4>
+<p class="text-[11px] text-on-surface-variant leading-relaxed">Cada compra apoya directamente al productor específico listado en tu cesta. Garantizamos que el 90% de tu pago llega directamente a la finca.</p>
+</div>
+</div>
+</aside>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-[#f4f4f0] dark:bg-[#361f1a] w-full py-12 px-8 mt-24">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-12 max-w-7xl mx-auto">
+<div class="space-y-4">
+<div class="text-xl font-bold text-[#361f1a] dark:text-[#faf9f5] font-headline uppercase tracking-tight">The Artisanal Connection</div>
+<p class="text-sm font-body text-[#361f1a]/60 dark:text-[#faf9f5]/60 leading-relaxed">
+                © 2024 The Artisanal Connection. Cultivando haciendas digitales.
+            </p>
+</div>
+<div class="space-y-4">
+<h4 class="font-headline text-lg text-primary">Misión</h4>
+<ul class="space-y-2">
+<li><a class="text-sm text-[#361f1a]/60 hover:underline decoration-[#1b6d24] decoration-2 underline-offset-4 transition-colors" href="#">Sostenibilidad</a></li>
+<li><a class="text-sm text-[#361f1a]/60 hover:underline decoration-[#1b6d24] decoration-2 underline-offset-4 transition-colors" href="#">Comercio Directo</a></li>
+</ul>
+</div>
+<div class="space-y-4">
+<h4 class="font-headline text-lg text-primary">Operaciones</h4>
+<ul class="space-y-2">
+<li><a class="text-sm text-[#361f1a]/60 hover:underline decoration-[#1b6d24] decoration-2 underline-offset-4 transition-colors" href="#">Logística</a></li>
+<li><a class="text-sm text-[#361f1a]/60 hover:underline decoration-[#1b6d24] decoration-2 underline-offset-4 transition-colors" href="#">Términos</a></li>
+</ul>
+</div>
+<div class="space-y-4">
+<h4 class="font-headline text-lg text-primary">Boletín</h4>
+<p class="text-xs text-on-surface-variant">Únete a nuestra lista curada para lanzamientos exclusivos de microlotes.</p>
+<div class="flex border-b-2 border-primary">
+<input class="bg-transparent border-none focus:ring-0 text-xs w-full py-2 px-0 font-label tracking-widest" placeholder="CORREO ELECTRÓNICO" type="email"/>
+<button class="material-symbols-outlined text-primary">arrow_right_alt</button>
+</div>
+</div>
+</div>
+</footer>
+</body></html>
