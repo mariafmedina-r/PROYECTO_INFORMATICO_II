@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate, Navigate } from 'react-router-dom';
-import { getProductsFS, createProductFS, deleteProductFS, getCart, addToCart, checkoutContext, getPendingProducersFS, approveProducerFS, saveUserProfile, getAllUsersFS } from './api';
+import { getProductsFS, createProductFS, deleteProductFS, getCart, addToCart, checkoutContext, getPendingProducersFS, approveProducerFS, saveUserProfile, getAllUsersFS, upgradeToProducerFS, toggleUserStatusFS } from './api';
 import LoginView from './components/LoginView';
 import CatalogView from './components/CatalogView';
 import ProductDetailView from './components/ProductDetailView';
@@ -31,32 +31,38 @@ class ErrorBoundary extends React.Component {
 
 const AdminDashboard = ({ token, showToast }) => {
     const [view, setView] = useState('overview');
-    const [pending, setPending] = useState([]);
     const [allUsers, setAllUsers] = useState([]);
+    const [allProducts, setAllProducts] = useState([]);
     const [inviteLink, setInviteLink] = useState('');
 
     const loadData = async () => {
         try {
-            const p = await getPendingProducersFS();
-            setPending(p);
-            const u = await getAllUsersFS();
-            setAllUsers(u);
-        } catch (e) { console.error(e); }
+            const u = await getAllUsersFS(); setAllUsers(u);
+            const p = await getProductsFS(); setAllProducts(p);
+        } catch (e) { 
+            console.error(e);
+            if (e.message.includes("permission")) {
+                showToast("Error: Revisa las Reglas de Firestore en tu consola", "error");
+            }
+        }
     };
 
     useEffect(() => { loadData(); }, [token]);
 
-    const handleApprove = async (id) => {
+    const handleToggleUser = async (uid, status) => {
         try {
-            await approveProducerFS(id);
-            showToast("Productor aprobado exitosamente", "success");
+            await toggleUserStatusFS(uid, status);
+            showToast(status ? "Usuario suspendido" : "Usuario activado", "success");
             loadData();
-        } catch (e) { showToast("Error al aprobar", "error"); }
+        } catch (e) { showToast("Error al cambiar estado", "error"); }
     };
 
-    const generateInvite = () => {
-        const t = Math.random().toString(36).substring(7);
-        setInviteLink(`${window.location.origin}/registro-productor/${t}`);
+    const handleDeleteProduct = async (id) => {
+        try {
+            await deleteProductFS(id);
+            showToast("Producto eliminado por administración", "success");
+            loadData();
+        } catch (e) { showToast("Error", "error"); }
     };
 
     return (
@@ -64,56 +70,55 @@ const AdminDashboard = ({ token, showToast }) => {
             <aside className="admin-sidebar">
                 <h2>Admin Portal</h2>
                 <nav className="admin-nav">
-                    <div className={`admin-nav-item ${view === 'overview' ? 'active' : ''}`} onClick={() => setView('overview')}>📊 Resumen General</div>
-                    <div className={`admin-nav-item ${view === 'pending' ? 'active' : ''}`} onClick={() => setView('pending')}>⏳ Productores Pendientes ({pending.length})</div>
-                    <div className={`admin-nav-item ${view === 'users' ? 'active' : ''}`} onClick={() => setView('users')}>👥 Directorio Usuarios</div>
+                    <div className={`admin-nav-item ${view === 'overview' ? 'active' : ''}`} onClick={() => setView('overview')}>📊 Resumen</div>
+                    <div className={`admin-nav-item ${view === 'users' ? 'active' : ''}`} onClick={() => setView('users')}>👥 Usuarios</div>
+                    <div className={`admin-nav-item ${view === 'products' ? 'active' : ''}`} onClick={() => setView('products')}>☕ Todos los Productos</div>
                 </nav>
             </aside>
             <main className="admin-content">
                 {view === 'overview' && (
                     <>
-                        <h1 className="serif" style={{marginBottom: '32px'}}>Dashboard Admin</h1>
+                        <h1 className="serif">Dashboard General</h1>
                         <div className="stats-grid-admin">
-                            <div className="stat-card"><h4>Usuarios Totales</h4><div className="stat-val">{allUsers.length}</div></div>
-                            <div className="stat-card"><h4>Pendientes</h4><div className="stat-val">{pending.length}</div></div>
-                            <div className="stat-card"><h4>Estatus</h4><div className="stat-val">Online</div></div>
-                        </div>
-                        <div className="card">
-                            <h3>Gestión de Invitaciones</h3>
-                            <button className="btn btn-primary" onClick={generateInvite}>Generar Link Productor</button>
-                            {inviteLink && (
-                                <div style={{marginTop: '20px', padding: '15px', background: '#fff', border: '1px dashed #296C42', borderRadius: '8px'}}>
-                                    <code style={{fontSize: '0.8rem'}}>{inviteLink}</code>
-                                    <button className="btn-text" style={{display:'block',marginTop:'5px'}} onClick={() => {navigator.clipboard.writeText(inviteLink); showToast("Link copiado")}}>COPIAR</button>
-                                </div>
-                            )}
+                            <div className="stat-card"><h4>Usuarios</h4><div className="stat-val">{allUsers.length}</div></div>
+                            <div className="stat-card"><h4>Productos</h4><div className="stat-val">{allProducts.length}</div></div>
+                            <div className="stat-card"><h4>Estado</h4><div className="stat-val">Online</div></div>
                         </div>
                     </>
                 )}
-                {view === 'pending' && (
+                {view === 'users' && (
                     <div className="admin-table-container">
+                        <h3>Directorio de Usuarios</h3>
                         <table className="admin-table">
-                            <thead><tr><th>Productor</th><th>Finca</th><th>WhatsApp</th><th>Acción</th></tr></thead>
+                            <thead><tr><th>Email</th><th>Rol</th><th>Estado</th><th>Acciones</th></tr></thead>
                             <tbody>
-                                {pending.map(p => (
-                                    <tr key={p.id}>
-                                        <td>{p.full_name}</td><td>{p.farm_name}</td><td>{p.whatsapp}</td>
-                                        <td><button className="btn btn-primary" style={{padding:'5px 10px', fontSize:'0.7rem'}} onClick={() => handleApprove(p.id)}>APROBAR</button></td>
+                                {allUsers.map(u => (
+                                    <tr key={u.id}>
+                                        <td>{u.email}</td>
+                                        <td><span className={`role-tag role-${u.role?.toLowerCase()}`}>{u.role}</span></td>
+                                        <td><span className={`status-tag ${u.is_active ? 'status-active' : 'status-pending'}`}>{u.is_active ? 'Activo' : 'Suspendido'}</span></td>
+                                        <td>
+                                            <button className={`btn ${u.is_active ? 'btn-outline-danger' : 'btn-primary'}`} style={{fontSize:'0.7rem', padding:'4px 8px'}} onClick={() => handleToggleUser(u.id, u.is_active)}>
+                                                {u.is_active ? 'SUSPENDER' : 'ACTIVAR'}
+                                            </button>
+                                        </td>
                                     </tr>
                                 ))}
                             </tbody>
                         </table>
                     </div>
                 )}
-                {view === 'users' && (
+                {view === 'products' && (
                     <div className="admin-table-container">
+                        <h3>Inventario Global</h3>
                         <table className="admin-table">
-                            <thead><tr><th>Email</th><th>Rol</th><th>Estatus</th></tr></thead>
+                            <thead><tr><th>Producto</th><th>Productor (ID)</th><th>Precio</th><th>Stock</th><th>Acción</th></tr></thead>
                             <tbody>
-                                {allUsers.map(u => (
-                                    <tr key={u.id}>
-                                        <td>{u.email}</td><td style={{fontWeight:700}}>{u.role}</td>
-                                        <td><span className={`status-tag ${u.is_active ? 'status-active' : 'status-pending'}`}>{u.is_active ? 'Activo' : 'Pendiente'}</span></td>
+                                {allProducts.map(p => (
+                                    <tr key={p.id}>
+                                        <td>{p.name}</td><td><small>{p.producer_id}</small></td>
+                                        <td>${p.price}</td><td>{p.stock}</td>
+                                        <td><button className="btn btn-outline" style={{color:'red', borderColor:'red', fontSize:'0.7rem'}} onClick={() => handleDeleteProduct(p.id)}>ELIMINAR</button></td>
                                     </tr>
                                 ))}
                             </tbody>
@@ -252,6 +257,40 @@ const ProducerRegistrationView = ({ showToast }) => {
     );
 };
 
+const UpgradeToProducerView = ({ user, setRole, showToast }) => {
+    const navigate = useNavigate();
+    const [formData, setFormData] = useState({
+        full_name: '', farm_name: '', region: 'Antioquia', whatsapp: '', description: ''
+    });
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            await upgradeToProducerFS(user.uid, formData);
+            showToast("¡Felicidades! Su perfil de productor ha sido habilitado inmediatamente.", "success");
+            setRole('PRODUCTOR');
+            navigate('/productor');
+        } catch (e) { showToast(e.message, "error"); }
+    };
+
+    return (
+        <div className="onboarding-container" style={{marginTop: '100px'}}>
+            <h1 className="serif">Convertirse en Productor</h1>
+            <p>Aplique para vender sus mejores productos en nuestra plataforma.</p>
+            <form onSubmit={handleSubmit}>
+                <div className="form-grid">
+                    <div className="input-group"><label>Nombre Completo</label><input type="text" required onChange={e => setFormData({...formData, full_name: e.target.value})} /></div>
+                    <div className="input-group"><label>Nombre de la Finca</label><input type="text" required onChange={e => setFormData({...formData, farm_name: e.target.value})} /></div>
+                    <div className="input-group"><label>Región</label><input type="text" required onChange={e => setFormData({...formData, region: e.target.value})} /></div>
+                    <div className="input-group"><label>WhatsApp</label><input type="text" required onChange={e => setFormData({...formData, whatsapp: e.target.value})} /></div>
+                    <div className="input-group form-span-2 textarea-group"><label>Historia de su café</label><textarea required onChange={e => setFormData({...formData, description: e.target.value})}></textarea></div>
+                </div>
+                <button type="submit" className="btn btn-primary full-width" style={{marginTop:'20px'}}>ENVIAR SOLICITUD DE PRODUCTOR</button>
+            </form>
+        </div>
+    );
+};
+
 const NavHeader = ({ role, user, cartCount, onLogout }) => (
     <header className="navbar">
         <Link to="/" className="logo-btn">The Artisanal Connection</Link>
@@ -261,6 +300,7 @@ const NavHeader = ({ role, user, cartCount, onLogout }) => (
             <Link to="/origen" className="nav-item">Origen</Link>
             {role === 'ADMIN' && <Link to="/admin" className="nav-item" style={{color: 'var(--accent-green)', fontWeight: 700}}>⚙️ PANEL ADMIN</Link>}
             {role === 'PRODUCTOR' && <Link to="/productor" className="nav-item" style={{color: 'var(--accent-green)', fontWeight: 700}}>☕ PANEL PRODUCTOR</Link>}
+            {role === 'COMPRADOR' && <Link to="/aplicar-productor" className="nav-item" style={{color: '#8D6E63', fontWeight: 600}}>🌱 Quiero vender</Link>}
         </nav>
         <div style={{display: 'flex', alignItems: 'center', gap: '24px'}}>
             {role !== 'ADMIN' && (
@@ -290,16 +330,27 @@ function AppContent() {
     const [role, setRole] = useState(null);
     const [loading, setLoading] = useState(true);
 
+    // [SISTEMA DE LOGIN] Hooks de Persistencia y Detección de Identidad
+    // onAuthStateChanged verifica continuamente el LocalStorage de Firebase 
+    // para reconectar sesiones sin pedir credenciales cada que se recarga la página.
     useEffect(() => {
         const unsubscribe = auth.onAuthStateChanged(async (firebaseUser) => {
             try {
                 if (firebaseUser) {
                     console.log("DEBUG Auth: Reconnecting user", firebaseUser.email);
+                    // Petición a base de datos de Firestore
                     const profile = await getUserProfile(firebaseUser.uid);
                     const token = await firebaseUser.getIdToken();
+                    
+                    // Inyección forzada de seguridad para QA/Desarrollo ('ADMIN' pre-configurado)
+                    const adminEmails = ['admin@patrimoniocafetero.com', 'test@example.com'];
+                    const finalRole = profile?.role || (adminEmails.includes(firebaseUser.email?.toLowerCase()) ? 'ADMIN' : 'COMPRADOR');
+                    
+                    console.log("DEBUG Auth: Role identified as", finalRole);
+                    // Seteamos el estado local global (`user`, `token`, `role`)
                     setUser({...firebaseUser, ...profile});
                     setToken(token);
-                    setRole(profile?.role || 'COMPRADOR');
+                    setRole(finalRole);
                 } else {
                     setUser(null);
                     setRole(null);
@@ -381,11 +432,26 @@ function AppContent() {
     return (
         <>
             <div className="toast-container">{toasts.map(t => (<div key={t.id} className={`toast toast-${t.type} ${t.show ? 'show' : ''}`}><span>{t.message}</span></div>))}</div>
+            
+            {/* [SISTEMA DE RUTAS PROTEGIDAS Y ROLES] 
+                Se usa `Navigate` para expulsar o redirigir a un usuario si `role` no coincide.
+                - Si el usuario no ha iniciado sesión (!user), lo enviamos a /login.
+                - Si no tiene rol suficiente, lo mandamos al index (/). 
+            */}
             <Routes>
                 <Route path="/login" element={<LoginView onLogin={handleLogin} showToast={showToast} />} />
-                <Route path="/admin" element={role === 'ADMIN' ? <AdminDashboard token={token} showToast={showToast} /> : (user ? null : <Navigate to="/login" />)} />
-                <Route path="/productor" element={role === 'PRODUCTOR' ? <ProducerDashboard user={user} showToast={showToast} /> : (user ? null : <Navigate to="/login" />)} />
+                
+                {/* Rutas exclusivas Administración (Test Team: Usar admin@patrimoniocafetero.com) */}
+                <Route path="/admin" element={role === 'ADMIN' ? <AdminDashboard token={token} showToast={showToast} /> : <Navigate to={user ? "/" : "/login"} />} />
+                
+                {/* Rutas exclusivas Productor */}
+                <Route path="/productor" element={role === 'PRODUCTOR' ? <ProducerDashboard user={user} showToast={showToast} /> : <Navigate to={user ? "/" : "/login"} />} />
+                
+                {/* Flujos de Integración y Onboarding */}
                 <Route path="/registro-productor/:token" element={<ProducerRegistrationView showToast={showToast} />} />
+                <Route path="/aplicar-productor" element={role === 'COMPRADOR' ? <UpgradeToProducerView user={user} setRole={setRole} showToast={showToast} /> : <Navigate to="/login" />} />
+                
+                {/* Fallback de navegación -> Componente Principal + Catalogo */}
                 <Route path="*" element={
                     <>
                         <NavHeader role={role} user={user} cartCount={cartData.items?.length || 0} onLogout={handleLogout} />

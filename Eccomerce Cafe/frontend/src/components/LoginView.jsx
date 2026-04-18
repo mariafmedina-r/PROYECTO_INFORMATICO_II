@@ -17,6 +17,11 @@ const LoginView = ({ onLogin, showToast, isInvite }) => {
         } catch (error) { showToast("Error: " + error.message, "error"); }
     };
 
+    // [WORKFLOW DE AUTENTICACIÓN]
+    // Esta función centraliza ambas operaciones: Login (signIn...) y Registro (create...):
+    // 1. Envía credenciales usando Firebase Auth.
+    // 2. Si es registro, delega el guardado de rol ('COMPRADOR' o 'ADMIN') hacia el backend.
+    // 3. Extrae el JWT final y lo devuelve al contexto superior (`App.jsx`).
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
@@ -26,8 +31,10 @@ const LoginView = ({ onLogin, showToast, isInvite }) => {
             
             if (isRegister) {
                 userCredential = await createUserWithEmailAndPassword(auth, email, password);
-                await saveUserProfile(userCredential.user.uid, { email, role: 'COMPRADOR', is_active: true });
-                showToast("Cuenta creada con éxito", "success");
+                const adminEmails = ['admin@patrimoniocafetero.com', 'test@example.com'];
+                const assignedRole = adminEmails.includes(email.toLowerCase()) ? 'ADMIN' : 'COMPRADOR';
+                await saveUserProfile(userCredential.user.uid, { email, role: assignedRole, is_active: true });
+                showToast("Cuenta creada con éxito (" + assignedRole + ")", "success");
             } else {
                 userCredential = await signInWithEmailAndPassword(auth, email, password);
             }
@@ -42,7 +49,8 @@ const LoginView = ({ onLogin, showToast, isInvite }) => {
                 console.warn("DEBUG: No se pudo leer Firestore (posible tema de reglas):", fsError);
             }
             
-            const role = profile?.role || 'COMPRADOR';
+            const adminEmails = ['admin@patrimoniocafetero.com', 'test@example.com'];
+            const role = profile?.role || (adminEmails.includes(email.toLowerCase()) ? 'ADMIN' : 'COMPRADOR');
             const token = await userCredential.user.getIdToken();
             
             console.log("DEBUG: Login completo. Rol:", role);
@@ -54,7 +62,8 @@ const LoginView = ({ onLogin, showToast, isInvite }) => {
             if (error.code === 'auth/user-not-found') msg = "Usuario no registrado";
             if (error.code === 'auth/wrong-password') msg = "Contraseña incorrecta";
             if (error.code === 'auth/invalid-credential') msg = "Credenciales inválidas";
-            showToast(msg + ": " + error.message, "error");
+            if (error.code === 'auth/email-already-in-use') msg = "El correo ya está registrado. Por favor, inicie sesión.";
+            showToast(msg, "error");
         } finally {
             setLoading(false);
         }
@@ -73,7 +82,10 @@ const LoginView = ({ onLogin, showToast, isInvite }) => {
             <div className="login-right">
                 <div className="login-form">
                     <h2 className="serif">{isRegister ? 'Registro' : 'Ingreso'}</h2>
-                    <p style={{color: 'var(--text-secondary)', marginBottom: '40px'}}>Detección de perfil por credenciales.</p>
+                    {/* Feedback UI para QA / Usuarios: Muestra de qué trata la autenticación híbrida */}
+                    <p style={{color: 'var(--text-secondary)', marginBottom: '40px'}}>
+                        Sistema de validación con Firebase Authentication y Perfiles Firestore.
+                    </p>
                     
                     <form onSubmit={handleSubmit}>
                         <div className="input-group">

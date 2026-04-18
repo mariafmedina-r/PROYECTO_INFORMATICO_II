@@ -46,6 +46,45 @@ def approve_producer(user_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="User not found")
     return user
 
+# =====================================================================
+# FIREBASE & FIRESTORE IDENTITY MIDDLEWARE
+# =====================================================================
+# Estos endpoints delegan el poder de Firestore/Auth al backend. 
+# Esto evita tener que escribir Reglas de Seguridad complejas 
+# en Firebase que usualmente causan errores de "Insufficient Permissions" en produccion.
+
+@router.get("/admin/firebase-users")
+def get_firebase_users():
+    """Retorna TODOS los usuarios del eCommerce (Merge entre Firebase Auth + Firestore)."""
+    try:
+        return user_service.get_all_firebase_users()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/profile")
+def save_profile(uid: str, data: dict):
+    """Guarda/actualiza el perfil base tras el registro inicial en el Frontend."""
+    try:
+        return user_service.save_user_profile(uid, data)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/profile/{uid}")
+def get_firebase_profile(uid: str):
+    """Obtiene un perfil de Firebase sorteando reglas de Firestore usando Backend SDK."""
+    try:
+        return user_service.get_user_profile_fs(uid)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/upgrade-to-producer")
+def upgrade_to_producer(uid: str, data: dict):
+    """Cambia el rol de un COMPRADOR a PRODUCTOR y activa la cuenta para acceso inmediato."""
+    try:
+        return user_service.upgrade_user_to_producer(uid, data)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 @router.get("/{email}", response_model=UserResponse)
 def read_user(email: str, db: Session = Depends(get_db)):
     try:

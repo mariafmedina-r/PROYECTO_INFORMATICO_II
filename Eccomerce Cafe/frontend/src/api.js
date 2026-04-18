@@ -6,23 +6,41 @@ const API_URL = 'http://localhost:8000';
 // --- Firestore Base APIs (User Profiles & Roles) ---
 
 export async function saveUserProfile(uid, userData) {
-    await setDoc(doc(db_fs, "users", uid), {
-        ...userData,
-        is_active: userData.role === 'PRODUCTOR' ? false : true,
-        createdAt: new Date().toISOString()
+    const res = await fetch(`${API_URL}/users/profile?uid=${uid}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(userData)
     });
+    return res.json();
 }
 
 export async function getUserProfile(uid) {
-    const docRef = doc(db_fs, "users", uid);
-    const docSnap = await getDoc(docRef);
-    if (docSnap.exists()) return docSnap.data();
+    try {
+        const res = await fetch(`${API_URL}/users/profile/${uid}`);
+        if (res.ok) {
+            return await res.json();
+        }
+    } catch(e) { console.error("Error al obtener perfil desde backend:", e); }
     return null;
 }
 
 export async function approveProducerFS(uid) {
     const docRef = doc(db_fs, "users", uid);
     await updateDoc(docRef, { is_active: true });
+}
+
+export async function upgradeToProducerFS(uid, producerData) {
+    const res = await fetch(`${API_URL}/users/upgrade-to-producer?uid=${uid}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(producerData)
+    });
+    return res.json();
+}
+
+export async function toggleUserStatusFS(uid, currentStatus) {
+    const docRef = doc(db_fs, "users", uid);
+    await updateDoc(docRef, { is_active: !currentStatus });
 }
 
 export async function getPendingProducersFS() {
@@ -32,8 +50,8 @@ export async function getPendingProducersFS() {
 }
 
 export async function getAllUsersFS() {
-    const querySnapshot = await getDocs(collection(db_fs, "users"));
-    return querySnapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+    const res = await fetch(`${API_URL}/users/admin/firebase-users`);
+    return res.json();
 }
 
 // --- Firestore Products APIs ---
