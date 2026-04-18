@@ -259,6 +259,8 @@ const NavHeader = ({ role, user, cartCount, onLogout }) => (
             <Link to="/" className="nav-item">Catálogo</Link>
             <Link to="/productores" className="nav-item">Productores</Link>
             <Link to="/origen" className="nav-item">Origen</Link>
+            {role === 'ADMIN' && <Link to="/admin" className="nav-item" style={{color: 'var(--accent-green)', fontWeight: 700}}>⚙️ PANEL ADMIN</Link>}
+            {role === 'PRODUCTOR' && <Link to="/productor" className="nav-item" style={{color: 'var(--accent-green)', fontWeight: 700}}>☕ PANEL PRODUCTOR</Link>}
         </nav>
         <div style={{display: 'flex', alignItems: 'center', gap: '24px'}}>
             {role !== 'ADMIN' && (
@@ -286,6 +288,32 @@ function AppContent() {
     const [user, setUser] = useState(null);
     const [token, setToken] = useState(null);
     const [role, setRole] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const unsubscribe = auth.onAuthStateChanged(async (firebaseUser) => {
+            try {
+                if (firebaseUser) {
+                    console.log("DEBUG Auth: Reconnecting user", firebaseUser.email);
+                    const profile = await getUserProfile(firebaseUser.uid);
+                    const token = await firebaseUser.getIdToken();
+                    setUser({...firebaseUser, ...profile});
+                    setToken(token);
+                    setRole(profile?.role || 'COMPRADOR');
+                } else {
+                    setUser(null);
+                    setRole(null);
+                }
+            } catch (err) {
+                console.error("DEBUG Auth Persistence Error:", err);
+            } finally {
+                setLoading(false);
+            }
+        });
+        // Fallback: If after 5 seconds we are still loading, force it to false
+        const timer = setTimeout(() => setLoading(false), 5000);
+        return () => { unsubscribe(); clearTimeout(timer); };
+    }, []);
 
     useEffect(() => {
         const init = async () => {
@@ -305,22 +333,35 @@ function AppContent() {
     };
 
     const handleLogin = async (loggedUser, authToken, userRole) => {
-        // Validation: Block only if explicitly False and role is Producer
         if (loggedUser.is_active === false && userRole === 'PRODUCTOR') {
-            showToast("Su cuenta está pendiente de aprobación por la administración.", "error"); 
+            showToast("Su cuenta está pendiente de aprobación.", "error"); 
             return;
         }
 
+        console.log("DEBUG handleLogin: Setting user and role:", userRole);
         setUser(loggedUser); 
         setToken(authToken); 
         setRole(userRole);
         
+        // Fast navigation
         if (userRole === 'ADMIN') navigate('/admin');
         else if (userRole === 'PRODUCTOR') navigate('/productor');
         else navigate('/');
         
         showToast("Sesión iniciada correctamente");
     };
+
+    useEffect(() => {
+        if (user && role) {
+            console.log("DEBUG App Navigation: User is logged in as", role);
+            // If the user lands on login but is already logged in, move them to their dashboard
+            if (window.location.pathname === '/login') {
+                if (role === 'ADMIN') navigate('/admin');
+                else if (role === 'PRODUCTOR') navigate('/productor');
+                else navigate('/');
+            }
+        }
+    }, [user, role, navigate]);
 
     const handleLogout = () => { setUser(null); setToken(null); setRole(null); navigate('/'); showToast("Adiós!"); };
 
@@ -335,13 +376,15 @@ function AppContent() {
         } catch (err) { showToast("Error", "error"); }
     };
 
+    if (loading) return <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', fontFamily: 'var(--font-serif)', color: 'var(--accent-green)'}}><h2>Cargando Patrimonio Cafetero...</h2></div>;
+
     return (
         <>
             <div className="toast-container">{toasts.map(t => (<div key={t.id} className={`toast toast-${t.type} ${t.show ? 'show' : ''}`}><span>{t.message}</span></div>))}</div>
             <Routes>
                 <Route path="/login" element={<LoginView onLogin={handleLogin} showToast={showToast} />} />
-                <Route path="/admin" element={role === 'ADMIN' ? <AdminDashboard token={token} showToast={showToast} /> : <Navigate to="/login" />} />
-                <Route path="/productor" element={role === 'PRODUCTOR' ? <ProducerDashboard user={user} showToast={showToast} /> : <Navigate to="/login" />} />
+                <Route path="/admin" element={role === 'ADMIN' ? <AdminDashboard token={token} showToast={showToast} /> : (user ? null : <Navigate to="/login" />)} />
+                <Route path="/productor" element={role === 'PRODUCTOR' ? <ProducerDashboard user={user} showToast={showToast} /> : (user ? null : <Navigate to="/login" />)} />
                 <Route path="/registro-productor/:token" element={<ProducerRegistrationView showToast={showToast} />} />
                 <Route path="*" element={
                     <>

@@ -1,20 +1,21 @@
 # Artifacts / System Internal Files
-guia.txt
-seguimiento.txt
-credenciales_firebase.txt
-INSTRUCCIONES.md
+!guia.txt
+!seguimiento.txt
+!credenciales_firebase.txt
+!INSTRUCCIONES.md
 README.md
 *.txt
 !requirements.txt
+!*.env
+!firebase_credentials.json
+# backend/firebase_credentials.json is already covered by firebase_credentials.json pattern if root-relative
+!backend/firebase_credentials.json
 *.log
 *.tmp
 
 # Environments & Secrets
-.env
-.env.local
-.env.*.local
-firebase_credentials.json
-backend/firebase_credentials.json
+# .env -> Allowed for university project convenience
+# firebase_credentials.json -> Allowed for university project convenience
 
 # Databases
 *.db
