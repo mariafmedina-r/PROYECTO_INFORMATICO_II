@@ -11,6 +11,7 @@ try:
     import models.product
     import models.cart
     import models.order
+    from firebase_config import initialize_firebase
 except ImportError:
     from backend.database import engine, Base, SessionLocal
     from backend.routers import user_router, product_router, cart_router, order_router
@@ -19,6 +20,12 @@ except ImportError:
     import backend.models.product
     import backend.models.cart
     import backend.models.order
+    from backend.firebase_config import initialize_firebase
+
+
+# Initialize Firebase
+initialize_firebase()
+
 
 # Logger setup
 logging.basicConfig(level=logging.INFO)
@@ -35,7 +42,7 @@ except Exception as e:
 try:
     db = SessionLocal()
     init_test_user(db)
-    seed_test_data(db)
+    # seed_test_data(db)  # Disabled to use Firebase for products
     db.close()
     logger.info("Test user and product seed data verified/created successfully.")
 except Exception as e:

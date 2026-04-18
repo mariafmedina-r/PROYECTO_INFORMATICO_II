@@ -1,36 +1,87 @@
-export const API_URL = 'http://127.0.0.1:8000';
+import { db_fs } from './firebase_config';
+import { doc, getDoc, setDoc, updateDoc, collection, query, where, getDocs, addDoc, deleteDoc } from "firebase/firestore";
 
-export async function getProducts() {
-    const response = await fetch(`${API_URL}/products/`);
-    if (!response.ok) throw new Error("Error al obtener catálogo");
-    return response.json();
-}
+const API_URL = 'http://localhost:8000';
 
-export async function getCart(userId = 1) {
-    const response = await fetch(`${API_URL}/cart/?user_id=${userId}`);
-    if (!response.ok) throw new Error("Error obteniendo el carrito");
-    return response.json();
-}
+// --- Firestore Base APIs (User Profiles & Roles) ---
 
-export async function addToCart(variantId, quantity = 1, userId = 1) {
-    const response = await fetch(`${API_URL}/cart/items?user_id=${userId}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ variant_id: variantId, quantity: quantity })
+export async function saveUserProfile(uid, userData) {
+    await setDoc(doc(db_fs, "users", uid), {
+        ...userData,
+        is_active: userData.role === 'PRODUCTOR' ? false : true,
+        createdAt: new Date().toISOString()
     });
-    
-    if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.detail || "Error al añadir producto");
-    }
-    return response.json();
 }
 
-export async function checkoutContext(userId = 1) {
-    const response = await fetch(`${API_URL}/orders/checkout?user_id=${userId}`, { method: 'POST' });
-    if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.detail || "Hubo un problema al procesar el pago");
-    }
-    return response.json();
+export async function getUserProfile(uid) {
+    const docRef = doc(db_fs, "users", uid);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) return docSnap.data();
+    return null;
+}
+
+export async function approveProducerFS(uid) {
+    const docRef = doc(db_fs, "users", uid);
+    await updateDoc(docRef, { is_active: true });
+}
+
+export async function getPendingProducersFS() {
+    const q = query(collection(db_fs, "users"), where("role", "==", "PRODUCTOR"), where("is_active", "==", false));
+    const querySnapshot = await getDocs(q);
+    return querySnapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+}
+
+export async function getAllUsersFS() {
+    const querySnapshot = await getDocs(collection(db_fs, "users"));
+    return querySnapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+}
+
+// --- Firestore Products APIs ---
+
+export async function getProductsFS() {
+    const querySnapshot = await getDocs(collection(db_fs, "products"));
+    return querySnapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+}
+
+export async function createProductFS(productData, userId) {
+    const docRef = await addDoc(collection(db_fs, "products"), {
+        ...productData,
+        producer_id: userId,
+        createdAt: new Date().toISOString()
+    });
+    return { id: docRef.id, ...productData };
+}
+
+export async function deleteProductFS(productId) {
+    await deleteDoc(doc(db_fs, "products", productId));
+}
+
+// --- Backend SQL APIs (Orders & Cart Placeholder) ---
+
+export async function getCart(userId, token) {
+    const res = await fetch(`${API_URL}/carts/${userId}`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+    });
+    return res.json();
+}
+
+export async function addToCart(variantId, quantity, userId, token) {
+    const res = await fetch(`${API_URL}/carts/${userId}/items`, {
+        method: 'POST',
+        headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ variant_id: variantId, quantity })
+    });
+    if (!res.ok) throw new Error("Stock insuficiente");
+    return res.json();
+}
+
+export async function checkoutContext(userId, token) {
+    const res = await fetch(`${API_URL}/orders/checkout/${userId}`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` }
+    });
+    return res.json();
 }

@@ -11,4 +11,11 @@ class User(Base):
     email = Column(String, unique=True, index=True)
     hashed_password = Column(String)
     is_active = Column(Boolean, default=True)
-    role = Column(String, default="Customer")
+    role = Column(String, default="COMPRADOR")
+    
+    # Producer specific fields
+    full_name = Column(String, nullable=True)
+    farm_name = Column(String, nullable=True)
+    region = Column(String, nullable=True)
+    whatsapp = Column(String, nullable=True)
+    description = Column(String, nullable=True)

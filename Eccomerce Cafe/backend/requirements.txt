@@ -2,3 +2,7 @@ fastapi
 uvicorn
 sqlalchemy
 pydantic[email]
+firebase-admin
+python-dotenv
+psycopg2-binary
+

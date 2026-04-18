@@ -1,50 +1,315 @@
-﻿Documento de Arquitectura Organizado: Coffee Commerce
+﻿# Documento de Instrucción para IA
 
+## Proyecto: Marketplace Cafetero (FastAPI + React + Firebase)
 
-El siguiente es un resumen organizado de la arquitectura propuesta, enfocado en el stack, los módulos del backend, el plan de desarrollo y las recomendaciones clave.1. Stack Tecnológico Principal
-* Frontend: React (Vite) + Tailwind CSS. Maneja la interfaz de usuario (UI) y el estado local del carrito.
-* Backend: FastAPI (Python). Se encarga de validar reglas de negocio, impuestos y stock.
-* Autenticación y Sesión: Firebase Auth, utilizando el Admin SDK en el backend.
-* Persistencia (Doble):
-   * PostgreSQL: Para datos relacionales críticos: Productos, Variantes, Productores e Historial de Órdenes.
-   * Firestore: Para el Shopping Cart (persistencia rápida y en tiempo real).
-* Pagos: API Externa (Sandbox).
-2. Módulos del Backend (Clean Architecture)
+---
 
+## 1. Contexto del Proyecto
 
-El proyecto se estructurará siguiendo el patrón de Clean Architecture, con capas de Router, Service y Repository.A. Módulo de Identidad (Auth & Roles)
-* Lógica: FastAPI intercepta el Authorization: Bearer <token> de Firebase.
-* Roles y Permisos:
-   * Customer: Acceso a compra y perfil.
-   * Productor: Solo lectura de sus ventas y edición de sus productos (creado por Admin).
-   * Admin: Creación de cuentas de productor.
-B. Módulo de Catálogo (Productos y Variantes)
-* Estructura: Relación Uno a Muchos entre Producto y Variante.
-* Lógica de Stock ("Gris"): Un producto se marca como out_of_stock si la suma de los stock de todas sus variantes es $0$.
-* Soft Delete: Los productos borrados se marcan con un campo deleted_at. El backend los filtra automáticamente de la tienda, pero los mantiene para el historial del productor.
-C. Módulo de Ventas y Checkout
-* Lógica de Reserva: Al iniciar el pago, se implementa un "Lock" temporal en el stock de PostgreSQL para evitar sobreventas.
-* Impuestos: El backend calcula el subtotal y suma el IVA definido en la variante del producto.
-* Proceso de Pago: Un Webhook en el endpoint /payments/webhook recibe la confirmación de la pasarela y dispara la actualización de la orden.
-3. Fases de Desarrollo (Plan Semanal)
-1. Fase 1: Cimientos y Autenticación (Semana 1)
-   * Configurar Firebase Admin SDK y el Middleware de validación de tokens en FastAPI.
-   * Definición de Base de Datos PostgreSQL (SQLAlchemy/SQLModel).
-   * Frontend: Login con Firebase y persistencia del token.
-2. Fase 2: CRUD de Productos y Variantes (Semana 2)
-   * Creación de Endpoints para que el Productor gestione (cree/edite/borre - soft delete) sus productos.
-   * Implementación de la lógica de variantes (múltiples moliendas/pesos/precios).
-   * Frontend: Dashboard del productor para la gestión de inventario.
-3. Fase 3: Carrito y Ordenes (Semana 3)
-   * Integración de FastAPI con Firestore para la lectura del carrito del usuario.
-   * Endpoint de "Checkout": Valida stock, calcula Totales + IVA, y crea la Orden en estado PENDING.
-   * Integración inicial con la API de Pagos (Redirección al checkout externo).
-4. Fase 4: Logística, Notificaciones e Historial (Semana 4)
-   * Implementación del Webhook de pago: Si el estado es SUCCESS, se actualiza Order.status = 'PAID'.
-   * Notificaciones: Envío de correo/notificación al Productor al confirmar el pago.
-   * Generación del JSON de Logística con datos de envío y productos.
-   * Frontend: Vistas de historial de compras (Cliente) y ventas (Productor).
-4. Recomendaciones de Seguridad y Escalabilidad
-* Validación Crítica: Nunca confiar en el precio que envíe el Frontend. FastAPI debe siempre consultar su propia base de datos de productos para calcular el total.
-* Variables de Entorno: Usar archivos .env para gestionar las llaves de Firebase y de la pasarela de pagos.
-* CORS: Configurar correctamente los orígenes permitidos en FastAPI para restringir el consumo de la API solo a la aplicación de React.
+Se requiere construir un sistema llamado **Marketplace Cafetero**, cuyo objetivo es conectar productores de café colombiano con consumidores finales mediante una plataforma digital.
+
+La solución se basa en una **arquitectura híbrida moderna**, compuesta por:
+
+* Frontend en React
+* Backend en FastAPI
+* Servicios externos mediante Firebase (autenticación, almacenamiento)
+* Integraciones externas para pagos y logística
+
+El sistema debe ser construido completamente por la IA.
+
+---
+
+## 2. Rol de la IA
+
+Debes actuar como:
+
+* Arquitecto de software
+* Desarrollador Full Stack (React + FastAPI)
+* Experto en Firebase
+* Diseñador UX/UI
+
+Debes construir el sistema completo de extremo a extremo.
+
+---
+
+## 3. Stack Tecnológico (OBLIGATORIO)
+
+### Frontend
+
+* React (preferiblemente con Vite o Next.js)
+* Manejo de estado (Context API o Redux)
+* Consumo de API REST
+
+### Backend
+
+* FastAPI
+* Arquitectura REST
+* Validación con Pydantic
+* ORM (SQLAlchemy o similar)
+
+### Base de datos
+
+* PostgreSQL (principal)
+* Firebase (servicios complementarios)
+
+### Firebase
+
+* Firebase Authentication (login/registro)
+* Firebase Storage (imágenes)
+
+### Servicios externos
+
+* Pagos: Stripe o MercadoPago
+* Logística: API o simulación
+
+---
+
+## 4. Arquitectura del Sistema
+
+Debes diseñar:
+
+* Arquitectura en capas:
+
+  * Presentación (React)
+  * Lógica (FastAPI)
+  * Datos (PostgreSQL)
+* Integración con Firebase
+* APIs REST bien estructuradas
+* Sistema desacoplado y escalable
+
+---
+
+## 5. Módulos del Sistema
+
+### 1. Autenticación
+
+* Registro/Login con Firebase Auth
+* Backend valida tokens (JWT Firebase)
+
+---
+
+### 2. Usuarios y Roles
+
+* Consumidor
+* Productor
+* Administrador
+
+---
+
+### 3. Productores
+
+* Crear perfil comercial
+* Editar perfil
+* Visualizar perfil
+
+---
+
+### 4. Productos
+
+* CRUD completo
+* Manejo de imágenes (Firebase Storage)
+* Activar/desactivar productos
+
+---
+
+### 5. Catálogo
+
+* Listado de productos
+* Filtros y búsqueda
+* Detalle de producto
+
+---
+
+### 6. Carrito
+
+* Agregar productos
+* Modificar cantidades
+* Persistencia (backend o local + sync)
+
+---
+
+### 7. Pedidos
+
+* Crear pedido
+* Guardar detalles
+* Estados:
+
+  * Pendiente
+  * Pagado
+  * Enviado
+  * Entregado
+
+---
+
+### 8. Pagos
+
+* Integración con Stripe/MercadoPago
+* Backend maneja confirmaciones (webhooks)
+
+---
+
+### 9. Logística
+
+* Selección de envío
+* Actualización de estado
+
+---
+
+### 10. Administración
+
+* Gestión de usuarios
+* Supervisión del sistema
+
+---
+
+## 6. Modelo de Datos (PostgreSQL)
+
+Tablas:
+
+### users
+
+* id
+* firebase_uid
+* nombre
+* email
+* rol
+
+### producers
+
+* id
+* user_id
+* nombre_marca
+* origen
+* descripcion
+
+### products
+
+* id
+* nombre
+* precio
+* origen
+* descripcion
+* activo
+* productor_id
+
+### product_images
+
+* id
+* product_id
+* url
+
+### orders
+
+* id
+* user_id
+* total
+* estado
+* fecha
+
+### order_items
+
+* id
+* order_id
+* product_id
+* cantidad
+* precio
+
+---
+
+## 7. Backend (FastAPI)
+
+Debes generar:
+
+* Endpoints REST:
+
+  * /auth
+  * /users
+  * /products
+  * /orders
+* Validación con Pydantic
+* Middleware para auth Firebase
+* Integración con DB
+* Webhooks de pago
+
+---
+
+## 8. Frontend (React)
+
+Debes generar:
+
+* Componentes:
+
+  * Login/Register
+  * Catálogo
+  * Detalle producto
+  * Carrito
+  * Checkout
+  * Dashboard productor
+  * Admin panel
+
+* Consumo de API
+
+* Manejo de estado global
+
+* UI moderna y responsive
+
+---
+
+## 9. Seguridad
+
+* Validar JWT de Firebase en backend
+* Control por roles
+* Protección de endpoints
+* Sanitización de datos
+
+---
+
+## 10. Flujos del Sistema
+
+### Registro/Login
+
+Firebase → token → backend valida → acceso
+
+### Publicación
+
+Productor → crea producto → sube imagen → guarda
+
+### Compra
+
+Usuario → carrito → pago → pedido
+
+### Seguimiento
+
+Backend actualiza estado
+
+---
+
+## 11. Entregables
+
+Debes generar:
+
+1. Arquitectura completa
+2. Código backend (FastAPI)
+3. Código frontend (React)
+4. Modelo de base de datos
+5. Integración Firebase
+6. Integración pagos
+7. UI completa
+8. Instrucciones de despliegue
+
+---
+
+## 12. Restricciones
+
+* La IA debe construir todo el sistema
+* Código limpio y modular
+* Evitar sobreingeniería
+* Priorizar MVP funcional
+
+---
+
+## 13. Objetivo Final
+
+Construir un sistema funcional tipo marketplace listo para demostración y crecimiento real.
+
+---
