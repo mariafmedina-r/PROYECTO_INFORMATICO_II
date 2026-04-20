@@ -81,7 +81,7 @@ El sistema viene pre-configurado con datos iniciales para facilitar el desarroll
 
 ### Usuario Administrador / Comprador
 - **Email:** `test@example.com`
-- **Contraseña:** `testpassword123`
+- **Contraseña:** `test123`
 - **Rol:** Admin / Customer
 
 ### Catálogo Semilla
@@ -96,3 +96,7 @@ Al iniciar el backend, se cargan automáticamente:
 
 - **Manejo de Errores:** Tanto el frontend como el backend tienen sistemas de logs y notificaciones visuales (Toasts) para informar sobre fallos de conexión o falta de stock.
 - **CORS:** El backend permite conexiones de cualquier origen para facilitar las pruebas locales.
+
+Email: test@example.com
+Contraseña: testpassword123
+URL de acceso: http://localhost:5173/admin

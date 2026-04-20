@@ -6,10 +6,9 @@
 README.md
 *.txt
 !requirements.txt
-!*.env
-!firebase_credentials.json
-# backend/firebase_credentials.json is already covered by firebase_credentials.json pattern if root-relative
-!backend/firebase_credentials.json
+*.env
+firebase_credentials.json
+backend/firebase_credentials.json
 *.log
 *.tmp
 
