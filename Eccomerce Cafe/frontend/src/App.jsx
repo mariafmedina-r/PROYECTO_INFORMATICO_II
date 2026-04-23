@@ -130,7 +130,7 @@ const AdminDashboard = ({ token, showToast }) => {
     );
 };
 
-const ProducerDashboard = ({ user, showToast }) => {
+const ProducerDashboard = ({ user, showToast, refreshGlobalProducts }) => {
     const [view, setView] = useState('products');
     const [myProducts, setMyProducts] = useState([]);
     const [formData, setFormData] = useState({ name: '', price: '', origin: '', description: '', stock: 100, image_path: '' });
@@ -159,6 +159,7 @@ const ProducerDashboard = ({ user, showToast }) => {
             showToast("Producto subido exitosamente a la tienda", "success");
             setFormData({ name: '', price: '', origin: '', description: '', stock: 100, image_path: '' });
             loadMyProducts();
+            if (refreshGlobalProducts) refreshGlobalProducts();
         } catch (e) {
             showToast("Error al subir el producto", "error");
         }
@@ -382,11 +383,12 @@ function AppContent() {
         return () => { unsubscribe(); clearTimeout(timer); };
     }, []);
 
+    const refreshGlobalProducts = async () => {
+        try { const data = await getProductsFS(); setProducts(data); } catch (e) { console.error(e); }
+    };
+
     useEffect(() => {
-        const init = async () => {
-            try { const data = await getProductsFS(); setProducts(data); } catch (e) { console.error(e); }
-        };
-        init();
+        refreshGlobalProducts();
     }, []);
 
     const showToast = (message, type = 'success') => {
@@ -499,7 +501,7 @@ function AppContent() {
                 <Route path="/admin" element={role === 'ADMIN' ? <AdminDashboard token={token} showToast={showToast} /> : <Navigate to={user ? "/" : "/login"} />} />
                 
                 {/* Rutas exclusivas Productor */}
-                <Route path="/productor" element={role === 'PRODUCTOR' ? <ProducerDashboard user={user} showToast={showToast} /> : <Navigate to={user ? "/" : "/login"} />} />
+                <Route path="/productor" element={role === 'PRODUCTOR' ? <ProducerDashboard user={user} showToast={showToast} refreshGlobalProducts={refreshGlobalProducts} /> : <Navigate to={user ? "/" : "/login"} />} />
                 
                 {/* Flujos de Integración y Onboarding */}
                 <Route path="/registro-productor/:token" element={<ProducerRegistrationView showToast={showToast} />} />

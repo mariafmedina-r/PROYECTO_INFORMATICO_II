@@ -57,8 +57,8 @@ export async function getAllUsersFS() {
 // --- Firestore Products APIs ---
 
 export async function getProductsFS() {
-    const querySnapshot = await getDocs(collection(db_fs, "products"));
-    return querySnapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+    const res = await fetch(`${API_URL}/users/admin/products-fs`);
+    return res.json();
 }
 
 export async function createProductFS(productData, userId) {
