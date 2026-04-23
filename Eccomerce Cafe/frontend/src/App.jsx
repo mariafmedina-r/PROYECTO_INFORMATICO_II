@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link, useNavigate, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link, useNavigate, Navigate, useParams } from 'react-router-dom';
 import { getProductsFS, createProductFS, deleteProductFS, getCart, addToCart, checkoutContext, getPendingProducersFS, approveProducerFS, saveUserProfile, getAllUsersFS, upgradeToProducerFS, toggleUserStatusFS } from './api';
 import LoginView from './components/LoginView';
 import CatalogView from './components/CatalogView';
@@ -131,6 +131,7 @@ const AdminDashboard = ({ token, showToast }) => {
 };
 
 const ProducerDashboard = ({ user, showToast }) => {
+    const [view, setView] = useState('products');
     const [myProducts, setMyProducts] = useState([]);
     const [formData, setFormData] = useState({ name: '', price: '', origin: '', description: '', stock: 100, image_path: '' });
     
@@ -176,47 +177,56 @@ const ProducerDashboard = ({ user, showToast }) => {
             <aside className="admin-sidebar" style={{background: '#3E2723'}}>
                 <h2>Mi Finca</h2>
                 <nav className="admin-nav">
-                    <div className="admin-nav-item active">☕ Mis Productos</div>
-                    <div className="admin-nav-item">📦 Pedidos Entrantes</div>
+                    <div className={`admin-nav-item ${view === 'products' ? 'active' : ''}`} onClick={() => setView('products')}>☕ Mis Productos</div>
+                    <div className={`admin-nav-item ${view === 'orders' ? 'active' : ''}`} onClick={() => setView('orders')}>📦 Pedidos Entrantes</div>
                 </nav>
             </aside>
             <main className="admin-content">
                 <h1 className="serif" style={{marginBottom: '32px'}}>Gestión de Cosecha</h1>
                 
-                <div style={{display: 'grid', gridTemplateColumns: 'minmax(300px, 1fr) 2fr', gap: '40px', alignItems: 'start'}}>
-                    {/* Add Product Form */}
-                    <div className="card" style={{background: '#fff', padding: '24px', borderRadius: '12px', boxShadow: 'var(--shadow-soft)'}}>
-                        <h3 style={{marginBottom: '20px'}}>Publicar Nuevo Lote</h3>
-                        <form onSubmit={handleSubmit} style={{display: 'flex', flexDirection: 'column', gap: '16px'}}>
-                            <div><label style={{fontSize: '0.8rem', fontWeight: 600}}>Nombre del Café</label><input type="text" className="full-width" style={{padding: '10px', border: '1px solid #ccc', borderRadius:'4px'}} required value={formData.name} onChange={e=>setFormData({...formData, name: e.target.value})} /></div>
-                            <div><label style={{fontSize: '0.8rem', fontWeight: 600}}>Precio (USD)</label><input type="number" step="0.01" className="full-width" style={{padding: '10px', border: '1px solid #ccc', borderRadius:'4px'}} required value={formData.price} onChange={e=>setFormData({...formData, price: e.target.value})} /></div>
-                            <div><label style={{fontSize: '0.8rem', fontWeight: 600}}>Origen Específico</label><input type="text" className="full-width" style={{padding: '10px', border: '1px solid #ccc', borderRadius:'4px'}} required value={formData.origin} onChange={e=>setFormData({...formData, origin: e.target.value})} /></div>
-                            <div><label style={{fontSize: '0.8rem', fontWeight: 600}}>Descripción</label><textarea className="full-width" style={{padding: '10px', border: '1px solid #ccc', borderRadius:'4px'}} required value={formData.description} onChange={e=>setFormData({...formData, description: e.target.value})}></textarea></div>
-                            <div><label style={{fontSize: '0.8rem', fontWeight: 600}}>URL de Imagen (Opcional)</label><input type="text" className="full-width" style={{padding: '10px', border: '1px solid #ccc', borderRadius:'4px'}} value={formData.image_path} onChange={e=>setFormData({...formData, image_path: e.target.value})} placeholder="https://..." /></div>
-                            <button type="submit" className="btn btn-primary">SUBIR PRODUCTO</button>
-                        </form>
-                    </div>
+                {view === 'products' ? (
+                    <div style={{display: 'grid', gridTemplateColumns: 'minmax(300px, 1fr) 2fr', gap: '40px', alignItems: 'start'}}>
+                        {/* Add Product Form */}
+                        <div className="card" style={{background: '#fff', padding: '24px', borderRadius: '12px', boxShadow: 'var(--shadow-soft)'}}>
+                            <h3 style={{marginBottom: '20px'}}>Publicar Nuevo Lote</h3>
+                            <form onSubmit={handleSubmit} style={{display: 'flex', flexDirection: 'column', gap: '16px'}}>
+                                <div><label style={{fontSize: '0.8rem', fontWeight: 600}}>Nombre del Café</label><input type="text" className="full-width" style={{padding: '10px', border: '1px solid #ccc', borderRadius:'4px'}} required value={formData.name} onChange={e=>setFormData({...formData, name: e.target.value})} /></div>
+                                <div><label style={{fontSize: '0.8rem', fontWeight: 600}}>Precio (USD)</label><input type="number" step="0.01" className="full-width" style={{padding: '10px', border: '1px solid #ccc', borderRadius:'4px'}} required value={formData.price} onChange={e=>setFormData({...formData, price: e.target.value})} /></div>
+                                <div><label style={{fontSize: '0.8rem', fontWeight: 600}}>Origen Específico</label><input type="text" className="full-width" style={{padding: '10px', border: '1px solid #ccc', borderRadius:'4px'}} required value={formData.origin} onChange={e=>setFormData({...formData, origin: e.target.value})} /></div>
+                                <div><label style={{fontSize: '0.8rem', fontWeight: 600}}>Descripción</label><textarea className="full-width" style={{padding: '10px', border: '1px solid #ccc', borderRadius:'4px'}} required value={formData.description} onChange={e=>setFormData({...formData, description: e.target.value})}></textarea></div>
+                                <div><label style={{fontSize: '0.8rem', fontWeight: 600}}>URL de Imagen (Opcional)</label><input type="text" className="full-width" style={{padding: '10px', border: '1px solid #ccc', borderRadius:'4px'}} value={formData.image_path} onChange={e=>setFormData({...formData, image_path: e.target.value})} placeholder="https://..." /></div>
+                                <button type="submit" className="btn btn-primary">SUBIR PRODUCTO</button>
+                            </form>
+                        </div>
 
-                    {/* Products List */}
-                    <div>
-                        <h3 style={{marginBottom: '20px'}}>Lotes Activos ({myProducts.length})</h3>
-                        <div className="admin-table-container">
-                            <table className="admin-table">
-                                <thead><tr><th>Nombre</th><th>Origen</th><th>Precio</th><th>Stock</th><th>Acción</th></tr></thead>
-                                <tbody>
-                                    {myProducts.length === 0 ? <tr><td colSpan="5" style={{textAlign: 'center'}}>No has publicado productos</td></tr> :
-                                    myProducts.map(p => (
-                                        <tr key={p.id}>
-                                            <td><strong style={{fontFamily: 'var(--font-serif)'}}>{p.name}</strong></td>
-                                            <td>{p.origin}</td><td>${p.price}</td><td>{p.stock} lbs</td>
-                                            <td><button className="btn btn-outline" style={{padding:'4px 8px', fontSize:'0.7rem', color: '#D32F2F', borderColor: '#D32F2F'}} onClick={() => handleDelete(p.id)}>BORRAR</button></td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+                        {/* Products List */}
+                        <div>
+                            <h3 style={{marginBottom: '20px'}}>Lotes Activos ({myProducts.length})</h3>
+                            <div className="admin-table-container">
+                                <table className="admin-table">
+                                    <thead><tr><th>Nombre</th><th>Origen</th><th>Precio</th><th>Stock</th><th>Acción</th></tr></thead>
+                                    <tbody>
+                                        {myProducts.length === 0 ? <tr><td colSpan="5" style={{textAlign: 'center'}}>No has publicado productos</td></tr> :
+                                        myProducts.map(p => (
+                                            <tr key={p.id}>
+                                                <td><strong style={{fontFamily: 'var(--font-serif)'}}>{p.name}</strong></td>
+                                                <td>{p.origin}</td><td>${p.price}</td><td>{p.stock} lbs</td>
+                                                <td><button className="btn btn-outline" style={{padding:'4px 8px', fontSize:'0.7rem', color: '#D32F2F', borderColor: '#D32F2F'}} onClick={() => handleDelete(p.id)}>BORRAR</button></td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
-                </div>
+                ) : (
+                    <div>
+                        <div className="card" style={{background: '#fff', padding: '40px', borderRadius: '12px', boxShadow: 'var(--shadow-soft)', textAlign: 'center'}}>
+                            <h3 style={{marginBottom: '16px'}}>No hay pedidos pendientes</h3>
+                            <p style={{color: 'var(--text-secondary)'}}>Todavía no tienes pedidos registrados en la plataforma. ¡Continúa promocionando tus lotes de café!</p>
+                        </div>
+                    </div>
+                )}
             </main>
         </div>
     );
@@ -318,6 +328,12 @@ const NavHeader = ({ role, user, cartCount, onLogout }) => (
     </header>
 );
 
+const ProductDetailWrapper = ({ products, onBack, onAddToCart, getProductImage }) => {
+    const { id } = useParams();
+    const product = products.find(p => p.id === id || p.id === parseInt(id));
+    return <ProductDetailView product={product} onBack={onBack} onAddToCart={onAddToCart} getProductImage={getProductImage} />;
+};
+
 function AppContent() {
     const navigate = useNavigate();
     const [products, setProducts] = useState([]);
@@ -414,7 +430,36 @@ function AppContent() {
         }
     }, [user, role, navigate]);
 
-    const handleLogout = () => { setUser(null); setToken(null); setRole(null); navigate('/'); showToast("Adiós!"); };
+    const handleLogout = () => { auth.signOut(); setUser(null); setToken(null); setRole(null); navigate('/'); showToast("Adiós!"); };
+
+    // [INACTIVITY TIMEOUT]
+    useEffect(() => {
+        let inactivityTimer;
+        const resetTimer = () => {
+            clearTimeout(inactivityTimer);
+            if (user) {
+                inactivityTimer = setTimeout(() => {
+                    handleLogout();
+                    showToast("Sesión cerrada por inactividad (5 min)", "warning");
+                }, 5 * 60 * 1000);
+            }
+        };
+
+        window.addEventListener('mousemove', resetTimer);
+        window.addEventListener('keydown', resetTimer);
+        window.addEventListener('click', resetTimer);
+        window.addEventListener('scroll', resetTimer);
+
+        resetTimer();
+
+        return () => {
+            clearTimeout(inactivityTimer);
+            window.removeEventListener('mousemove', resetTimer);
+            window.removeEventListener('keydown', resetTimer);
+            window.removeEventListener('click', resetTimer);
+            window.removeEventListener('scroll', resetTimer);
+        };
+    }, [user]);
 
     const handleAddToCart = async (variantId, quantity) => {
         if (!user) { navigate('/login'); return; }
@@ -458,7 +503,7 @@ function AppContent() {
                         <main>
                             <Routes>
                                 <Route path="/" element={<CatalogView products={products} onSelectProduct={(id) => {setCurrentProductId(id); navigate(`/product/${id}`)}} getProductImage={getProductImage} />} />
-                                <Route path="/product/:id" element={<ProductDetailView product={products.find(p => p.id === currentProductId)} onBack={() => navigate('/')} onAddToCart={handleAddToCart} getProductImage={getProductImage} />} />
+                                <Route path="/product/:id" element={<ProductDetailWrapper products={products} onBack={() => navigate('/')} onAddToCart={handleAddToCart} getProductImage={getProductImage} />} />
                                 <Route path="/productores" element={<ProducersView />} />
                                 <Route path="/origen" element={<OriginView />} />
                                 <Route path="*" element={<Navigate to="/" />} />

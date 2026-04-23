@@ -41,7 +41,7 @@ const CatalogView = ({ products, onSelectProduct, getProductImage }) => (
                         return (
                             <div key={p.id} className="product-card" onClick={() => onSelectProduct(p.id)}>
                                 <div className="product-image-container">
-                                    <img src={getProductImage(p.id)} alt={p.name} />
+                                    <img src={getProductImage(p.id, p)} alt={p.name} />
                                     <div className="product-badge">Región Exclusiva</div>
                                 </div>
                                 <div className="product-header-row">

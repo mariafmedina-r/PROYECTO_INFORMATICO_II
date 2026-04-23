@@ -12,7 +12,7 @@ const ProductDetailView = ({ product, onBack, onAddToCart, getProductImage }) =>
             
             <div className="product-detail-layout">
                 <div className="product-hero-images">
-                    <img src={getProductImage(product.id)} className="main-img" alt={product.name} />
+                    <img src={getProductImage(product.id, product)} className="main-img" alt={product.name} />
                     <div className="sub-images">
                         <img src="https://images.unsplash.com/photo-1541167760496-1628856ab772?w=400&q=80" className="sub-img" alt="sub1"/>
                         <img src="https://images.unsplash.com/photo-1498603536246-15572faa67a6?w=400&q=80" className="sub-img" alt="sub2"/>

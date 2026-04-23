@@ -67,7 +67,7 @@ def upgrade_user_to_producer(uid: str, producer_data: dict):
         "role": "PRODUCTOR",
         "is_active": True
     }
-    doc_ref.update(update_data)
+    doc_ref.set(update_data, merge=True)
     return {"status": "success"}
 
 def get_user_profile_fs(uid: str):

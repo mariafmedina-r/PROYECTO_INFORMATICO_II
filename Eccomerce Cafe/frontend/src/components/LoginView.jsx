@@ -7,6 +7,7 @@ const LoginView = ({ onLogin, showToast, isInvite }) => {
     const [isRegister, setIsRegister] = useState(false);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [fullName, setFullName] = useState('');
     const [loading, setLoading] = useState(false);
 
     const handleResetPassword = async () => {
@@ -33,7 +34,7 @@ const LoginView = ({ onLogin, showToast, isInvite }) => {
                 userCredential = await createUserWithEmailAndPassword(auth, email, password);
                 const adminEmails = ['admin@patrimoniocafetero.com', 'test@example.com'];
                 const assignedRole = adminEmails.includes(email.toLowerCase()) ? 'ADMIN' : 'COMPRADOR';
-                await saveUserProfile(userCredential.user.uid, { email, role: assignedRole, is_active: true });
+                await saveUserProfile(userCredential.user.uid, { email, full_name: fullName, role: assignedRole, is_active: true });
                 showToast("Cuenta creada con éxito (" + assignedRole + ")", "success");
             } else {
                 userCredential = await signInWithEmailAndPassword(auth, email, password);
@@ -59,10 +60,12 @@ const LoginView = ({ onLogin, showToast, isInvite }) => {
         } catch (error) {
             console.error("DEBUG: Error en handleSubmit:", error);
             let msg = "Error de autenticación";
-            if (error.code === 'auth/user-not-found') msg = "Usuario no registrado";
-            if (error.code === 'auth/wrong-password') msg = "Contraseña incorrecta";
-            if (error.code === 'auth/invalid-credential') msg = "Credenciales inválidas";
+            if (error.code === 'auth/user-not-found') msg = "Usuario no registrado. Verifique su correo.";
+            if (error.code === 'auth/wrong-password') msg = "Contraseña incorrecta. Intente de nuevo.";
+            if (error.code === 'auth/invalid-credential') msg = "Credenciales inválidas. Correo o contraseña erróneos.";
             if (error.code === 'auth/email-already-in-use') msg = "El correo ya está registrado. Por favor, inicie sesión.";
+            if (error.code === 'auth/weak-password') msg = "Su contraseña debe tener al menos 6 caracteres.";
+            if (error.code === 'auth/invalid-email') msg = "El formato del correo es inválido.";
             showToast(msg, "error");
         } finally {
             setLoading(false);
@@ -88,6 +91,12 @@ const LoginView = ({ onLogin, showToast, isInvite }) => {
                     </p>
                     
                     <form onSubmit={handleSubmit}>
+                        {isRegister && (
+                            <div className="input-group">
+                                <label>Nombre Completo</label>
+                                <input type="text" value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="Ej. Juan Pérez" required={isRegister} />
+                            </div>
+                        )}
                         <div className="input-group">
                             <label>Email</label>
                             <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="tu@correo.com" required />

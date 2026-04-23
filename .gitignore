@@ -12,6 +12,7 @@ backend/firebase_credentials.json
 *.log
 *.tmp
 
+
 # Environments & Secrets
 # .env -> Allowed for university project convenience
 # firebase_credentials.json -> Allowed for university project convenience
