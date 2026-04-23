@@ -58,7 +58,7 @@ const ProductDetailView = ({ product, onBack, onAddToCart, getProductImage }) =>
                             <input type="number" className="qty-input" value={qty} readOnly />
                             <button className="qty-btn" onClick={() => setQty(qty + 1)}>+</button>
                         </div>
-                        <button className="btn btn-primary" style={{flex: 1}} onClick={() => onAddToCart(variant?.id, qty)}>
+                        <button className="btn btn-primary" style={{flex: 1}} onClick={() => onAddToCart(product, qty)}>
                             AÑADIR AL CARRITO 🛒
                         </button>
                     </div>

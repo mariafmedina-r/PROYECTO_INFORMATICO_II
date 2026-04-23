@@ -77,14 +77,14 @@ export async function deleteProductFS(productId) {
 // --- Backend SQL APIs (Orders & Cart Placeholder) ---
 
 export async function getCart(userId, token) {
-    const res = await fetch(`${API_URL}/carts/${userId}`, {
+    const res = await fetch(`${API_URL}/cart`, {
         headers: { 'Authorization': `Bearer ${token}` }
     });
     return res.json();
 }
 
 export async function addToCart(variantId, quantity, userId, token) {
-    const res = await fetch(`${API_URL}/carts/${userId}/items`, {
+    const res = await fetch(`${API_URL}/cart/items`, {
         method: 'POST',
         headers: { 
             'Content-Type': 'application/json',
@@ -92,7 +92,7 @@ export async function addToCart(variantId, quantity, userId, token) {
         },
         body: JSON.stringify({ variant_id: variantId, quantity })
     });
-    if (!res.ok) throw new Error("Stock insuficiente");
+    if (!res.ok) throw new Error("Stock insuficiente u error en carrito");
     return res.json();
 }
 

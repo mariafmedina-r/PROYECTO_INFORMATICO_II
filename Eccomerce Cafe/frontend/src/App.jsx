@@ -461,13 +461,22 @@ function AppContent() {
         };
     }, [user]);
 
-    const handleAddToCart = async (variantId, quantity) => {
-        if (!user) { navigate('/login'); return; }
+    const handleAddToCart = async (product, quantity) => {
+        if (!user) { navigate('/login'); showToast("Inicia sesión para poder comprar", "warning"); return; }
         try {
-            await addToCart(variantId, quantity, user.uid || 1, token);
-            showToast("Añadido!");
-            const data = await getCart(user.uid || 1, token);
-            setCartData(data);
+            showToast("¡Añadido al carrito!", "success");
+            setCartData(prev => {
+                const existing = prev.items.find(i => i.product.id === product.id);
+                let newItems;
+                if (existing) {
+                    newItems = prev.items.map(i => i.product.id === product.id ? {...i, quantity: i.quantity + quantity} : i);
+                } else {
+                    const price = parseFloat(product.price) || (product.variants?.length ? product.variants[0].price : 0);
+                    newItems = [...prev.items, { product, quantity, price }];
+                }
+                const newTotal = newItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+                return { items: newItems, total: newTotal };
+            });
             setCartOpen(true);
         } catch (err) { showToast("Error", "error"); }
     };
@@ -514,7 +523,33 @@ function AppContent() {
             </Routes>
             <div className={`cart-drawer ${cartOpen ? 'open' : ''}`}>
                 <div className="cart-overlay" onClick={() => setCartOpen(false)}></div>
-                <div className="cart-panel"><div className="cart-header"><h2>Carrito</h2><button onClick={() => setCartOpen(false)}>×</button></div><div className="cart-footer"><button className="btn btn-primary full-width" onClick={() => showToast("Checkout...")}>Pagar</button></div></div>
+                <div className="cart-panel" style={{display: 'flex', flexDirection: 'column'}}>
+                    <div className="cart-header"><h2>Tu Carrito</h2><button onClick={() => setCartOpen(false)}>×</button></div>
+                    <div style={{flex: 1, overflowY: 'auto', padding: '20px'}}>
+                        {cartData.items.length === 0 ? <p style={{textAlign: 'center', color: '#666', marginTop: '40px'}}>El carrito está vacío.</p> :
+                        cartData.items.map((item, idx) => (
+                            <div key={idx} style={{display: 'flex', gap: '16px', marginBottom: '20px', alignItems: 'center', borderBottom: '1px solid #eee', paddingBottom: '16px'}}>
+                                <img src={getProductImage(item.product.id, item.product)} style={{width: '60px', height: '60px', borderRadius: '8px', objectFit: 'cover'}} alt="item" />
+                                <div style={{flex: 1}}>
+                                    <h4 className="serif" style={{margin: '0 0 4px 0'}}>{item.product.name}</h4>
+                                    <p style={{margin: 0, fontSize: '0.85rem', color: '#666'}}>Cant: {item.quantity}</p>
+                                </div>
+                                <div style={{fontWeight: 'bold'}}>${(item.price * item.quantity).toFixed(2)}</div>
+                            </div>
+                        ))}
+                    </div>
+                    <div className="cart-footer" style={{borderTop: '1px solid #eee', padding: '20px'}}>
+                        <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: '20px', fontSize: '1.2rem', fontWeight: 'bold'}}>
+                            <span>Total:</span>
+                            <span>${cartData.total.toFixed(2)}</span>
+                        </div>
+                        <button className="btn btn-primary full-width" disabled={cartData.items.length === 0} onClick={() => {
+                            showToast("Procesando pago... ¡Compra Exitosa!", "success");
+                            setCartData({items: [], total: 0});
+                            setCartOpen(false);
+                        }}>Realizar Pedido Seguro</button>
+                    </div>
+                </div>
             </div>
         </>
     );
