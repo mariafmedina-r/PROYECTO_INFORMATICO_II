@@ -85,6 +85,27 @@ def upgrade_to_producer(uid: str, data: dict):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+@router.post("/admin/products-fs")
+def create_product_bypassing_rules(data: dict):
+    try:
+        return user_service.create_product_fs(data)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/admin/products-fs")
+def get_all_products_fs():
+    try:
+        return user_service.get_all_products_fs()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.delete("/admin/products-fs/{product_id}")
+def delete_product_bypassing_rules(product_id: str):
+    try:
+        return user_service.delete_product_fs(product_id)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 @router.get("/{email}", response_model=UserResponse)
 def read_user(email: str, db: Session = Depends(get_db)):
     try:

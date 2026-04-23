@@ -62,16 +62,22 @@ export async function getProductsFS() {
 }
 
 export async function createProductFS(productData, userId) {
-    const docRef = await addDoc(collection(db_fs, "products"), {
-        ...productData,
-        producer_id: userId,
-        createdAt: new Date().toISOString()
+    const payload = { ...productData, producer_id: userId };
+    const res = await fetch(`${API_URL}/users/admin/products-fs`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
     });
-    return { id: docRef.id, ...productData };
+    if (!res.ok) throw new Error("Error crerating product via backend");
+    return res.json();
 }
 
 export async function deleteProductFS(productId) {
-    await deleteDoc(doc(db_fs, "products", productId));
+    const res = await fetch(`${API_URL}/users/admin/products-fs/${productId}`, {
+        method: 'DELETE'
+    });
+    if (!res.ok) throw new Error("Error deleting product via backend");
+    return res.json();
 }
 
 // --- Backend SQL APIs (Orders & Cart Placeholder) ---

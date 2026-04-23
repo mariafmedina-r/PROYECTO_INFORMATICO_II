@@ -76,3 +76,22 @@ def get_user_profile_fs(uid: str):
     if doc.exists:
         return doc.to_dict()
     return None
+
+import datetime
+
+def create_product_fs(product_data: dict):
+    db_fs = firestore.client()
+    # Add timestamp as an ISO string to avoid FastAPI JSON serialization errors
+    product_data["createdAt"] = datetime.datetime.utcnow().isoformat() + "Z"
+    _, doc_ref = db_fs.collection("products").add(product_data)
+    return {"id": doc_ref.id, **product_data}
+
+def delete_product_fs(product_id: str):
+    db_fs = firestore.client()
+    db_fs.collection("products").document(product_id).delete()
+    return {"status": "success"}
+
+def get_all_products_fs():
+    db_fs = firestore.client()
+    docs = db_fs.collection("products").get()
+    return [{"id": d.id, **d.to_dict()} for d in docs]
