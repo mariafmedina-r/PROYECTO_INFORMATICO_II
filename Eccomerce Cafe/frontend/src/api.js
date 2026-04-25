@@ -119,3 +119,12 @@ export async function checkoutContext(userId, token) {
     });
     return res.json();
 }
+
+export async function processPayment(paymentData) {
+    const res = await fetch(`${API_URL}/payments/process`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(paymentData)
+    });
+    return res.json();
+}

@@ -9,6 +9,7 @@ import OriginView from './components/OriginView';
 import { getProductImage } from './utils';
 import { auth } from './firebase_config';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
+import PaymentModal from './components/PaymentModal';
 
 class ErrorBoundary extends React.Component {
     constructor(props) { super(props); this.state = { hasError: false, error: null }; }
@@ -479,6 +480,7 @@ function AppContent() {
     const [currentProductId, setCurrentProductId] = useState(null);
     const [cartData, setCartData] = useState({ items: [], total: 0 });
     const [cartOpen, setCartOpen] = useState(false);
+    const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
     const [toasts, setToasts] = useState([]);
     const [user, setUser] = useState(null);
     const [token, setToken] = useState(null);
@@ -630,6 +632,18 @@ function AppContent() {
         } catch (err) { showToast("Error", "error"); }
     };
 
+    const handlePaymentSuccess = (paymentResponse) => {
+        setIsPaymentModalOpen(false);
+        showToast("✅ ¡Pago Exitoso! Tu pedido #" + paymentResponse.id + " está en camino.", "success");
+        setCartData({ items: [], total: 0 });
+        setCartOpen(false);
+    };
+
+    const handlePaymentError = (error) => {
+        console.error("Payment Error:", error);
+        showToast("❌ Hubo un problema con el pago: " + (error.message || "Rechazado"), "error");
+    };
+
     const updateCartItemQuantity = (productId, delta) => {
         setCartData(prev => {
             const newItems = prev.items.map(item => {
@@ -656,6 +670,15 @@ function AppContent() {
     return (
         <>
             <div className="toast-container">{toasts.map(t => (<div key={t.id} className={`toast toast-${t.type} ${t.show ? 'show' : ''}`}><span>{t.message}</span></div>))}</div>
+            
+            <PaymentModal 
+                isOpen={isPaymentModalOpen} 
+                amount={cartData.total} 
+                payerEmail={user?.email}
+                onClose={() => setIsPaymentModalOpen(false)}
+                onPaymentSuccess={handlePaymentSuccess}
+                onPaymentError={handlePaymentError}
+            />
             
             {/* [SISTEMA DE RUTAS PROTEGIDAS Y ROLES] 
                 Se usa `Navigate` para expulsar o redirigir a un usuario si `role` no coincide.
@@ -721,13 +744,9 @@ function AppContent() {
                             <span>${cartData.total.toFixed(2)}</span>
                         </div>
                         <button className="btn btn-primary full-width" disabled={cartData.items.length === 0} onClick={() => {
-                            showToast("✅ Pedido #" + Math.floor(Math.random()*90000+10000) + " creado con éxito. Redirigiendo a pago...", "success");
-                            setTimeout(() => {
-                                setCartData({items: [], total: 0});
-                                setCartOpen(false);
-                            }, 1500);
-                        }}>Confirmar y Comprar</button>
-                        <p style={{fontSize: '0.7rem', textAlign: 'center', color: '#999', marginTop: '12px'}}>IVA incluido. Envío calculado en el siguiente paso.</p>
+                            setIsPaymentModalOpen(true);
+                        }}>Confirmar y Comprar Seguro</button>
+                        <p style={{fontSize: '0.7rem', textAlign: 'center', color: '#999', marginTop: '12px'}}>IVA incluido. Pago procesado por Mercado Pago.</p>
                     </div>
                 </div>
             </div>

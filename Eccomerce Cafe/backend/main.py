@@ -5,7 +5,7 @@ import logging
 
 try:
     from database import engine, Base, SessionLocal
-    from routers import user_router, product_router, cart_router, order_router
+    from routers import user_router, product_router, cart_router, order_router, payment_router
     from repository.user_repository import init_test_user
     from repository.init_data import seed_test_data
     import models.product
@@ -14,7 +14,7 @@ try:
     from firebase_config import initialize_firebase
 except ImportError:
     from backend.database import engine, Base, SessionLocal
-    from backend.routers import user_router, product_router, cart_router, order_router
+    from backend.routers import user_router, product_router, cart_router, order_router, payment_router
     from backend.repository.user_repository import init_test_user
     from backend.repository.init_data import seed_test_data
     import backend.models.product
@@ -76,6 +76,7 @@ app.include_router(user_router.router)
 app.include_router(product_router.router)
 app.include_router(cart_router.router)
 app.include_router(order_router.router)
+app.include_router(payment_router.router)
 
 @app.get("/")
 def read_root():
