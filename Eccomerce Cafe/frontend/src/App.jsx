@@ -29,39 +29,51 @@ class ErrorBoundary extends React.Component {
 }
 
 // --- Improved Components ---
+const LoadingSpinner = ({ size = 'medium', light = false }) => (
+    <div className={`spinner ${size === 'large' ? 'spinner-large' : ''} ${light ? 'spinner-light' : ''}`}></div>
+);
 
 const AdminDashboard = ({ token, showToast }) => {
     const [view, setView] = useState('overview');
     const [allUsers, setAllUsers] = useState([]);
     const [allProducts, setAllProducts] = useState([]);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const loadData = async () => {
+        setIsSubmitting(true);
         try {
             const u = await getAllUsersFS(); setAllUsers(u);
             const p = await getProductsFS(); setAllProducts(p);
         } catch (e) { console.error(e); }
+        finally { setIsSubmitting(false); }
     };
 
     useEffect(() => { loadData(); }, [token]);
 
     const handleToggleUser = async (uid, status) => {
+        setIsSubmitting(true);
         try {
             await toggleUserStatusFS(uid, status);
             showToast(status ? "Usuario suspendido" : "Usuario activado", "success");
-            loadData();
+            await loadData();
         } catch (e) { showToast("Error", "error"); }
+        finally { setIsSubmitting(false); }
     };
 
     const handleDeleteProduct = async (id) => {
+        if (!window.confirm("¿Seguro?")) return;
+        setIsSubmitting(true);
         try {
             await deleteProductFS(id);
-            showToast("Producto eliminado por administración", "success");
-            loadData();
+            showToast("Producto eliminado", "success");
+            await loadData();
         } catch (e) { showToast("Error", "error"); }
+        finally { setIsSubmitting(false); }
     };
 
     return (
-        <div className="admin-layout">
+        <div className="admin-layout" style={{position: 'relative'}}>
+            {isSubmitting && <div className="loading-overlay"><div className="spinner spinner-large"></div></div>}
             <aside className="admin-sidebar" style={{background: '#263238'}}>
                 <div style={{padding: '30px 20px', borderBottom: '1px solid rgba(255,255,255,0.1)', marginBottom: '20px'}}>
                     <h2 style={{fontSize: '1.2rem', color: '#fff', letterSpacing: '1px'}}>CONTROL CENTRAL</h2>
@@ -154,7 +166,7 @@ const ProducerDashboard = ({ user, showToast, refreshGlobalProducts, refreshProf
         sensory_notes: '', altitude: '', process: 'Lavado', is_exclusive: false
     });
     const [editingProduct, setEditingProduct] = useState(null);
-    const [fileError, setFileError] = useState('');
+    const [isSubmitting, setIsSubmitting] = useState(false);
     
     const [profileForm, setProfileForm] = useState({
         full_name: '', farm_name: '', region: '', whatsapp: '', description: ''
@@ -173,26 +185,19 @@ const ProducerDashboard = ({ user, showToast, refreshGlobalProducts, refreshProf
     }, [user]);
 
     const loadMyProducts = async () => {
+        setIsSubmitting(true);
         try {
             const allProducts = await getProductsFS();
             setMyProducts(allProducts.filter(p => p.producer_id === user?.uid));
         } catch (e) { console.error(e); }
+        finally { setIsSubmitting(false); }
     };
     
     useEffect(() => { if (user) loadMyProducts(); }, [user]);
 
-    const handleFileChange = (e) => {
-        const url = e.target.value;
-        setFormData({ ...formData, image_path: url });
-        if (url && !url.match(/\.(jpg|jpeg|png|gif|webp)$/i)) {
-            setFileError('Tipo de archivo no permitido. Use imágenes (jpg, png, webp).');
-        } else {
-            setFileError('');
-        }
-    };
-
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setIsSubmitting(true);
         try {
             const payload = {
                 ...formData,
@@ -218,6 +223,7 @@ const ProducerDashboard = ({ user, showToast, refreshGlobalProducts, refreshProf
             loadMyProducts();
             if (refreshGlobalProducts) refreshGlobalProducts();
         } catch (e) { showToast("Error al procesar el producto", "error"); }
+        finally { setIsSubmitting(false); }
     };
 
     const handleEdit = (p) => {
@@ -229,28 +235,33 @@ const ProducerDashboard = ({ user, showToast, refreshGlobalProducts, refreshProf
     };
 
     const handleToggleStatus = async (product) => {
+        setIsSubmitting(true);
         try {
             const newStatus = !product.is_active;
             await updateProductFS(product.id, { is_active: newStatus });
             showToast(newStatus ? "Lote Activado" : "Lote Pausado", "success");
-            loadMyProducts();
+            await loadMyProducts();
             if (refreshGlobalProducts) refreshGlobalProducts();
         } catch (e) { showToast("Error", "error"); }
+        finally { setIsSubmitting(false); }
     };
 
     const handleSaveProfile = async (e) => {
         e.preventDefault();
+        setIsSubmitting(true);
         try {
             await saveUserProfile(user.uid, profileForm);
             showToast("Perfil actualizado", "success");
             if (refreshProfile) await refreshProfile();
         } catch (e) { showToast("Error", "error"); }
+        finally { setIsSubmitting(false); }
     };
 
     const filteredProducts = myProducts.filter(p => productTab === 'active' ? p.is_active !== false : p.is_active === false);
 
     return (
-        <div className="admin-layout">
+        <div className="admin-layout" style={{position: 'relative'}}>
+            {isSubmitting && <div className="loading-overlay"><div className="spinner spinner-large"></div></div>}
             <aside className="admin-sidebar" style={{background: '#3d2b1f'}}>
                 <div style={{padding: '30px 20px', textAlign: 'center', borderBottom: '1px solid rgba(255,255,255,0.1)', marginBottom: '20px'}}>
                     <div style={{width: '60px', height: '60px', borderRadius: '50%', background: 'rgba(255,255,255,0.1)', margin: '0 auto 15px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem'}}>🏞️</div>
@@ -477,6 +488,7 @@ function AppContent() {
     const [token, setToken] = useState(null);
     const [role, setRole] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [refreshing, setRefreshing] = useState(false);
 
     // [SISTEMA DE LOGIN] Hooks de Persistencia y Detección de Identidad
     // onAuthStateChanged verifica continuamente el LocalStorage de Firebase 
@@ -515,7 +527,15 @@ function AppContent() {
     }, []);
 
     const refreshGlobalProducts = async () => {
-        try { const data = await getProductsFS(); setProducts(data); } catch (e) { console.error(e); }
+        setRefreshing(true);
+        try { 
+            const data = await getProductsFS(); 
+            setProducts(data); 
+        } catch (e) { 
+            console.error(e); 
+        } finally {
+            setRefreshing(false);
+        }
     };
 
     const refreshProfile = async () => {
@@ -656,7 +676,13 @@ function AppContent() {
         });
     };
 
-    if (loading) return <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', fontFamily: 'var(--font-serif)', color: 'var(--accent-green)'}}><h2>Cargando Patrimonio Cafetero...</h2></div>;
+    if (loading) return (
+        <div className="global-loader">
+            <div className="spinner spinner-large"></div>
+            <h2 className="serif" style={{color: 'var(--accent-green)', marginTop: '20px'}}>Patrimonio Cafetero</h2>
+            <p style={{color: '#999', fontSize: '0.9rem'}}>Cargando tu experiencia desde el origen...</p>
+        </div>
+    );
 
     return (
         <>
@@ -688,7 +714,7 @@ function AppContent() {
                         <NavHeader role={role} user={user} cartCount={cartData.items?.length || 0} onLogout={handleLogout} onOpenCart={() => setCartOpen(true)} />
                         <main>
                             <Routes>
-                                <Route path="/" element={<CatalogView products={products} onSelectProduct={(id) => {setCurrentProductId(id); navigate(`/product/${id}`)}} getProductImage={getProductImage} />} />
+                                <Route path="/" element={<CatalogView products={products} onSelectProduct={(id) => navigate(`/product/${id}`)} getProductImage={getProductImage} loading={refreshing} />} />
                                 <Route path="/product/:id" element={<ProductDetailWrapper products={products} onBack={() => navigate('/')} onAddToCart={handleAddToCart} getProductImage={getProductImage} role={role} />} />
                                 <Route path="/productores" element={<ProducersView />} />
                                 <Route path="/origen" element={<OriginView />} />

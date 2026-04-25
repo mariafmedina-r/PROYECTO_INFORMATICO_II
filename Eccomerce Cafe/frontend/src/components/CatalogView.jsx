@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
 
-const CatalogView = ({ products, onSelectProduct, getProductImage }) => {
+const CatalogView = ({ products, onSelectProduct, getProductImage, loading }) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedOrigin, setSelectedOrigin] = useState('Todos');
 
-    // Filtrar solo productos activos
     const activeProducts = products.filter(p => p.is_active !== false);
-
     const origins = ['Todos', ...new Set(activeProducts.map(p => p.origin).filter(Boolean))];
 
     const filteredProducts = activeProducts.filter(p => {
@@ -35,46 +33,40 @@ const CatalogView = ({ products, onSelectProduct, getProductImage }) => {
                     <h3>Filtros <span>▾</span></h3>
                     <div className="filter-group">
                         <p className="filter-label">Origen / Región</p>
-                        {origins.map(origin => (
-                            <label key={origin} className="filter-item" style={{cursor: 'pointer', fontWeight: selectedOrigin === origin ? 700 : 400, color: selectedOrigin === origin ? 'var(--accent-green)' : 'inherit'}}>
-                                <input 
-                                    type="radio" 
-                                    name="origin"
-                                    checked={selectedOrigin === origin}
-                                    onChange={() => setSelectedOrigin(origin)}
-                                    style={{marginRight: '8px'}}
-                                /> 
-                                {origin}
-                            </label>
-                        ))}
+                        {loading ? (
+                            [1,2,3].map(i => <div key={i} className="skeleton" style={{height: '24px', marginBottom: '12px', width: '80%'}}></div>)
+                        ) : (
+                            origins.map(origin => (
+                                <label key={origin} className="filter-item">
+                                    <input type="radio" name="origin" checked={selectedOrigin === origin} onChange={() => setSelectedOrigin(origin)} style={{marginRight: '8px'}}/> 
+                                    {origin}
+                                </label>
+                            ))
+                        )}
                     </div>
-                    
-                    <div className="filter-group" style={{marginTop: '20px'}}>
-                        <p className="filter-label">Notas Sensoriales</p>
-                        <div className="tag-list">
-                            <button className="tag-btn active">Floral</button>
-                            <button className="tag-btn">Frutal</button>
-                            <button className="tag-btn">Nuez</button>
-                        </div>
-                    </div>
-                    <button className="btn btn-outline full-width" style={{marginTop: '20px'}} onClick={() => {setSearchTerm(''); setSelectedOrigin('Todos');}}>Limpiar Filtros</button>
                 </aside>
                 
                 <main className="catalog-main">
                     <div className="main-header">
-                        <span>Mostrando {filteredProducts.length} variedades</span>
-                        <div>Ordenar por: <select style={{fontWeight: 700, border: 'none', background: 'transparent', cursor: 'pointer', textDecoration: 'underline'}}><option>Cosecha Reciente</option></select></div>
+                        <span>{loading ? 'Cargando variedades...' : `Mostrando ${filteredProducts.length} variedades`}</span>
                     </div>
                     
-                    {filteredProducts.length === 0 ? (
-                        <div style={{textAlign: 'center', padding: '80px', background: 'rgba(0,0,0,0.02)', borderRadius: '16px', border: '1px dashed #ccc', marginTop: '40px'}}>
-                            <h2 className="serif" style={{color: '#999'}}>No se encontraron coincidencias</h2>
-                            <p style={{color: '#666'}}>Intenta ajustar tus criterios de búsqueda o filtros.</p>
-                            <button className="btn btn-text" style={{marginTop: '20px', textDecoration: 'underline'}} onClick={() => {setSearchTerm(''); setSelectedOrigin('Todos');}}>Ver todo el catálogo</button>
-                        </div>
-                    ) : (
-                        <div className="product-grid">
-                            {filteredProducts.map(p => {
+                    <div className="product-grid">
+                        {loading ? (
+                            [1,2,3,4,5,6].map(i => (
+                                <div key={i} className="product-card">
+                                    <div className="product-image-container skeleton"></div>
+                                    <div className="skeleton" style={{height: '24px', width: '70%', marginBottom: '8px'}}></div>
+                                    <div className="skeleton" style={{height: '16px', width: '90%'}}></div>
+                                </div>
+                            ))
+                        ) : filteredProducts.length === 0 ? (
+                            <div style={{gridColumn: '1/-1', textAlign: 'center', padding: '80px', background: 'rgba(0,0,0,0.02)', borderRadius: '16px', border: '1px dashed #ccc'}}>
+                                <h2 className="serif" style={{color: '#999'}}>No se encontraron coincidencias</h2>
+                                <button className="btn btn-text" style={{marginTop: '20px', textDecoration: 'underline'}} onClick={() => {setSearchTerm(''); setSelectedOrigin('Todos');}}>Ver todo</button>
+                            </div>
+                        ) : (
+                            filteredProducts.map(p => {
                                 const price = p.price !== undefined ? parseFloat(p.price) : (p.variants?.length ? p.variants[0].price : 0);
                                 return (
                                     <div key={p.id} className="product-card" onClick={() => onSelectProduct(p.id)}>
@@ -86,13 +78,12 @@ const CatalogView = ({ products, onSelectProduct, getProductImage }) => {
                                             <h3 className="serif">{p.name}</h3>
                                             <span className="product-price">${price.toFixed(2)}</span>
                                         </div>
-                                        <p className="product-desc">{p.description ? p.description.substring(0, 80) + '...' : 'Café de especialidad con notas únicas'}</p>
-                                        <div style={{marginTop: '12px', fontSize: '0.75rem', fontWeight: 700, color: 'var(--accent-green)', textTransform: 'uppercase'}}>{p.origin}</div>
+                                        <p className="product-desc">{p.description ? p.description.substring(0, 80) + '...' : 'Café de especialidad'}</p>
                                     </div>
                                 );
-                            })}
-                        </div>
-                    )}
+                            })
+                        )}
+                    </div>
                 </main>
             </div>
         </div>
