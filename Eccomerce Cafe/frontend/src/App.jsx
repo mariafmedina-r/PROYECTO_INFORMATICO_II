@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate, Navigate, useParams } from 'react-router-dom';
-import { getProductsFS, createProductFS, deleteProductFS, getCart, addToCart, checkoutContext, getPendingProducersFS, approveProducerFS, saveUserProfile, getAllUsersFS, upgradeToProducerFS, toggleUserStatusFS } from './api';
+import { getProductsFS, createProductFS, deleteProductFS, updateProductFS, getCart, addToCart, checkoutContext, getPendingProducersFS, approveProducerFS, saveUserProfile, getUserProfile, getAllUsersFS, upgradeToProducerFS, toggleUserStatusFS } from './api';
 import LoginView from './components/LoginView';
 import CatalogView from './components/CatalogView';
 import ProductDetailView from './components/ProductDetailView';
@@ -130,11 +130,30 @@ const AdminDashboard = ({ token, showToast }) => {
     );
 };
 
-const ProducerDashboard = ({ user, showToast, refreshGlobalProducts }) => {
+const ProducerDashboard = ({ user, showToast, refreshGlobalProducts, refreshProfile }) => {
     const [view, setView] = useState('products');
+    const [productTab, setProductTab] = useState('active'); // active | inactive
     const [myProducts, setMyProducts] = useState([]);
     const [formData, setFormData] = useState({ name: '', price: '', origin: '', description: '', stock: 100, image_path: '' });
+    const [editingProduct, setEditingProduct] = useState(null);
+    const [fileError, setFileError] = useState('');
     
+    const [profileForm, setProfileForm] = useState({
+        full_name: '', farm_name: '', region: '', whatsapp: '', description: ''
+    });
+
+    useEffect(() => {
+        if (user) {
+            setProfileForm({
+                full_name: user.full_name || '',
+                farm_name: user.farm_name || '',
+                region: user.region || '',
+                whatsapp: user.whatsapp || '',
+                description: user.description || ''
+            });
+        }
+    }, [user]);
+
     const loadMyProducts = async () => {
         try {
             const allProducts = await getProductsFS();
@@ -144,34 +163,97 @@ const ProducerDashboard = ({ user, showToast, refreshGlobalProducts }) => {
     
     useEffect(() => { if (user) loadMyProducts(); }, [user]);
 
+    const handleFileChange = (e) => {
+        const url = e.target.value;
+        setFormData({ ...formData, image_path: url });
+        if (url && !url.match(/\.(jpg|jpeg|png|gif|webp)$/i)) {
+            setFileError('Tipo de archivo no permitido. Use imágenes (jpg, png, webp).');
+        } else {
+            setFileError('');
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (fileError) {
+            showToast("Error: " + fileError, "error");
+            return;
+        }
+
         try {
-            await createProductFS({
+            const payload = {
                 name: formData.name,
                 price: parseFloat(formData.price),
                 origin: formData.origin,
                 description: formData.description,
                 stock: parseInt(formData.stock),
-                is_active: true,
+                is_active: editingProduct ? editingProduct.is_active : true,
                 image_path: formData.image_path || null
-            }, user.uid);
-            showToast("Producto subido exitosamente a la tienda", "success");
+            };
+
+            if (editingProduct) {
+                await updateProductFS(editingProduct.id, payload);
+                showToast("Producto actualizado con éxito", "success");
+            } else {
+                await createProductFS(payload, user.uid);
+                showToast("Producto subido exitosamente", "success");
+            }
+
             setFormData({ name: '', price: '', origin: '', description: '', stock: 100, image_path: '' });
+            setEditingProduct(null);
             loadMyProducts();
             if (refreshGlobalProducts) refreshGlobalProducts();
         } catch (e) {
-            showToast("Error al subir el producto", "error");
+            showToast("Error al procesar el producto", "error");
         }
+    };
+
+    const handleEdit = (product) => {
+        setEditingProduct(product);
+        setFormData({
+            name: product.name,
+            price: product.price,
+            origin: product.origin,
+            description: product.description,
+            stock: product.stock,
+            image_path: product.image_path || ''
+        });
+        showToast("Editando: " + product.name, "info");
+    };
+
+    const handleToggleStatus = async (product) => {
+        try {
+            const newStatus = !product.is_active;
+            await updateProductFS(product.id, { is_active: newStatus });
+            showToast(newStatus ? "Producto Activado" : "Producto Inactivado", "success");
+            loadMyProducts();
+            if (refreshGlobalProducts) refreshGlobalProducts();
+        } catch (e) { showToast("Error", "error"); }
     };
     
     const handleDelete = async (id) => {
+        if (!window.confirm("¿Seguro que desea eliminar permanentemente este lote?")) return;
         try {
             await deleteProductFS(id);
             showToast("Producto eliminado", "success");
             loadMyProducts();
+            if (refreshGlobalProducts) refreshGlobalProducts();
         } catch (e) { showToast("Error", "error"); }
     };
+
+    const handleSaveProfile = async (e) => {
+        e.preventDefault();
+        try {
+            await saveUserProfile(user.uid, profileForm);
+            showToast("Perfil comercial actualizado con éxito", "success");
+            if (refreshProfile) await refreshProfile();
+        } catch (e) { showToast("Error al guardar cambios", "error"); }
+    };
+
+    const filteredProducts = myProducts.filter(p => {
+        if (productTab === 'active') return p.is_active !== false;
+        return p.is_active === false;
+    });
 
     return (
         <div className="admin-layout">
@@ -180,39 +262,59 @@ const ProducerDashboard = ({ user, showToast, refreshGlobalProducts }) => {
                 <nav className="admin-nav">
                     <div className={`admin-nav-item ${view === 'products' ? 'active' : ''}`} onClick={() => setView('products')}>☕ Mis Productos</div>
                     <div className={`admin-nav-item ${view === 'orders' ? 'active' : ''}`} onClick={() => setView('orders')}>📦 Pedidos Entrantes</div>
+                    <div className={`admin-nav-item ${view === 'profile' ? 'active' : ''}`} onClick={() => setView('profile')}>👤 Mi Perfil Comercial</div>
                 </nav>
             </aside>
             <main className="admin-content">
-                <h1 className="serif" style={{marginBottom: '32px'}}>Gestión de Cosecha</h1>
+                <h1 className="serif" style={{marginBottom: '32px'}}>
+                    {view === 'products' && 'Gestión de Cosecha'}
+                    {view === 'orders' && 'Pedidos Recibidos'}
+                    {view === 'profile' && 'Perfil Comercial'}
+                </h1>
                 
-                {view === 'products' ? (
-                    <div style={{display: 'grid', gridTemplateColumns: 'minmax(300px, 1fr) 2fr', gap: '40px', alignItems: 'start'}}>
-                        {/* Add Product Form */}
+                {view === 'products' && (
+                    <div style={{display: 'grid', gridTemplateColumns: 'minmax(320px, 1fr) 2fr', gap: '40px', alignItems: 'start'}}>
+                        {/* Form */}
                         <div className="card" style={{background: '#fff', padding: '24px', borderRadius: '12px', boxShadow: 'var(--shadow-soft)'}}>
-                            <h3 style={{marginBottom: '20px'}}>Publicar Nuevo Lote</h3>
+                            <h3 style={{marginBottom: '20px'}}>{editingProduct ? 'Editar Producto' : 'Publicar Nuevo Lote'}</h3>
                             <form onSubmit={handleSubmit} style={{display: 'flex', flexDirection: 'column', gap: '16px'}}>
                                 <div><label style={{fontSize: '0.8rem', fontWeight: 600}}>Nombre del Café</label><input type="text" className="full-width" style={{padding: '10px', border: '1px solid #ccc', borderRadius:'4px'}} required value={formData.name} onChange={e=>setFormData({...formData, name: e.target.value})} /></div>
                                 <div><label style={{fontSize: '0.8rem', fontWeight: 600}}>Precio (USD)</label><input type="number" step="0.01" className="full-width" style={{padding: '10px', border: '1px solid #ccc', borderRadius:'4px'}} required value={formData.price} onChange={e=>setFormData({...formData, price: e.target.value})} /></div>
-                                <div><label style={{fontSize: '0.8rem', fontWeight: 600}}>Origen Específico</label><input type="text" className="full-width" style={{padding: '10px', border: '1px solid #ccc', borderRadius:'4px'}} required value={formData.origin} onChange={e=>setFormData({...formData, origin: e.target.value})} /></div>
+                                <div><label style={{fontSize: '0.8rem', fontWeight: 600}}>Origen</label><input type="text" className="full-width" style={{padding: '10px', border: '1px solid #ccc', borderRadius:'4px'}} required value={formData.origin} onChange={e=>setFormData({...formData, origin: e.target.value})} /></div>
                                 <div><label style={{fontSize: '0.8rem', fontWeight: 600}}>Descripción</label><textarea className="full-width" style={{padding: '10px', border: '1px solid #ccc', borderRadius:'4px'}} required value={formData.description} onChange={e=>setFormData({...formData, description: e.target.value})}></textarea></div>
-                                <div><label style={{fontSize: '0.8rem', fontWeight: 600}}>URL de Imagen (Opcional)</label><input type="text" className="full-width" style={{padding: '10px', border: '1px solid #ccc', borderRadius:'4px'}} value={formData.image_path} onChange={e=>setFormData({...formData, image_path: e.target.value})} placeholder="https://..." /></div>
-                                <button type="submit" className="btn btn-primary">SUBIR PRODUCTO</button>
+                                <div>
+                                    <label style={{fontSize: '0.8rem', fontWeight: 600}}>URL de Imagen</label>
+                                    <input type="text" className="full-width" style={{padding: '10px', border: fileError ? '1px solid red' : '1px solid #ccc', borderRadius:'4px'}} 
+                                        value={formData.image_path} onChange={handleFileChange} placeholder="https://..." />
+                                    {fileError && <small style={{color: 'red', display: 'block', marginTop: '4px'}}>{fileError}</small>}
+                                </div>
+                                <div style={{display: 'flex', gap: '10px'}}>
+                                    <button type="submit" className="btn btn-primary" style={{flex: 1}}>{editingProduct ? 'GUARDAR CAMBIOS' : 'SUBIR PRODUCTO'}</button>
+                                    {editingProduct && <button type="button" className="btn btn-outline" onClick={()=>{setEditingProduct(null); setFormData({name:'', price:'', origin:'', description:'', stock:100, image_path:''})}}>CANCELAR</button>}
+                                </div>
                             </form>
                         </div>
 
-                        {/* Products List */}
+                        {/* List */}
                         <div>
-                            <h3 style={{marginBottom: '20px'}}>Lotes Activos ({myProducts.length})</h3>
+                            <div style={{display: 'flex', gap: '20px', marginBottom: '20px', borderBottom: '1px solid #eee'}}>
+                                <button className={`btn-text ${productTab === 'active' ? 'active-tab' : ''}`} style={{paddingBottom: '10px', fontWeight: 600, color: productTab === 'active' ? '#3E2723' : '#999'}} onClick={()=>setProductTab('active')}>Activos</button>
+                                <button className={`btn-text ${productTab === 'inactive' ? 'active-tab' : ''}`} style={{paddingBottom: '10px', fontWeight: 600, color: productTab === 'inactive' ? '#3E2723' : '#999'}} onClick={()=>setProductTab('inactive')}>Inactivos / Pausados</button>
+                            </div>
                             <div className="admin-table-container">
                                 <table className="admin-table">
-                                    <thead><tr><th>Nombre</th><th>Origen</th><th>Precio</th><th>Stock</th><th>Acción</th></tr></thead>
+                                    <thead><tr><th>Nombre</th><th>Precio</th><th>Stock</th><th>Acciones</th></tr></thead>
                                     <tbody>
-                                        {myProducts.length === 0 ? <tr><td colSpan="5" style={{textAlign: 'center'}}>No has publicado productos</td></tr> :
-                                        myProducts.map(p => (
+                                        {filteredProducts.length === 0 ? <tr><td colSpan="4" style={{textAlign: 'center', padding: '40px'}}>No hay productos en esta categoría</td></tr> :
+                                        filteredProducts.map(p => (
                                             <tr key={p.id}>
-                                                <td><strong style={{fontFamily: 'var(--font-serif)'}}>{p.name}</strong></td>
-                                                <td>{p.origin}</td><td>${p.price}</td><td>{p.stock} lbs</td>
-                                                <td><button className="btn btn-outline" style={{padding:'4px 8px', fontSize:'0.7rem', color: '#D32F2F', borderColor: '#D32F2F'}} onClick={() => handleDelete(p.id)}>BORRAR</button></td>
+                                                <td><strong className="serif">{p.name}</strong></td>
+                                                <td>${p.price}</td><td>{p.stock}</td>
+                                                <td style={{display: 'flex', gap: '8px'}}>
+                                                    <button title="Editar" className="btn-icon" onClick={()=>handleEdit(p)}>✏️</button>
+                                                    <button title={p.is_active ? "Inactivar" : "Activar"} className="btn-icon" onClick={()=>handleToggleStatus(p)}>{p.is_active ? '⏸️' : '▶️'}</button>
+                                                    <button title="Eliminar" className="btn-icon" style={{color: 'red'}} onClick={()=>handleDelete(p.id)}>🗑️</button>
+                                                </td>
                                             </tr>
                                         ))}
                                     </tbody>
@@ -220,11 +322,47 @@ const ProducerDashboard = ({ user, showToast, refreshGlobalProducts }) => {
                             </div>
                         </div>
                     </div>
-                ) : (
-                    <div>
-                        <div className="card" style={{background: '#fff', padding: '40px', borderRadius: '12px', boxShadow: 'var(--shadow-soft)', textAlign: 'center'}}>
-                            <h3 style={{marginBottom: '16px'}}>No hay pedidos pendientes</h3>
-                            <p style={{color: 'var(--text-secondary)'}}>Todavía no tienes pedidos registrados en la plataforma. ¡Continúa promocionando tus lotes de café!</p>
+                )}
+
+                {view === 'orders' && (
+                    <div className="card" style={{background: '#fff', padding: '40px', borderRadius: '12px', textAlign: 'center'}}>
+                        <h3>No hay pedidos entrantes</h3>
+                        <p style={{color: '#666'}}>Los pedidos que realicen los clientes aparecerán aquí.</p>
+                    </div>
+                )}
+
+                {view === 'profile' && (
+                    <div style={{maxWidth: '800px'}}>
+                        <div className="card" style={{background: '#fff', padding: '32px', borderRadius: '12px', boxShadow: 'var(--shadow-soft)'}}>
+                            <h3 style={{marginBottom: '24px'}}>Información de Productor</h3>
+                            <form onSubmit={handleSaveProfile} style={{display: 'flex', flexDirection: 'column', gap: '24px'}}>
+                                <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px'}}>
+                                    <div className="input-group">
+                                        <label style={{fontSize: '0.85rem', fontWeight: 600}}>Nombre Productor</label>
+                                        <input type="text" className="full-width" style={{marginTop: '8px', padding: '12px', border: '1px solid #ddd', borderRadius: '6px'}} 
+                                            value={profileForm.full_name} onChange={e => setProfileForm({...profileForm, full_name: e.target.value})} required />
+                                    </div>
+                                    <div className="input-group">
+                                        <label style={{fontSize: '0.85rem', fontWeight: 600}}>Nombre Finca</label>
+                                        <input type="text" className="full-width" style={{marginTop: '8px', padding: '12px', border: '1px solid #ddd', borderRadius: '6px'}} 
+                                            value={profileForm.farm_name} onChange={e => setProfileForm({...profileForm, farm_name: e.target.value})} required />
+                                    </div>
+                                </div>
+                                <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px'}}>
+                                    <div className="input-group">
+                                        <label style={{fontSize: '0.85rem', fontWeight: 600}}>Región</label>
+                                        <input type="text" className="full-width" style={{marginTop: '8px', padding: '12px', border: '1px solid #ddd', borderRadius: '6px'}} 
+                                            value={profileForm.region} onChange={e => setProfileForm({...profileForm, region: e.target.value})} required />
+                                    </div>
+                                    <div className="input-group">
+                                        <label style={{fontSize: '0.85rem', fontWeight: 600}}>WhatsApp</label>
+                                        <input type="text" className="full-width" style={{marginTop: '8px', padding: '12px', border: '1px solid #ddd', borderRadius: '6px'}} 
+                                            value={profileForm.whatsapp} onChange={e => setProfileForm({...profileForm, whatsapp: e.target.value})} required />
+                                    </div>
+                                </div>
+                                <div className="input-group"><label style={{fontSize: '0.85rem', fontWeight: 600}}>Bio</label><textarea className="full-width" style={{marginTop: '8px', padding: '12px', border: '1px solid #ddd', borderRadius: '6px', minHeight: '120px'}} value={profileForm.description} onChange={e => setProfileForm({...profileForm, description: e.target.value})} required></textarea></div>
+                                <div style={{display: 'flex', justifyContent: 'flex-end'}}><button type="submit" className="btn btn-primary" style={{padding: '12px 32px'}}>GUARDAR CAMBIOS</button></div>
+                            </form>
                         </div>
                     </div>
                 )}
@@ -387,6 +525,15 @@ function AppContent() {
         try { const data = await getProductsFS(); setProducts(data); } catch (e) { console.error(e); }
     };
 
+    const refreshProfile = async () => {
+        if (auth.currentUser) {
+            try {
+                const profile = await getUserProfile(auth.currentUser.uid);
+                setUser(prev => ({...prev, ...profile}));
+            } catch (e) { console.error("Error refreshing profile:", e); }
+        }
+    };
+
     useEffect(() => {
         refreshGlobalProducts();
     }, []);
@@ -483,6 +630,27 @@ function AppContent() {
         } catch (err) { showToast("Error", "error"); }
     };
 
+    const updateCartItemQuantity = (productId, delta) => {
+        setCartData(prev => {
+            const newItems = prev.items.map(item => {
+                if (item.product.id === productId) {
+                    return { ...item, quantity: Math.max(1, item.quantity + delta) };
+                }
+                return item;
+            });
+            const newTotal = newItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+            return { items: newItems, total: newTotal };
+        });
+    };
+
+    const removeFromCart = (productId) => {
+        setCartData(prev => {
+            const newItems = prev.items.filter(item => item.product.id !== productId);
+            const newTotal = newItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+            return { items: newItems, total: newTotal };
+        });
+    };
+
     if (loading) return <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', fontFamily: 'var(--font-serif)', color: 'var(--accent-green)'}}><h2>Cargando Patrimonio Cafetero...</h2></div>;
 
     return (
@@ -501,7 +669,7 @@ function AppContent() {
                 <Route path="/admin" element={role === 'ADMIN' ? <AdminDashboard token={token} showToast={showToast} /> : <Navigate to={user ? "/" : "/login"} />} />
                 
                 {/* Rutas exclusivas Productor */}
-                <Route path="/productor" element={role === 'PRODUCTOR' ? <ProducerDashboard user={user} showToast={showToast} refreshGlobalProducts={refreshGlobalProducts} /> : <Navigate to={user ? "/" : "/login"} />} />
+                <Route path="/productor" element={role === 'PRODUCTOR' ? <ProducerDashboard user={user} showToast={showToast} refreshGlobalProducts={refreshGlobalProducts} refreshProfile={refreshProfile} /> : <Navigate to={user ? "/" : "/login"} />} />
                 
                 {/* Flujos de Integración y Onboarding */}
                 <Route path="/registro-productor/:token" element={<ProducerRegistrationView showToast={showToast} />} />
@@ -533,10 +701,17 @@ function AppContent() {
                             <div key={idx} style={{display: 'flex', gap: '16px', marginBottom: '20px', alignItems: 'center', borderBottom: '1px solid #eee', paddingBottom: '16px'}}>
                                 <img src={getProductImage(item.product.id, item.product)} style={{width: '60px', height: '60px', borderRadius: '8px', objectFit: 'cover'}} alt="item" />
                                 <div style={{flex: 1}}>
-                                    <h4 className="serif" style={{margin: '0 0 4px 0'}}>{item.product.name}</h4>
-                                    <p style={{margin: 0, fontSize: '0.85rem', color: '#666'}}>Cant: {item.quantity}</p>
+                                    <h4 className="serif" style={{margin: '0 0 4px 0', fontSize: '0.95rem'}}>{item.product.name}</h4>
+                                    <div style={{display: 'flex', alignItems: 'center', gap: '10px', marginTop: '8px'}}>
+                                        <div className="cart-qty-mini">
+                                            <button onClick={() => updateCartItemQuantity(item.product.id, -1)}>-</button>
+                                            <span>{item.quantity}</span>
+                                            <button onClick={() => updateCartItemQuantity(item.product.id, 1)}>+</button>
+                                        </div>
+                                        <button className="btn-text" style={{color: '#999', fontSize: '0.7rem', fontWeight: 600}} onClick={() => removeFromCart(item.product.id)}>ELIMINAR</button>
+                                    </div>
                                 </div>
-                                <div style={{fontWeight: 'bold'}}>${(item.price * item.quantity).toFixed(2)}</div>
+                                <div style={{fontWeight: 'bold', fontSize: '0.9rem'}}>${(item.price * item.quantity).toFixed(2)}</div>
                             </div>
                         ))}
                     </div>
@@ -546,10 +721,13 @@ function AppContent() {
                             <span>${cartData.total.toFixed(2)}</span>
                         </div>
                         <button className="btn btn-primary full-width" disabled={cartData.items.length === 0} onClick={() => {
-                            showToast("Procesando pago... ¡Compra Exitosa!", "success");
-                            setCartData({items: [], total: 0});
-                            setCartOpen(false);
-                        }}>Realizar Pedido Seguro</button>
+                            showToast("✅ Pedido #" + Math.floor(Math.random()*90000+10000) + " creado con éxito. Redirigiendo a pago...", "success");
+                            setTimeout(() => {
+                                setCartData({items: [], total: 0});
+                                setCartOpen(false);
+                            }, 1500);
+                        }}>Confirmar y Comprar</button>
+                        <p style={{fontSize: '0.7rem', textAlign: 'center', color: '#999', marginTop: '12px'}}>IVA incluido. Envío calculado en el siguiente paso.</p>
                     </div>
                 </div>
             </div>

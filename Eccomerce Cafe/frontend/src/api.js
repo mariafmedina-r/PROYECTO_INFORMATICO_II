@@ -80,6 +80,16 @@ export async function deleteProductFS(productId) {
     return res.json();
 }
 
+export async function updateProductFS(productId, productData) {
+    const res = await fetch(`${API_URL}/users/admin/products-fs/${productId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(productData)
+    });
+    if (!res.ok) throw new Error("Error updating product via backend");
+    return res.json();
+}
+
 // --- Backend SQL APIs (Orders & Cart Placeholder) ---
 
 export async function getCart(userId, token) {

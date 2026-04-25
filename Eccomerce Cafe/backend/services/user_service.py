@@ -95,3 +95,9 @@ def get_all_products_fs():
     db_fs = firestore.client()
     docs = db_fs.collection("products").get()
     return [{"id": d.id, **d.to_dict()} for d in docs]
+
+def update_product_fs(product_id: str, data: dict):
+    db_fs = firestore.client()
+    doc_ref = db_fs.collection("products").document(product_id)
+    doc_ref.set(data, merge=True)
+    return {"status": "success", "id": product_id}

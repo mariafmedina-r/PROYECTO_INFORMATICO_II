@@ -106,6 +106,13 @@ def delete_product_bypassing_rules(product_id: str):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+@router.patch("/admin/products-fs/{product_id}")
+def update_product_bypassing_rules(product_id: str, data: dict):
+    try:
+        return user_service.update_product_fs(product_id, data)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 @router.get("/{email}", response_model=UserResponse)
 def read_user(email: str, db: Session = Depends(get_db)):
     try:
