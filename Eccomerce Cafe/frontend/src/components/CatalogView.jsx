@@ -80,7 +80,7 @@ const CatalogView = ({ products, onSelectProduct, getProductImage }) => {
                                     <div key={p.id} className="product-card" onClick={() => onSelectProduct(p.id)}>
                                         <div className="product-image-container">
                                             <img src={getProductImage(p.id, p)} alt={p.name} />
-                                            <div className="product-badge">Región Exclusiva</div>
+                                            {p.is_exclusive && <div className="product-badge">Región Exclusiva</div>}
                                         </div>
                                         <div className="product-header-row">
                                             <h3 className="serif">{p.name}</h3>

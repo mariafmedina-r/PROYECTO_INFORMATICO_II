@@ -34,18 +34,12 @@ const AdminDashboard = ({ token, showToast }) => {
     const [view, setView] = useState('overview');
     const [allUsers, setAllUsers] = useState([]);
     const [allProducts, setAllProducts] = useState([]);
-    const [inviteLink, setInviteLink] = useState('');
 
     const loadData = async () => {
         try {
             const u = await getAllUsersFS(); setAllUsers(u);
             const p = await getProductsFS(); setAllProducts(p);
-        } catch (e) { 
-            console.error(e);
-            if (e.message.includes("permission")) {
-                showToast("Error: Revisa las Reglas de Firestore en tu consola", "error");
-            }
-        }
+        } catch (e) { console.error(e); }
     };
 
     useEffect(() => { loadData(); }, [token]);
@@ -55,7 +49,7 @@ const AdminDashboard = ({ token, showToast }) => {
             await toggleUserStatusFS(uid, status);
             showToast(status ? "Usuario suspendido" : "Usuario activado", "success");
             loadData();
-        } catch (e) { showToast("Error al cambiar estado", "error"); }
+        } catch (e) { showToast("Error", "error"); }
     };
 
     const handleDeleteProduct = async (id) => {
@@ -68,39 +62,55 @@ const AdminDashboard = ({ token, showToast }) => {
 
     return (
         <div className="admin-layout">
-            <aside className="admin-sidebar">
-                <h2>Admin Portal</h2>
+            <aside className="admin-sidebar" style={{background: '#263238'}}>
+                <div style={{padding: '30px 20px', borderBottom: '1px solid rgba(255,255,255,0.1)', marginBottom: '20px'}}>
+                    <h2 style={{fontSize: '1.2rem', color: '#fff', letterSpacing: '1px'}}>CONTROL CENTRAL</h2>
+                </div>
                 <nav className="admin-nav">
-                    <div className={`admin-nav-item ${view === 'overview' ? 'active' : ''}`} onClick={() => setView('overview')}>📊 Resumen</div>
+                    <div className={`admin-nav-item ${view === 'overview' ? 'active' : ''}`} onClick={() => setView('overview')}>📊 Dashboard</div>
                     <div className={`admin-nav-item ${view === 'users' ? 'active' : ''}`} onClick={() => setView('users')}>👥 Usuarios</div>
-                    <div className={`admin-nav-item ${view === 'products' ? 'active' : ''}`} onClick={() => setView('products')}>☕ Todos los Productos</div>
+                    <div className={`admin-nav-item ${view === 'products' ? 'active' : ''}`} onClick={() => setView('products')}>🛒 Inventario Global</div>
                 </nav>
             </aside>
-            <main className="admin-content">
+            <main className="admin-content" style={{background: '#F5F7F8'}}>
+                <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '40px'}}>
+                    <h1 className="serif">{view === 'overview' ? 'Resumen Ejecutivo' : view === 'users' ? 'Gestión de Usuarios' : 'Inventario Maestro'}</h1>
+                    <button className="btn btn-outline" onClick={loadData} style={{fontSize: '0.8rem'}}>🔄 ACTUALIZAR DATOS</button>
+                </div>
+                
                 {view === 'overview' && (
-                    <>
-                        <h1 className="serif">Dashboard General</h1>
-                        <div className="stats-grid-admin">
-                            <div className="stat-card"><h4>Usuarios</h4><div className="stat-val">{allUsers.length}</div></div>
-                            <div className="stat-card"><h4>Productos</h4><div className="stat-val">{allProducts.length}</div></div>
-                            <div className="stat-card"><h4>Estado</h4><div className="stat-val">Online</div></div>
+                    <div style={{display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '24px'}}>
+                        <div className="stat-card" style={{borderLeft: '5px solid #607D8B', background: '#fff'}}>
+                            <span style={{fontSize: '0.7rem', color: '#666', fontWeight: 700}}>USUARIOS TOTALES</span>
+                            <div className="stat-val" style={{color: '#263238'}}>{allUsers.length}</div>
                         </div>
-                    </>
+                        <div className="stat-card" style={{borderLeft: '5px solid #4CAF50', background: '#fff'}}>
+                            <span style={{fontSize: '0.7rem', color: '#666', fontWeight: 700}}>LOTES DE CAFÉ</span>
+                            <div className="stat-val" style={{color: '#263238'}}>{allProducts.length}</div>
+                        </div>
+                        <div className="stat-card" style={{borderLeft: '5px solid #FF9800', background: '#fff'}}>
+                            <span style={{fontSize: '0.7rem', color: '#666', fontWeight: 700}}>INFRAESTRUCTURA</span>
+                            <div className="stat-val" style={{fontSize: '1.2rem', color: '#4CAF50', paddingTop: '10px'}}>ESTABLE</div>
+                        </div>
+                    </div>
                 )}
+
                 {view === 'users' && (
-                    <div className="admin-table-container">
-                        <h3>Directorio de Usuarios</h3>
+                    <div className="card shadow-soft" style={{background: '#fff', borderRadius: '16px', overflow: 'hidden'}}>
                         <table className="admin-table">
-                            <thead><tr><th>Email</th><th>Rol</th><th>Estado</th><th>Acciones</th></tr></thead>
+                            <thead style={{background: '#f8f9fa'}}>
+                                <tr><th>USUARIO / EMAIL</th><th>ROL</th><th>WHATSAPP</th><th>ESTADO</th><th>ACCIONES</th></tr>
+                            </thead>
                             <tbody>
                                 {allUsers.map(u => (
                                     <tr key={u.id}>
-                                        <td>{u.email}</td>
+                                        <td><strong>{u.email}</strong><br/><small style={{color: '#999'}}>{u.id}</small></td>
                                         <td><span className={`role-tag role-${u.role?.toLowerCase()}`}>{u.role}</span></td>
+                                        <td>{u.whatsapp ? <a href={`https://wa.me/${u.whatsapp}`} target="_blank" rel="noreferrer" style={{color: '#25D366', fontWeight: 600}}>💬 {u.whatsapp}</a> : '—'}</td>
                                         <td><span className={`status-tag ${u.is_active ? 'status-active' : 'status-pending'}`}>{u.is_active ? 'Activo' : 'Suspendido'}</span></td>
                                         <td>
-                                            <button className={`btn ${u.is_active ? 'btn-outline-danger' : 'btn-primary'}`} style={{fontSize:'0.7rem', padding:'4px 8px'}} onClick={() => handleToggleUser(u.id, u.is_active)}>
-                                                {u.is_active ? 'SUSPENDER' : 'ACTIVAR'}
+                                            <button className={`btn ${u.is_active ? 'btn-outline-danger' : 'btn-primary'}`} style={{padding: '6px 12px', fontSize: '0.75rem'}} onClick={() => handleToggleUser(u.id, u.is_active)}>
+                                                {u.is_active ? 'DESACTIVAR' : 'ACTIVAR'}
                                             </button>
                                         </td>
                                     </tr>
@@ -109,17 +119,21 @@ const AdminDashboard = ({ token, showToast }) => {
                         </table>
                     </div>
                 )}
+                
                 {view === 'products' && (
-                    <div className="admin-table-container">
-                        <h3>Inventario Global</h3>
+                    <div className="card shadow-soft" style={{background: '#fff', borderRadius: '16px', overflow: 'hidden'}}>
                         <table className="admin-table">
-                            <thead><tr><th>Producto</th><th>Productor (ID)</th><th>Precio</th><th>Stock</th><th>Acción</th></tr></thead>
+                            <thead style={{background: '#f8f9fa'}}>
+                                <tr><th>LOTE</th><th>PRODUCTOR</th><th>PRECIO</th><th>STOCK</th><th>ACCIONES</th></tr>
+                            </thead>
                             <tbody>
                                 {allProducts.map(p => (
                                     <tr key={p.id}>
-                                        <td>{p.name}</td><td><small>{p.producer_id}</small></td>
-                                        <td>${p.price}</td><td>{p.stock}</td>
-                                        <td><button className="btn btn-outline" style={{color:'red', borderColor:'red', fontSize:'0.7rem'}} onClick={() => handleDeleteProduct(p.id)}>ELIMINAR</button></td>
+                                        <td><strong>{p.name}</strong></td>
+                                        <td><small>{p.farm_name || p.producer_id}</small></td>
+                                        <td>${p.price}</td>
+                                        <td>{p.stock}</td>
+                                        <td><button className="btn-text" style={{color: 'red', fontWeight: 700}} onClick={() => handleDeleteProduct(p.id)}>ELIMINAR</button></td>
                                     </tr>
                                 ))}
                             </tbody>
@@ -131,11 +145,14 @@ const AdminDashboard = ({ token, showToast }) => {
     );
 };
 
-const ProducerDashboard = ({ user, showToast, refreshGlobalProducts, refreshProfile }) => {
+const ProducerDashboard = ({ user, showToast, refreshGlobalProducts, refreshProfile, role }) => {
     const [view, setView] = useState('products');
     const [productTab, setProductTab] = useState('active'); // active | inactive
     const [myProducts, setMyProducts] = useState([]);
-    const [formData, setFormData] = useState({ name: '', price: '', origin: '', description: '', stock: 100, image_path: '' });
+    const [formData, setFormData] = useState({ 
+        name: '', price: '', origin: '', description: '', stock: 100, image_path: '',
+        sensory_notes: '', altitude: '', process: 'Lavado', is_exclusive: false
+    });
     const [editingProduct, setEditingProduct] = useState(null);
     const [fileError, setFileError] = useState('');
     
@@ -176,67 +193,46 @@ const ProducerDashboard = ({ user, showToast, refreshGlobalProducts, refreshProf
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (fileError) {
-            showToast("Error: " + fileError, "error");
-            return;
-        }
-
         try {
             const payload = {
-                name: formData.name,
+                ...formData,
                 price: parseFloat(formData.price),
-                origin: formData.origin,
-                description: formData.description,
                 stock: parseInt(formData.stock),
                 is_active: editingProduct ? editingProduct.is_active : true,
-                image_path: formData.image_path || null
+                farm_name: user.farm_name
             };
 
             if (editingProduct) {
                 await updateProductFS(editingProduct.id, payload);
-                showToast("Producto actualizado con éxito", "success");
+                showToast("Producto actualizado", "success");
             } else {
                 await createProductFS(payload, user.uid);
-                showToast("Producto subido exitosamente", "success");
+                showToast("Lote publicado exitosamente", "success");
             }
 
-            setFormData({ name: '', price: '', origin: '', description: '', stock: 100, image_path: '' });
+            setFormData({ 
+                name: '', price: '', origin: '', description: '', stock: 100, image_path: '',
+                sensory_notes: '', altitude: '', process: 'Lavado', is_exclusive: false
+            });
             setEditingProduct(null);
             loadMyProducts();
             if (refreshGlobalProducts) refreshGlobalProducts();
-        } catch (e) {
-            showToast("Error al procesar el producto", "error");
-        }
+        } catch (e) { showToast("Error al procesar el producto", "error"); }
     };
 
-    const handleEdit = (product) => {
-        setEditingProduct(product);
+    const handleEdit = (p) => {
+        setEditingProduct(p);
         setFormData({
-            name: product.name,
-            price: product.price,
-            origin: product.origin,
-            description: product.description,
-            stock: product.stock,
-            image_path: product.image_path || ''
+            name: p.name || '', price: p.price || '', origin: p.origin || '', description: p.description || '', stock: p.stock || 100, image_path: p.image_path || '', sensory_notes: p.sensory_notes || '', altitude: p.altitude || '', process: p.process || 'Lavado', is_exclusive: p.is_exclusive || false
         });
-        showToast("Editando: " + product.name, "info");
+        showToast("Editando: " + p.name, "info");
     };
 
     const handleToggleStatus = async (product) => {
         try {
             const newStatus = !product.is_active;
             await updateProductFS(product.id, { is_active: newStatus });
-            showToast(newStatus ? "Producto Activado" : "Producto Inactivado", "success");
-            loadMyProducts();
-            if (refreshGlobalProducts) refreshGlobalProducts();
-        } catch (e) { showToast("Error", "error"); }
-    };
-    
-    const handleDelete = async (id) => {
-        if (!window.confirm("¿Seguro que desea eliminar permanentemente este lote?")) return;
-        try {
-            await deleteProductFS(id);
-            showToast("Producto eliminado", "success");
+            showToast(newStatus ? "Lote Activado" : "Lote Pausado", "success");
             loadMyProducts();
             if (refreshGlobalProducts) refreshGlobalProducts();
         } catch (e) { showToast("Error", "error"); }
@@ -246,75 +242,89 @@ const ProducerDashboard = ({ user, showToast, refreshGlobalProducts, refreshProf
         e.preventDefault();
         try {
             await saveUserProfile(user.uid, profileForm);
-            showToast("Perfil comercial actualizado con éxito", "success");
+            showToast("Perfil actualizado", "success");
             if (refreshProfile) await refreshProfile();
-        } catch (e) { showToast("Error al guardar cambios", "error"); }
+        } catch (e) { showToast("Error", "error"); }
     };
 
-    const filteredProducts = myProducts.filter(p => {
-        if (productTab === 'active') return p.is_active !== false;
-        return p.is_active === false;
-    });
+    const filteredProducts = myProducts.filter(p => productTab === 'active' ? p.is_active !== false : p.is_active === false);
 
     return (
         <div className="admin-layout">
-            <aside className="admin-sidebar" style={{background: '#3E2723'}}>
-                <h2>Mi Finca</h2>
+            <aside className="admin-sidebar" style={{background: '#3d2b1f'}}>
+                <div style={{padding: '30px 20px', textAlign: 'center', borderBottom: '1px solid rgba(255,255,255,0.1)', marginBottom: '20px'}}>
+                    <div style={{width: '60px', height: '60px', borderRadius: '50%', background: 'rgba(255,255,255,0.1)', margin: '0 auto 15px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem'}}>🏞️</div>
+                    <h3 style={{color: '#fff', fontSize: '0.9rem', textTransform: 'uppercase'}}>{user?.farm_name || 'Mi Finca'}</h3>
+                </div>
                 <nav className="admin-nav">
-                    <div className={`admin-nav-item ${view === 'products' ? 'active' : ''}`} onClick={() => setView('products')}>☕ Mis Productos</div>
+                    <div className={`admin-nav-item ${view === 'products' ? 'active' : ''}`} onClick={() => setView('products')}>☕ Mis Cosechas</div>
                     <div className={`admin-nav-item ${view === 'orders' ? 'active' : ''}`} onClick={() => setView('orders')}>📦 Pedidos Entrantes</div>
                     <div className={`admin-nav-item ${view === 'profile' ? 'active' : ''}`} onClick={() => setView('profile')}>👤 Mi Perfil Comercial</div>
                 </nav>
             </aside>
-            <main className="admin-content">
+            <main className="admin-content" style={{background: '#FAF9F6'}}>
                 <h1 className="serif" style={{marginBottom: '32px'}}>
-                    {view === 'products' && 'Gestión de Cosecha'}
-                    {view === 'orders' && 'Pedidos Recibidos'}
-                    {view === 'profile' && 'Perfil Comercial'}
+                    {view === 'products' ? 'Gestión de Cosecha' : view === 'orders' ? 'Pedidos Recibidos' : 'Perfil Comercial'}
                 </h1>
                 
                 {view === 'products' && (
-                    <div style={{display: 'grid', gridTemplateColumns: 'minmax(320px, 1fr) 2fr', gap: '40px', alignItems: 'start'}}>
-                        {/* Form */}
-                        <div className="card" style={{background: '#fff', padding: '24px', borderRadius: '12px', boxShadow: 'var(--shadow-soft)'}}>
-                            <h3 style={{marginBottom: '20px'}}>{editingProduct ? 'Editar Producto' : 'Publicar Nuevo Lote'}</h3>
+                    <div style={{display: 'grid', gridTemplateColumns: 'minmax(350px, 1.2fr) 2fr', gap: '30px', alignItems: 'start'}}>
+                        <div className="card shadow-soft" style={{background: '#fff', padding: '24px', borderRadius: '12px'}}>
+                            <h3 style={{marginBottom: '20px'}}>{editingProduct ? '✏️ Editar Lote' : '➕ Publicar Nuevo Lote'}</h3>
                             <form onSubmit={handleSubmit} style={{display: 'flex', flexDirection: 'column', gap: '16px'}}>
-                                <div><label style={{fontSize: '0.8rem', fontWeight: 600}}>Nombre del Café</label><input type="text" className="full-width" style={{padding: '10px', border: '1px solid #ccc', borderRadius:'4px'}} required value={formData.name} onChange={e=>setFormData({...formData, name: e.target.value})} /></div>
-                                <div><label style={{fontSize: '0.8rem', fontWeight: 600}}>Precio (USD)</label><input type="number" step="0.01" className="full-width" style={{padding: '10px', border: '1px solid #ccc', borderRadius:'4px'}} required value={formData.price} onChange={e=>setFormData({...formData, price: e.target.value})} /></div>
-                                <div><label style={{fontSize: '0.8rem', fontWeight: 600}}>Origen</label><input type="text" className="full-width" style={{padding: '10px', border: '1px solid #ccc', borderRadius:'4px'}} required value={formData.origin} onChange={e=>setFormData({...formData, origin: e.target.value})} /></div>
-                                <div><label style={{fontSize: '0.8rem', fontWeight: 600}}>Descripción</label><textarea className="full-width" style={{padding: '10px', border: '1px solid #ccc', borderRadius:'4px'}} required value={formData.description} onChange={e=>setFormData({...formData, description: e.target.value})}></textarea></div>
-                                <div>
-                                    <label style={{fontSize: '0.8rem', fontWeight: 600}}>URL de Imagen</label>
-                                    <input type="text" className="full-width" style={{padding: '10px', border: fileError ? '1px solid red' : '1px solid #ccc', borderRadius:'4px'}} 
-                                        value={formData.image_path} onChange={handleFileChange} placeholder="https://..." />
-                                    {fileError && <small style={{color: 'red', display: 'block', marginTop: '4px'}}>{fileError}</small>}
+                                <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:'12px'}}>
+                                    <div><label style={{fontSize: '0.75rem', fontWeight: 600}}>Nombre del Café</label><input type="text" className="full-width" style={{padding: '10px', border: '1px solid #eee', borderRadius:'4px'}} required value={formData.name} onChange={e=>setFormData({...formData, name: e.target.value})} /></div>
+                                    <div><label style={{fontSize: '0.75rem', fontWeight: 600}}>Precio (USD)</label><input type="number" step="0.01" className="full-width" style={{padding: '10px', border: '1px solid #eee', borderRadius:'4px'}} required value={formData.price} onChange={e=>setFormData({...formData, price: e.target.value})} /></div>
+                                </div>
+                                <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:'12px'}}>
+                                    <div><label style={{fontSize: '0.75rem', fontWeight: 600}}>Región/Origen</label><input type="text" className="full-width" style={{padding: '10px', border: '1px solid #eee', borderRadius:'4px'}} required value={formData.origin} onChange={e=>setFormData({...formData, origin: e.target.value})} /></div>
+                                    <div><label style={{fontSize: '0.75rem', fontWeight: 600}}>Stock (Unidades)</label><input type="number" className="full-width" style={{padding: '10px', border: '1px solid #eee', borderRadius:'4px'}} required value={formData.stock} onChange={e=>setFormData({...formData, stock: e.target.value})} /></div>
+                                </div>
+                                <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:'12px'}}>
+                                    <div><label style={{fontSize: '0.75rem', fontWeight: 600}}>Altitud (msnm)</label><input type="text" className="full-width" style={{padding: '10px', border: '1px solid #eee', borderRadius:'4px'}} placeholder="Ej: 1850" value={formData.altitude} onChange={e=>setFormData({...formData, altitude: e.target.value})} /></div>
+                                    <div><label style={{fontSize: '0.75rem', fontWeight: 600}}>Proceso</label>
+                                        <select className="full-width" style={{padding: '10px', border: '1px solid #eee', borderRadius:'4px'}} value={formData.process} onChange={e=>setFormData({...formData, process: e.target.value})}>
+                                            <option value="Lavado">Lavado</option>
+                                            <option value="Natural">Natural</option>
+                                            <option value="Honey">Honey</option>
+                                            <option value="Anaeróbico">Anaeróbico</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div><label style={{fontSize: '0.75rem', fontWeight: 600}}>Notas Sensoriales</label><input type="text" className="full-width" style={{padding: '10px', border: '1px solid #eee', borderRadius:'4px'}} placeholder="Ej: Cacao, Cítrico, Dulce" value={formData.sensory_notes} onChange={e=>setFormData({...formData, sensory_notes: e.target.value})} /></div>
+                                <div><label style={{fontSize: '0.75rem', fontWeight: 600}}>Descripción</label><textarea className="full-width" style={{padding: '10px', border: '1px solid #eee', borderRadius:'4px', minHeight: '80px'}} required value={formData.description} onChange={e=>setFormData({...formData, description: e.target.value})}></textarea></div>
+                                <div style={{display:'flex', alignItems:'center', gap:'10px'}}>
+                                    <input type="checkbox" id="exclusive" checked={formData.is_exclusive} onChange={e=>setFormData({...formData, is_exclusive: e.target.checked})} />
+                                    <label htmlFor="exclusive" style={{fontSize: '0.75rem', cursor: 'pointer'}}>Región Exclusiva 🌟</label>
                                 </div>
                                 <div style={{display: 'flex', gap: '10px'}}>
-                                    <button type="submit" className="btn btn-primary" style={{flex: 1}}>{editingProduct ? 'GUARDAR CAMBIOS' : 'SUBIR PRODUCTO'}</button>
-                                    {editingProduct && <button type="button" className="btn btn-outline" onClick={()=>{setEditingProduct(null); setFormData({name:'', price:'', origin:'', description:'', stock:100, image_path:''})}}>CANCELAR</button>}
+                                    <button type="submit" className="btn btn-primary" style={{flex: 1}}>{editingProduct ? 'GUARDAR CAMBIOS' : 'PUBLICAR LOTE'}</button>
+                                    {editingProduct && <button type="button" className="btn btn-outline" onClick={()=>setEditingProduct(null)}>CANCELAR</button>}
                                 </div>
                             </form>
                         </div>
-
-                        {/* List */}
                         <div>
                             <div style={{display: 'flex', gap: '20px', marginBottom: '20px', borderBottom: '1px solid #eee'}}>
-                                <button className={`btn-text ${productTab === 'active' ? 'active-tab' : ''}`} style={{paddingBottom: '10px', fontWeight: 600, color: productTab === 'active' ? '#3E2723' : '#999'}} onClick={()=>setProductTab('active')}>Activos</button>
-                                <button className={`btn-text ${productTab === 'inactive' ? 'active-tab' : ''}`} style={{paddingBottom: '10px', fontWeight: 600, color: productTab === 'inactive' ? '#3E2723' : '#999'}} onClick={()=>setProductTab('inactive')}>Inactivos / Pausados</button>
+                                <button className={`btn-text ${productTab === 'active' ? 'active-tab' : ''}`} style={{paddingBottom: '15px', fontWeight: 700, color: productTab === 'active' ? '#3d2b1f' : '#999'}} onClick={()=>setProductTab('active')}>EN VENTA</button>
+                                <button className={`btn-text ${productTab === 'inactive' ? 'active-tab' : ''}`} style={{paddingBottom: '15px', fontWeight: 700, color: productTab === 'inactive' ? '#3d2b1f' : '#999'}} onClick={()=>setProductTab('inactive')}>PAUSADOS</button>
                             </div>
-                            <div className="admin-table-container">
+                            <div className="admin-table-container shadow-soft" style={{background: '#fff', borderRadius: '12px', overflow: 'hidden'}}>
                                 <table className="admin-table">
-                                    <thead><tr><th>Nombre</th><th>Precio</th><th>Stock</th><th>Acciones</th></tr></thead>
+                                    <thead><tr><th>Lote</th><th>Características</th><th>Stock</th><th>Acciones</th></tr></thead>
                                     <tbody>
-                                        {filteredProducts.length === 0 ? <tr><td colSpan="4" style={{textAlign: 'center', padding: '40px'}}>No hay productos en esta categoría</td></tr> :
-                                        filteredProducts.map(p => (
+                                        {filteredProducts.map(p => (
                                             <tr key={p.id}>
-                                                <td><strong className="serif">{p.name}</strong></td>
-                                                <td>${p.price}</td><td>{p.stock}</td>
-                                                <td style={{display: 'flex', gap: '8px'}}>
-                                                    <button title="Editar" className="btn-icon" onClick={()=>handleEdit(p)}>✏️</button>
-                                                    <button title={p.is_active ? "Inactivar" : "Activar"} className="btn-icon" onClick={()=>handleToggleStatus(p)}>{p.is_active ? '⏸️' : '▶️'}</button>
-                                                    <button title="Eliminar" className="btn-icon" style={{color: 'red'}} onClick={()=>handleDelete(p.id)}>🗑️</button>
+                                                <td><strong className="serif">{p.name}</strong><br/><small style={{color:'var(--accent-green)', fontWeight:700}}>${p.price}</small></td>
+                                                <td>
+                                                    <div style={{fontSize:'0.7rem', color:'#666'}}>
+                                                        <div>{p.origin} • {p.process}</div>
+                                                        <div>{p.altitude} msnm</div>
+                                                    </div>
+                                                </td>
+                                                <td><span style={{fontWeight:700, color: p.stock < 10 ? 'red' : 'inherit'}}>{p.stock <= 0 ? 'AGOTADO' : `${p.stock} un.`}</span></td>
+                                                <td style={{display:'flex', gap:'8px'}}>
+                                                    <button className="btn-icon" onClick={()=>handleEdit(p)}>✏️</button>
+                                                    <button className="btn-icon" onClick={()=>handleToggleStatus(p)}>{p.is_active ? '⏸️' : '▶️'}</button>
                                                 </td>
                                             </tr>
                                         ))}
@@ -326,43 +336,22 @@ const ProducerDashboard = ({ user, showToast, refreshGlobalProducts, refreshProf
                 )}
 
                 {view === 'orders' && (
-                    <div className="card" style={{background: '#fff', padding: '40px', borderRadius: '12px', textAlign: 'center'}}>
+                    <div className="card shadow-soft" style={{background: '#fff', padding: '40px', borderRadius: '12px', textAlign: 'center'}}>
                         <h3>No hay pedidos entrantes</h3>
-                        <p style={{color: '#666'}}>Los pedidos que realicen los clientes aparecerán aquí.</p>
+                        <p style={{color: '#666'}}>Aquí aparecerán las ventas realizadas.</p>
                     </div>
                 )}
 
                 {view === 'profile' && (
                     <div style={{maxWidth: '800px'}}>
-                        <div className="card" style={{background: '#fff', padding: '32px', borderRadius: '12px', boxShadow: 'var(--shadow-soft)'}}>
-                            <h3 style={{marginBottom: '24px'}}>Información de Productor</h3>
-                            <form onSubmit={handleSaveProfile} style={{display: 'flex', flexDirection: 'column', gap: '24px'}}>
-                                <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px'}}>
-                                    <div className="input-group">
-                                        <label style={{fontSize: '0.85rem', fontWeight: 600}}>Nombre Productor</label>
-                                        <input type="text" className="full-width" style={{marginTop: '8px', padding: '12px', border: '1px solid #ddd', borderRadius: '6px'}} 
-                                            value={profileForm.full_name} onChange={e => setProfileForm({...profileForm, full_name: e.target.value})} required />
-                                    </div>
-                                    <div className="input-group">
-                                        <label style={{fontSize: '0.85rem', fontWeight: 600}}>Nombre Finca</label>
-                                        <input type="text" className="full-width" style={{marginTop: '8px', padding: '12px', border: '1px solid #ddd', borderRadius: '6px'}} 
-                                            value={profileForm.farm_name} onChange={e => setProfileForm({...profileForm, farm_name: e.target.value})} required />
-                                    </div>
+                        <div className="card shadow-soft" style={{background: '#fff', padding: '32px', borderRadius: '12px'}}>
+                            <h3 style={{marginBottom: '24px'}}>Mi Perfil Comercial</h3>
+                            <form onSubmit={handleSaveProfile} style={{display: 'flex', flexDirection: 'column', gap: '20px'}}>
+                                <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:'20px'}}>
+                                    <div><label style={{fontSize:'0.85rem', fontWeight:600}}>Productor</label><input type="text" className="full-width" style={{padding:'10px', border:'1px solid #ddd', borderRadius:'6px', marginTop:'5px'}} value={profileForm.full_name} onChange={e=>setProfileForm({...profileForm, full_name: e.target.value})} /></div>
+                                    <div><label style={{fontSize:'0.85rem', fontWeight:600}}>WhatsApp</label><input type="text" className="full-width" style={{padding:'10px', border:'1px solid #ddd', borderRadius:'6px', marginTop:'5px'}} value={profileForm.whatsapp} onChange={e=>setProfileForm({...profileForm, whatsapp: e.target.value})} /></div>
                                 </div>
-                                <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px'}}>
-                                    <div className="input-group">
-                                        <label style={{fontSize: '0.85rem', fontWeight: 600}}>Región</label>
-                                        <input type="text" className="full-width" style={{marginTop: '8px', padding: '12px', border: '1px solid #ddd', borderRadius: '6px'}} 
-                                            value={profileForm.region} onChange={e => setProfileForm({...profileForm, region: e.target.value})} required />
-                                    </div>
-                                    <div className="input-group">
-                                        <label style={{fontSize: '0.85rem', fontWeight: 600}}>WhatsApp</label>
-                                        <input type="text" className="full-width" style={{marginTop: '8px', padding: '12px', border: '1px solid #ddd', borderRadius: '6px'}} 
-                                            value={profileForm.whatsapp} onChange={e => setProfileForm({...profileForm, whatsapp: e.target.value})} required />
-                                    </div>
-                                </div>
-                                <div className="input-group"><label style={{fontSize: '0.85rem', fontWeight: 600}}>Bio</label><textarea className="full-width" style={{marginTop: '8px', padding: '12px', border: '1px solid #ddd', borderRadius: '6px', minHeight: '120px'}} value={profileForm.description} onChange={e => setProfileForm({...profileForm, description: e.target.value})} required></textarea></div>
-                                <div style={{display: 'flex', justifyContent: 'flex-end'}}><button type="submit" className="btn btn-primary" style={{padding: '12px 32px'}}>GUARDAR CAMBIOS</button></div>
+                                <div style={{display:'flex', justifyContent:'flex-end'}}><button type="submit" className="btn btn-primary">GUARDAR PERFIL</button></div>
                             </form>
                         </div>
                     </div>
@@ -441,7 +430,7 @@ const UpgradeToProducerView = ({ user, setRole, showToast }) => {
     );
 };
 
-const NavHeader = ({ role, user, cartCount, onLogout }) => (
+const NavHeader = ({ role, user, cartCount, onLogout, onOpenCart }) => (
     <header className="navbar">
         <Link to="/" className="logo-btn">The Artisanal Connection</Link>
         <nav className="nav-links">
@@ -453,8 +442,10 @@ const NavHeader = ({ role, user, cartCount, onLogout }) => (
             {role === 'COMPRADOR' && <Link to="/aplicar-productor" className="nav-item" style={{color: '#8D6E63', fontWeight: 600}}>🌱 Quiero vender</Link>}
         </nav>
         <div style={{display: 'flex', alignItems: 'center', gap: '24px'}}>
-            {role !== 'ADMIN' && (
-                <button className="cart-icon-btn">🛒<span className="cart-badge" style={{display: cartCount > 0 ? 'inline-block' : 'none'}}>{cartCount}</span></button>
+            {(role === 'COMPRADOR' || !user) && (
+                <button className="cart-icon-btn" onClick={onOpenCart}>
+                    🛒<span className="cart-badge" style={{display: cartCount > 0 ? 'inline-block' : 'none'}}>{cartCount}</span>
+                </button>
             )}
             <div style={{display: 'flex', alignItems: 'center', gap: '10px'}}>
                 {user ? (
@@ -468,10 +459,10 @@ const NavHeader = ({ role, user, cartCount, onLogout }) => (
     </header>
 );
 
-const ProductDetailWrapper = ({ products, onBack, onAddToCart, getProductImage }) => {
+const ProductDetailWrapper = ({ products, onBack, onAddToCart, getProductImage, role }) => {
     const { id } = useParams();
     const product = products.find(p => p.id === id || p.id === parseInt(id));
-    return <ProductDetailView product={product} onBack={onBack} onAddToCart={onAddToCart} getProductImage={getProductImage} />;
+    return <ProductDetailView product={product} onBack={onBack} onAddToCart={onAddToCart} getProductImage={getProductImage} role={role} />;
 };
 
 function AppContent() {
@@ -680,32 +671,25 @@ function AppContent() {
                 onPaymentError={handlePaymentError}
             />
             
-            {/* [SISTEMA DE RUTAS PROTEGIDAS Y ROLES] 
-                Se usa `Navigate` para expulsar o redirigir a un usuario si `role` no coincide.
-                - Si el usuario no ha iniciado sesión (!user), lo enviamos a /login.
-                - Si no tiene rol suficiente, lo mandamos al index (/). 
-            */}
             <Routes>
                 <Route path="/login" element={<LoginView onLogin={handleLogin} showToast={showToast} />} />
                 
-                {/* Rutas exclusivas Administración (Test Team: Usar admin@patrimoniocafetero.com) */}
+                {/* Rutas exclusivas Administración */}
                 <Route path="/admin" element={role === 'ADMIN' ? <AdminDashboard token={token} showToast={showToast} /> : <Navigate to={user ? "/" : "/login"} />} />
                 
                 {/* Rutas exclusivas Productor */}
                 <Route path="/productor" element={role === 'PRODUCTOR' ? <ProducerDashboard user={user} showToast={showToast} refreshGlobalProducts={refreshGlobalProducts} refreshProfile={refreshProfile} /> : <Navigate to={user ? "/" : "/login"} />} />
                 
-                {/* Flujos de Integración y Onboarding */}
                 <Route path="/registro-productor/:token" element={<ProducerRegistrationView showToast={showToast} />} />
                 <Route path="/aplicar-productor" element={role === 'COMPRADOR' ? <UpgradeToProducerView user={user} setRole={setRole} showToast={showToast} /> : <Navigate to="/login" />} />
                 
-                {/* Fallback de navegación -> Componente Principal + Catalogo */}
                 <Route path="*" element={
                     <>
-                        <NavHeader role={role} user={user} cartCount={cartData.items?.length || 0} onLogout={handleLogout} />
+                        <NavHeader role={role} user={user} cartCount={cartData.items?.length || 0} onLogout={handleLogout} onOpenCart={() => setCartOpen(true)} />
                         <main>
                             <Routes>
                                 <Route path="/" element={<CatalogView products={products} onSelectProduct={(id) => {setCurrentProductId(id); navigate(`/product/${id}`)}} getProductImage={getProductImage} />} />
-                                <Route path="/product/:id" element={<ProductDetailWrapper products={products} onBack={() => navigate('/')} onAddToCart={handleAddToCart} getProductImage={getProductImage} />} />
+                                <Route path="/product/:id" element={<ProductDetailWrapper products={products} onBack={() => navigate('/')} onAddToCart={handleAddToCart} getProductImage={getProductImage} role={role} />} />
                                 <Route path="/productores" element={<ProducersView />} />
                                 <Route path="/origen" element={<OriginView />} />
                                 <Route path="*" element={<Navigate to="/" />} />
