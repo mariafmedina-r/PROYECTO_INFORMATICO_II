@@ -38,7 +38,7 @@ El MVP busca validar la interacción básica entre productores y consumidores de
 - DevOps - Edward Rubio
 - QA + Documentación - María Fernanda Medina
 
-## 🔗 Repositorio
+## Repositorio
 
 Repositorio del proyecto:
 https://github.com/mariafmedina-r/PROYECTO_INFORMATICO_II
