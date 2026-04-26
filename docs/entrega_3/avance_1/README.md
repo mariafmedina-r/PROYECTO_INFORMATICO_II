@@ -21,7 +21,7 @@ Definir el Producto Mínimo Viable (MVP) del sistema, estableciendo:
 - Organización del equipo de trabajo
 - Metodología ágil utilizada
 
-El MVP busca validar la interacción básica entre productores y consumidores dentro del sistema, incluyendo registro, gestión de productos y proceso de compra. :contentReference[oaicite:2]{index=2}
+El MVP busca validar la interacción básica entre productores y consumidores dentro del sistema, incluyendo registro, gestión de productos y proceso de compra. 
 
 ## Herramientas utilizadas
 
@@ -29,7 +29,7 @@ El MVP busca validar la interacción básica entre productores y consumidores de
 - GitHub Projects (gestión de tareas)
 - Postman (pruebas de API)
 - Figma (diseño)
-- Vercel / Render (despliegue) :contentReference[oaicite:3]{index=3}
+- Vercel / Render (despliegue) 
 
 ## Equipo de trabajo
 
