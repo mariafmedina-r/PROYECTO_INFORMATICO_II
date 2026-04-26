@@ -53,7 +53,7 @@ Se ejecutaron pruebas funcionales y no funcionales para validar:
 - Total de pruebas: 33
 - Aprobadas: 20
 - Fallidas: 13
-- Pendientes: 12 :contentReference[oaicite:2]{index=2}
+- Pendientes: 12 
 
 ## Principales hallazgos
 
