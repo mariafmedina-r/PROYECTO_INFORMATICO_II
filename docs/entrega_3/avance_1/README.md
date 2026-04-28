@@ -34,8 +34,8 @@ El MVP busca validar la interacción básica entre productores y consumidores de
 ## Equipo de trabajo
 
 - Product Owner - Leonardo Martínez
-- Developer - Francisco Tabares
-- DevOps - Edward Rubio
+- Developer - Edward Rubio
+- DevOps - Francisco Tabares 
 - QA + Documentación - María Fernanda Medina
 
 ## Repositorio
