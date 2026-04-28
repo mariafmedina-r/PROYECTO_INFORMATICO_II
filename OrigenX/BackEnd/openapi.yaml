@@ -1,0 +1,1874 @@
+openapi: 3.0.3
+info:
+  title: The Artisanal Connection API
+  description: |
+    API REST para The Artisanal Connection. Conecta productores de cafe colombiano con consumidores finales.
+
+    ## Autenticacion
+    La mayoria de endpoints requieren un Firebase ID Token en el header:
+    `Authorization: Bearer <firebase_id_token>`
+
+    ## Roles
+    - **CONSUMER**: consumidor final que navega el catalogo y realiza pedidos.
+    - **PRODUCER**: productor de cafe que gestiona productos y ventas.
+    - **ADMIN**: administrador de la plataforma.
+
+    ## Formato de errores
+    Todos los errores siguen el formato uniforme:
+    ```json
+    {
+      "error": {
+        "code": "VALIDATION_ERROR",
+        "message": "Descripcion del error",
+        "fields": [{"field": "email", "message": "El correo ya esta registrado"}]
+      }
+    }
+    ```
+  version: 0.1.0
+  contact:
+    name: The Artisanal Connection
+servers:
+  - url: http://localhost:8000
+    description: Servidor de desarrollo local
+  - url: https://api.marketplacecafetero.com
+    description: Servidor de produccion
+tags:
+  - name: auth
+    description: Autenticacion y gestion de usuarios
+  - name: products
+    description: Gestion de productos del catalogo
+  - name: producers
+    description: Perfiles de productores
+  - name: cart
+    description: Carrito de compras (rol CONSUMER)
+  - name: orders
+    description: Pedidos y historial de compras
+  - name: payments
+    description: Simulador de pagos
+  - name: shipping
+    description: Opciones de envio
+  - name: sales
+    description: Panel de ventas del productor
+  - name: addresses
+    description: Direcciones de envio del consumidor
+  - name: health
+    description: Estado del servicio
+security:
+  - BearerAuth: []
+paths:
+  /:
+    get:
+      tags: [health]
+      summary: Health check
+      description: Verifica que el servidor esta activo.
+      operationId: healthCheck
+      security: []
+      responses:
+        "200":
+          description: Servidor activo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  service:
+                    type: string
+                    example: The Artisanal Connection API
+                  version:
+                    type: string
+                    example: 0.1.0
+  /health:
+    get:
+      tags: [health]
+      summary: Health check detallado
+      description: Health check con informacion del entorno.
+      operationId: healthCheckDetailed
+      security: []
+      responses:
+        "200":
+          description: Estado del servicio
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  environment:
+                    type: string
+                    example: development
+  /api/auth/register:
+    post:
+      tags: [auth]
+      summary: Registro de usuario
+      description: Crea una nueva cuenta de usuario. Retorna HTTP 409 si el correo ya existe. Requerimientos 1.1-1.5.
+      operationId: registerUser
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserCreate"
+            example:
+              name: Juan Perez
+              email: juan@example.com
+              password: miContrasena123
+              role: CONSUMER
+      responses:
+        "201":
+          description: Usuario registrado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RegisterResponse"
+              example:
+                message: Usuario registrado exitosamente.
+                data:
+                  id: abc123uid
+                  name: Juan Perez
+                  email: juan@example.com
+                  role: CONSUMER
+                  created_at: "2024-01-15T10:30:00"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "409":
+          $ref: "#/components/responses/ConflictError"
+        "500":
+          $ref: "#/components/responses/InternalError"
+  /api/auth/login:
+    post:
+      tags: [auth]
+      summary: Inicio de sesion
+      description: Verifica el Firebase ID Token del usuario. El cliente debe autenticarse con Firebase Client SDK y enviar el ID Token en el campo password. Retorna HTTP 429 tras 5 intentos fallidos. Requerimientos 2.1-2.2.
+      operationId: loginUser
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+            example:
+              email: juan@example.com
+              password: eyJhbGciOiJSUzI1NiJ9...
+      responses:
+        "200":
+          description: Sesion iniciada exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/InternalError"
+  /api/auth/forgot-password:
+    post:
+      tags: [auth]
+      summary: Solicitar recuperacion de contrasena
+      description: Envia un email de restablecimiento. Siempre retorna el mismo mensaje sin revelar si el correo existe. Requerimientos 2.4-2.5.
+      operationId: forgotPassword
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ForgotPasswordRequest"
+      responses:
+        "200":
+          description: Solicitud procesada
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Si el correo esta registrado, recibiras un enlace de restablecimiento en los proximos minutos.
+        "500":
+          $ref: "#/components/responses/InternalError"
+  /api/auth/reset-password:
+    post:
+      tags: [auth]
+      summary: Restablecer contrasena
+      description: Restablece la contrasena usando el token enviado por email. Requerimiento 2.4.
+      operationId: resetPassword
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ResetPasswordRequest"
+      responses:
+        "200":
+          description: Contrasena restablecida exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Contrasena restablecida exitosamente.
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "500":
+          $ref: "#/components/responses/InternalError"
+  /api/products:
+    get:
+      tags: [products]
+      summary: Catalogo de productos
+      description: Retorna el catalogo de productos activos con paginacion y filtros opcionales. Endpoint publico. Requerimientos 9.1-9.4, 10.1-10.5.
+      operationId: getCatalog
+      security: []
+      parameters:
+        - name: page
+          in: query
+          description: Numero de pagina (inicia en 1)
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: pageSize
+          in: query
+          description: Productos por pagina (maximo 20)
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 20
+            default: 20
+        - name: q
+          in: query
+          description: Busqueda por nombre o descripcion
+          schema:
+            type: string
+        - name: minPrice
+          in: query
+          description: Precio minimo
+          schema:
+            type: number
+            minimum: 0
+        - name: maxPrice
+          in: query
+          description: Precio maximo
+          schema:
+            type: number
+            minimum: 0
+        - name: region
+          in: query
+          description: Region del productor
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Catalogo de productos activos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedProductsResponse"
+        "500":
+          $ref: "#/components/responses/InternalError"
+    post:
+      tags: [products]
+      summary: Crear producto
+      description: Crea un nuevo producto asociado al Productor autenticado. Estado inicial inactive. Requerimientos 5.1-5.5.
+      operationId: createProduct
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProductCreate"
+            example:
+              name: Cafe Especial Huila
+              description: Cafe de origen unico del departamento del Huila, notas a chocolate y frutas rojas.
+              price: 45000
+      responses:
+        "201":
+          description: Producto creado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductDetailResponse"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "500":
+          $ref: "#/components/responses/InternalError"
+  /api/products/{product_id}:
+    get:
+      tags: [products]
+      summary: Detalle de producto
+      description: Retorna el detalle completo de un producto. Endpoint publico. Requerimientos 11.1-11.3.
+      operationId: getProductDetail
+      security: []
+      parameters:
+        - $ref: "#/components/parameters/ProductId"
+      responses:
+        "200":
+          description: Detalle del producto
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductDetailResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "500":
+          $ref: "#/components/responses/InternalError"
+    put:
+      tags: [products]
+      summary: Actualizar producto
+      description: Actualiza los campos de un producto. Solo el Productor dueno puede actualizarlo. Requerimientos 6.1-6.4.
+      operationId: updateProduct
+      parameters:
+        - $ref: "#/components/parameters/ProductId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProductUpdate"
+      responses:
+        "200":
+          description: Producto actualizado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductDetailResponse"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "500":
+          $ref: "#/components/responses/InternalError"
+  /api/products/{product_id}/status:
+    patch:
+      tags: [products]
+      summary: Activar o inactivar producto
+      description: Cambia el estado de un producto entre active e inactive. Solo el Productor dueno puede cambiar el estado. Requerimientos 8.1-8.4.
+      operationId: updateProductStatus
+      parameters:
+        - $ref: "#/components/parameters/ProductId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProductStatusUpdate"
+            example:
+              status: active
+      responses:
+        "200":
+          description: Estado del producto actualizado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductDetailResponse"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "500":
+          $ref: "#/components/responses/InternalError"
+  /api/products/{product_id}/images:
+    post:
+      tags: [products]
+      summary: Subir imagen de producto
+      description: Sube una imagen JPG o PNG (max 5 MB) y la asocia al producto. Maximo 5 imagenes por producto. Solo el Productor dueno puede subir imagenes. Requerimientos 7.1-7.4.
+      operationId: uploadProductImage
+      parameters:
+        - $ref: "#/components/parameters/ProductId"
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [file]
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: Imagen JPG o PNG, maximo 5 MB
+      responses:
+        "201":
+          description: Imagen subida exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ImageUploadResponse"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "500":
+          $ref: "#/components/responses/InternalError"
+  /api/products/{product_id}/images/{image_id}:
+    delete:
+      tags: [products]
+      summary: Eliminar imagen de producto
+      description: Elimina una imagen del producto. No afecta el historial de pedidos. Solo el Productor dueno puede eliminar imagenes. Requerimiento 7.5.
+      operationId: deleteProductImage
+      parameters:
+        - $ref: "#/components/parameters/ProductId"
+        - $ref: "#/components/parameters/ImageId"
+      responses:
+        "200":
+          description: Imagen eliminada exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Imagen eliminada exitosamente.
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "500":
+          $ref: "#/components/responses/InternalError"
+  /api/producers/{producer_id}:
+    get:
+      tags: [producers]
+      summary: Obtener perfil de productor
+      description: Retorna el perfil publico de un productor. Accesible por cualquier usuario. Requerimientos 4.1, 4.4.
+      operationId: getProducerProfile
+      security: []
+      parameters:
+        - $ref: "#/components/parameters/ProducerId"
+      responses:
+        "200":
+          description: Perfil del productor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: "#/components/schemas/ProducerProfileData"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "500":
+          $ref: "#/components/responses/InternalError"
+    put:
+      tags: [producers]
+      summary: Actualizar perfil de productor
+      description: Crea o actualiza el perfil de un productor. Solo el Productor dueno puede actualizar su propio perfil. Retorna HTTP 400 si farmName esta vacio. Retorna HTTP 403 si el usuario autenticado no es el dueno del perfil. Requerimientos 4.1-4.4.
+      operationId: updateProducerProfile
+      parameters:
+        - $ref: "#/components/parameters/ProducerId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProducerProfileCreate"
+            example:
+              farm_name: Finca La Esperanza
+              region: Huila
+              description: Productores de cafe especial desde 1985.
+              contact_info: contacto@fincaesperanza.com
+      responses:
+        "200":
+          description: Perfil actualizado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Perfil actualizado exitosamente.
+                  data:
+                    $ref: "#/components/schemas/ProducerProfileData"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "500":
+          $ref: "#/components/responses/InternalError"
+  /api/cart:
+    get:
+      tags: [cart]
+      summary: Obtener carrito
+      description: Retorna el carrito del consumidor autenticado con subtotales y total calculados. Requiere rol CONSUMER. Requerimientos 12.1, 12.6.
+      operationId: getCart
+      responses:
+        "200":
+          description: Carrito del consumidor
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CartResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "500":
+          $ref: "#/components/responses/InternalError"
+  /api/cart/items:
+    post:
+      tags: [cart]
+      summary: Agregar item al carrito
+      description: Agrega un producto activo al carrito del consumidor. Retorna HTTP 400 si el producto esta inactivo. Requiere rol CONSUMER. Requerimientos 12.1, 8.4.
+      operationId: addCartItem
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CartItemCreate"
+            example:
+              product_id: prod123
+              quantity: 2
+      responses:
+        "201":
+          description: Item agregado al carrito
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Item agregado al carrito."
+                  data:
+                    $ref: "#/components/schemas/CartData"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "500":
+          $ref: "#/components/responses/InternalError"
+  /api/cart/items/{item_id}:
+    put:
+      tags: [cart]
+      summary: Actualizar cantidad de item
+      description: Actualiza la cantidad de un item en el carrito. Requiere rol CONSUMER. Requerimiento 12.2.
+      operationId: updateCartItem
+      parameters:
+        - $ref: "#/components/parameters/ItemId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CartItemUpdate"
+            example:
+              quantity: 3
+      responses:
+        "200":
+          description: Item actualizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Item actualizado."
+                  data:
+                    $ref: "#/components/schemas/CartData"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "500":
+          $ref: "#/components/responses/InternalError"
+    delete:
+      tags: [cart]
+      summary: Eliminar item del carrito
+      description: Elimina un item del carrito y recalcula el total. Requiere rol CONSUMER. Requerimiento 12.3.
+      operationId: deleteCartItem
+      parameters:
+        - $ref: "#/components/parameters/ItemId"
+      responses:
+        "200":
+          description: Item eliminado del carrito
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Item eliminado del carrito."
+                  data:
+                    $ref: "#/components/schemas/CartData"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "500":
+          $ref: "#/components/responses/InternalError"
+  /api/orders:
+    post:
+      tags: [orders]
+      summary: Crear pedido
+      description: Crea un pedido a partir del carrito del consumidor. Valida carrito no vacio, direccion valida y empresa de envio. Requiere rol CONSUMER. Requerimientos 13.1-13.5.
+      operationId: createOrder
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OrderCreate"
+            example:
+              address_id: addr123
+              shipping_company: servientrega
+      responses:
+        "201":
+          description: Pedido creado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Pedido creado exitosamente.
+                  data:
+                    $ref: "#/components/schemas/OrderData"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailableError"
+        "500":
+          $ref: "#/components/responses/InternalError"
+    get:
+      tags: [orders]
+      summary: Historial de pedidos
+      description: Retorna todos los pedidos del consumidor autenticado, ordenados por fecha descendente. Requiere rol CONSUMER. Requerimiento 15.1.
+      operationId: getOrders
+      responses:
+        "200":
+          description: Historial de pedidos del consumidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    description: Lista de pedidos ordenados por fecha de creacion descendente
+                    items:
+                      $ref: "#/components/schemas/OrderData"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "500":
+          $ref: "#/components/responses/InternalError"
+  /api/orders/{order_id}:
+    get:
+      tags: [orders]
+      summary: Detalle de pedido
+      description: |
+        Retorna el detalle completo de un pedido del consumidor autenticado.
+        Incluye productos comprados con cantidades y precios snapshot, direccion de envio, empresa de envio y estado.
+        Requiere rol CONSUMER (solo puede ver sus propios pedidos).
+        Requerimiento 15.2.
+      operationId: getOrderDetail
+      parameters:
+        - $ref: "#/components/parameters/OrderId"
+      responses:
+        "200":
+          description: Detalle del pedido
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: "#/components/schemas/OrderData"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "500":
+          $ref: "#/components/responses/InternalError"
+  /api/orders/{order_id}/status:
+    patch:
+      tags: [orders]
+      summary: Actualizar estado del pedido
+      description: |
+        Actualiza el estado de un pedido siguiendo la maquina de estados.
+        Solo PRODUCER (con productos en el pedido) o ADMIN pueden actualizar.
+        Rechaza transiciones invalidas con HTTP 422.
+        Notifica al consumidor del cambio de estado via Firestore.
+
+        **Transiciones validas:**
+        - pendiente → pagado (solo via simulador de pagos)
+        - pagado → en_preparacion
+        - en_preparacion → enviado
+        - enviado → entregado
+        - pendiente → cancelado (solo ADMIN)
+        - pagado → cancelado (solo ADMIN)
+
+        Requiere rol PRODUCER o ADMIN. Requerimientos 19.1-19.4.
+      operationId: updateOrderStatus
+      parameters:
+        - $ref: "#/components/parameters/OrderId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OrderStatusUpdate"
+            example:
+              status: en_preparacion
+      responses:
+        "200":
+          description: Estado del pedido actualizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Estado del pedido actualizado a 'en_preparacion'."
+                  data:
+                    $ref: "#/components/schemas/OrderData"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "422":
+          $ref: "#/components/responses/UnprocessableError"
+        "500":
+          $ref: "#/components/responses/InternalError"
+  /api/payments/simulate:
+    post:
+      tags: [payments]
+      summary: Simular pago
+      description: |
+        Simula el procesamiento de un pago para un pedido en estado pendiente.
+
+        **Logica de simulacion:**
+        - Si `card_number` termina en `0000` → fallo simulado (HTTP 402), el pedido permanece en estado `pendiente`.
+        - Cualquier otro numero de 16 digitos → pago exitoso (HTTP 200), el pedido pasa a estado `pagado` y se registra un `transaction_id` con formato `SIM-{uuid}`.
+
+        Los datos de tarjeta (card_number, card_holder, expiry_date, cvv) **NO se almacenan** en la base de datos.
+        Requiere rol CONSUMER. Requerimientos 17.1-17.5.
+      operationId: simulatePayment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PaymentSimulateRequest"
+            examples:
+              pago_exitoso:
+                summary: Pago exitoso (cualquier numero que no termine en 0000)
+                value:
+                  order_id: order123jkl
+                  card_number: "4111111111111111"
+                  card_holder: Juan Perez
+                  expiry_date: 12/26
+                  cvv: "123"
+                  amount: 95000
+              pago_fallido:
+                summary: Pago fallido (card_number termina en 0000)
+                value:
+                  order_id: order123jkl
+                  card_number: "4111111100000000"
+                  card_holder: Juan Perez
+                  expiry_date: 12/26
+                  cvv: "123"
+                  amount: 95000
+      responses:
+        "200":
+          description: Pago simulado exitoso. El pedido pasa a estado pagado.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentSimulateResponse"
+              example:
+                success: true
+                transaction_id: SIM-a1b2c3d4-e5f6-7890-abcd-ef1234567890
+                message: Pago procesado exitosamente.
+                order_status: pagado
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "402":
+          description: Pago simulado fallido (card_number termina en 0000). El pedido permanece en estado pendiente.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                error:
+                  code: PAYMENT_SIMULATED_FAILURE
+                  message: Pago rechazado. El numero de tarjeta fue rechazado por el simulador.
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "409":
+          description: Conflicto - el pedido no esta en estado pendiente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                error:
+                  code: ORDER_NOT_PENDING
+                  message: El pedido ya fue procesado y no puede ser pagado nuevamente.
+        "500":
+          $ref: "#/components/responses/InternalError"
+  /api/shipping/options:
+    get:
+      tags: [shipping]
+      summary: Obtener opciones de envio
+      description: Retorna la lista de empresas de envio disponibles con tarifas y tiempos estimados. Retorna HTTP 503 si el modulo no esta disponible. Requiere rol CONSUMER. Requerimientos 14.1-14.4.
+      operationId: getShippingOptions
+      responses:
+        "200":
+          description: Opciones de envio disponibles
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ShippingOption"
+              example:
+                data:
+                  - id: servientrega
+                    name: Servientrega
+                    cost: 15000
+                    estimated_days: 3
+                  - id: coordinadora
+                    name: Coordinadora
+                    cost: 12000
+                    estimated_days: 5
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailableError"
+        "500":
+          $ref: "#/components/responses/InternalError"
+  /api/sales:
+    get:
+      tags: [sales]
+      summary: Panel de ventas del productor
+      description: Retorna los pedidos que contienen productos del productor autenticado. Incluye total acumulado del mes en curso y anterior. Soporta filtro por rango de fechas. Requiere rol PRODUCER. Requerimientos 16.1-16.4.
+      operationId: getSales
+      parameters:
+        - name: from_date
+          in: query
+          description: Fecha de inicio del filtro (YYYY-MM-DD, inclusive)
+          schema:
+            type: string
+            format: date
+            example: "2024-01-01"
+        - name: to_date
+          in: query
+          description: Fecha de fin del filtro (YYYY-MM-DD, inclusive)
+          schema:
+            type: string
+            format: date
+            example: "2024-01-31"
+      responses:
+        "200":
+          description: Panel de ventas del productor
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SalesResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "500":
+          $ref: "#/components/responses/InternalError"
+  /api/addresses:
+    get:
+      tags: [addresses]
+      summary: Listar direcciones de envio
+      description: Retorna todas las direcciones de envio del consumidor autenticado. Requiere rol CONSUMER. Requerimiento 18.4.
+      operationId: listAddresses
+      responses:
+        "200":
+          description: Direcciones del consumidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/AddressResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "500":
+          $ref: "#/components/responses/InternalError"
+    post:
+      tags: [addresses]
+      summary: Registrar direccion de envio
+      description: "Registra una nueva direccion de envio. Campos obligatorios: street, city, department. Limite de 5 direcciones por usuario. Requiere rol CONSUMER. Requerimientos 18.1-18.3."
+      operationId: createAddress
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddressCreate"
+            example:
+              street: "Calle 10 No 5-20"
+              city: Bogota
+              department: Cundinamarca
+              postal_code: "110111"
+      responses:
+        "201":
+          description: Direccion registrada exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Direccion registrada exitosamente.
+                  data:
+                    $ref: "#/components/schemas/AddressResponse"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "500":
+          $ref: "#/components/responses/InternalError"
+  /api/addresses/{address_id}:
+    delete:
+      tags: [addresses]
+      summary: Eliminar direccion de envio
+      description: Elimina una direccion de envio del consumidor. Requiere rol CONSUMER.
+      operationId: deleteAddress
+      parameters:
+        - $ref: "#/components/parameters/AddressId"
+      responses:
+        "200":
+          description: Direccion eliminada exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Direccion eliminada exitosamente.
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "500":
+          $ref: "#/components/responses/InternalError"
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: Firebase ID Token
+      description: "Firebase ID Token obtenido mediante Firebase Client SDK. Incluir en el header Authorization: Bearer <token>"
+  parameters:
+    ProductId:
+      name: product_id
+      in: path
+      required: true
+      description: Identificador unico del producto
+      schema:
+        type: string
+        example: prod123abc
+    ImageId:
+      name: image_id
+      in: path
+      required: true
+      description: Identificador unico de la imagen
+      schema:
+        type: string
+        example: img456def
+    ProducerId:
+      name: producer_id
+      in: path
+      required: true
+      description: Identificador unico del productor (Firebase UID)
+      schema:
+        type: string
+        example: uid789ghi
+    OrderId:
+      name: order_id
+      in: path
+      required: true
+      description: Identificador unico del pedido
+      schema:
+        type: string
+        example: order123jkl
+    ItemId:
+      name: item_id
+      in: path
+      required: true
+      description: Identificador unico del item del carrito
+      schema:
+        type: string
+        example: item456mno
+    AddressId:
+      name: address_id
+      in: path
+      required: true
+      description: Identificador unico de la direccion
+      schema:
+        type: string
+        example: addr789pqr
+  schemas:
+    ErrorField:
+      type: object
+      properties:
+        field:
+          type: string
+          example: email
+        message:
+          type: string
+          example: El correo ya esta registrado
+    ErrorDetail:
+      type: object
+      required: [code, message]
+      properties:
+        code:
+          type: string
+          example: VALIDATION_ERROR
+        message:
+          type: string
+          example: Descripcion del error
+        fields:
+          type: array
+          items:
+            $ref: "#/components/schemas/ErrorField"
+    ErrorResponse:
+      type: object
+      required: [error]
+      properties:
+        error:
+          $ref: "#/components/schemas/ErrorDetail"
+    UserCreate:
+      type: object
+      required: [name, email, password]
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+          example: Juan Perez
+        email:
+          type: string
+          format: email
+          example: juan@example.com
+        password:
+          type: string
+          minLength: 8
+          description: Minimo 8 caracteres
+          example: miContrasena123
+        role:
+          type: string
+          enum: [CONSUMER, PRODUCER]
+          default: CONSUMER
+          description: Rol del usuario. ADMIN no puede registrarse via API.
+    RegisterResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Usuario registrado exitosamente.
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              example: abc123uid
+            name:
+              type: string
+              example: Juan Perez
+            email:
+              type: string
+              format: email
+              example: juan@example.com
+            role:
+              type: string
+              enum: [CONSUMER, PRODUCER, ADMIN]
+              example: CONSUMER
+            created_at:
+              type: string
+              format: date-time
+              example: "2024-01-15T10:30:00"
+    LoginRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          format: email
+          example: juan@example.com
+        password:
+          type: string
+          description: Firebase ID Token obtenido del cliente Firebase SDK
+          example: eyJhbGciOiJSUzI1NiJ9...
+    LoginResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Sesion iniciada exitosamente.
+        data:
+          type: object
+          properties:
+            uid:
+              type: string
+              example: abc123uid
+            email:
+              type: string
+              format: email
+              example: juan@example.com
+            role:
+              type: string
+              enum: [CONSUMER, PRODUCER, ADMIN]
+              example: CONSUMER
+            name:
+              type: string
+              example: Juan Perez
+    ForgotPasswordRequest:
+      type: object
+      required: [email]
+      properties:
+        email:
+          type: string
+          format: email
+          example: juan@example.com
+    ResetPasswordRequest:
+      type: object
+      required: [token, new_password]
+      properties:
+        token:
+          type: string
+          description: Token de restablecimiento enviado por email
+          example: oobCode123
+        new_password:
+          type: string
+          minLength: 8
+          description: Nueva contrasena (minimo 8 caracteres)
+          example: nuevaContrasena456
+    ProductImageResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          example: img456def
+        url:
+          type: string
+          format: uri
+          example: https://storage.googleapis.com/bucket/products/img.jpg
+        storage_path:
+          type: string
+          example: products/prod123/img456.jpg
+        sort_order:
+          type: integer
+          example: 0
+        created_at:
+          type: string
+          format: date-time
+          example: "2024-01-15T10:30:00"
+    ProductCreate:
+      type: object
+      required: [name, description, price]
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+          example: Cafe Especial Huila
+        description:
+          type: string
+          minLength: 1
+          example: Cafe de origen unico del departamento del Huila.
+        price:
+          type: number
+          exclusiveMinimum: 0
+          description: Precio en pesos colombianos. Debe ser mayor que cero.
+          example: 45000
+    ProductUpdate:
+      type: object
+      required: [name, description, price]
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+          example: Cafe Especial Huila Premium
+        description:
+          type: string
+          minLength: 1
+          example: Cafe de origen unico del departamento del Huila, cosecha 2024.
+        price:
+          type: number
+          exclusiveMinimum: 0
+          example: 48000
+    ProductStatusUpdate:
+      type: object
+      required: [status]
+      properties:
+        status:
+          type: string
+          enum: [active, inactive]
+          example: active
+    ProductDetailResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Producto creado exitosamente.
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              example: prod123abc
+            producer_id:
+              type: string
+              example: uid789ghi
+            producer_name:
+              type: string
+              example: Finca La Esperanza
+            name:
+              type: string
+              example: Cafe Especial Huila
+            description:
+              type: string
+              example: Cafe de origen unico del departamento del Huila.
+            price:
+              type: number
+              example: 45000
+            status:
+              type: string
+              enum: [active, inactive]
+              example: inactive
+            created_at:
+              type: string
+              format: date-time
+              example: "2024-01-15T10:30:00"
+            updated_at:
+              type: string
+              format: date-time
+              example: "2024-01-15T10:30:00"
+            images:
+              type: array
+              items:
+                $ref: "#/components/schemas/ProductImageResponse"
+    ProductListItem:
+      type: object
+      properties:
+        id:
+          type: string
+          example: prod123abc
+        name:
+          type: string
+          example: Cafe Especial Huila
+        price:
+          type: number
+          example: 45000
+        producer_name:
+          type: string
+          example: Finca La Esperanza
+        main_image_url:
+          type: string
+          format: uri
+          nullable: true
+          example: https://storage.googleapis.com/bucket/products/img.jpg
+        status:
+          type: string
+          enum: [active, inactive]
+          example: active
+    PaginatedProductsResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProductListItem"
+        total:
+          type: integer
+          example: 45
+        page:
+          type: integer
+          example: 1
+        page_size:
+          type: integer
+          example: 20
+        has_next:
+          type: boolean
+          example: true
+    ImageUploadResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Imagen subida exitosamente.
+        data:
+          $ref: "#/components/schemas/ProductImageResponse"
+    ProducerProfileCreate:
+      type: object
+      required: [farm_name]
+      properties:
+        farm_name:
+          type: string
+          minLength: 1
+          description: Nombre de la finca (obligatorio)
+          example: Finca La Esperanza
+        region:
+          type: string
+          nullable: true
+          example: Huila
+        description:
+          type: string
+          nullable: true
+          example: Productores de cafe especial desde 1985.
+        contact_info:
+          type: string
+          nullable: true
+          example: contacto@fincaesperanza.com
+    ProducerProfileResponse:
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/ProducerProfileData"
+    ProducerProfileData:
+      type: object
+      description: Datos del perfil de un productor
+      properties:
+        user_id:
+          type: string
+          example: uid789ghi
+        farm_name:
+          type: string
+          example: Finca La Esperanza
+        region:
+          type: string
+          nullable: true
+          example: Huila
+        description:
+          type: string
+          nullable: true
+          example: Productores de cafe especial desde 1985.
+        contact_info:
+          type: string
+          nullable: true
+          example: contacto@fincaesperanza.com
+        updated_at:
+          type: string
+          format: date-time
+          example: "2024-01-15T10:30:00"
+    CartItemCreate:
+      type: object
+      required: [product_id, quantity]
+      properties:
+        product_id:
+          type: string
+          example: prod123abc
+        quantity:
+          type: integer
+          minimum: 1
+          example: 2
+    CartItemUpdate:
+      type: object
+      required: [quantity]
+      properties:
+        quantity:
+          type: integer
+          minimum: 1
+          example: 3
+    CartItemResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          example: item456mno
+        product_id:
+          type: string
+          example: prod123abc
+        product_name:
+          type: string
+          example: Cafe Especial Huila
+        price:
+          type: number
+          example: 45000
+        quantity:
+          type: integer
+          example: 2
+        subtotal:
+          type: number
+          description: precio x cantidad
+          example: 90000
+        added_at:
+          type: string
+          format: date-time
+          example: "2024-01-15T10:30:00"
+    CartData:
+      type: object
+      description: Datos del carrito del consumidor con subtotales calculados
+      properties:
+        user_id:
+          type: string
+          example: abc123uid
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/CartItemResponse"
+        total:
+          type: number
+          description: Suma de todos los subtotales (precio x cantidad)
+          example: 90000
+        updated_at:
+          type: string
+          format: date-time
+          example: "2024-01-15T10:30:00"
+    CartResponse:
+      type: object
+      description: Respuesta del carrito envuelta en data
+      properties:
+        data:
+          $ref: "#/components/schemas/CartData"
+    AddressSnapshot:
+      type: object
+      properties:
+        street:
+          type: string
+          example: Calle 10 # 5-20
+        city:
+          type: string
+          example: Bogota
+        department:
+          type: string
+          example: Cundinamarca
+        postal_code:
+          type: string
+          nullable: true
+          example: "110111"
+    OrderItemSnapshot:
+      type: object
+      properties:
+        product_id:
+          type: string
+          example: prod123abc
+        product_name_snapshot:
+          type: string
+          example: Cafe Especial Huila
+        price_snapshot:
+          type: number
+          example: 45000
+        quantity:
+          type: integer
+          example: 2
+    OrderCreate:
+      type: object
+      required: [address_id, shipping_company]
+      properties:
+        address_id:
+          type: string
+          description: ID de la direccion de envio del consumidor
+          example: addr789pqr
+        shipping_company:
+          type: string
+          description: ID de la empresa de envio seleccionada
+          example: servientrega
+    OrderStatusUpdate:
+      type: object
+      required: [status]
+      properties:
+        status:
+          type: string
+          enum: [pendiente, pagado, en_preparacion, enviado, entregado, cancelado]
+          description: "Nuevo estado del pedido. Transiciones validas: pendiente->pagado->en_preparacion->enviado->entregado. Admin puede cancelar desde pendiente o pagado."
+          example: en_preparacion
+    OrderListItem:
+      type: object
+      properties:
+        id:
+          type: string
+          example: order123jkl
+        total:
+          type: number
+          example: 95000
+        status:
+          type: string
+          enum: [pendiente, pagado, en_preparacion, enviado, entregado, cancelado]
+          example: pendiente
+        created_at:
+          type: string
+          format: date-time
+          example: "2024-01-15T10:30:00"
+    OrderResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Pedido creado exitosamente.
+        data:
+          $ref: "#/components/schemas/OrderData"
+    OrderData:
+      type: object
+      description: Datos completos de un pedido
+      properties:
+        id:
+          type: string
+          example: order123jkl
+        consumer_id:
+          type: string
+          example: abc123uid
+        address_snapshot:
+          $ref: "#/components/schemas/AddressSnapshot"
+        shipping_company:
+          type: string
+          example: servientrega
+        shipping_cost:
+          type: number
+          example: 15000
+        total:
+          type: number
+          example: 95000
+        status:
+          type: string
+          enum: [pendiente, pagado, en_preparacion, enviado, entregado, cancelado]
+          example: pendiente
+        transaction_id:
+          type: string
+          nullable: true
+          example: SIM-a1b2c3d4-e5f6-7890-abcd-ef1234567890
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/OrderItemSnapshot"
+        created_at:
+          type: string
+          format: date-time
+          example: "2024-01-15T10:30:00"
+        updated_at:
+          type: string
+          format: date-time
+          example: "2024-01-15T10:30:00"
+    PaymentSimulateRequest:
+      type: object
+      required: [order_id, card_number, card_holder, expiry_date, cvv, amount]
+      properties:
+        order_id:
+          type: string
+          description: ID del pedido a pagar (debe estar en estado pendiente)
+          example: order123jkl
+        card_number:
+          type: string
+          minLength: 16
+          maxLength: 16
+          description: Numero de tarjeta de 16 digitos. Si termina en 0000 el pago falla.
+          example: "4111111111111111"
+        card_holder:
+          type: string
+          minLength: 1
+          description: Nombre del titular de la tarjeta
+          example: Juan Perez
+        expiry_date:
+          type: string
+          pattern: "\\d{2}/\\d{2}$"
+          description: Fecha de vencimiento en formato MM/YY
+          example: 12/26
+        cvv:
+          type: string
+          minLength: 3
+          maxLength: 4
+          description: Codigo de seguridad de 3 o 4 digitos
+          example: "123"
+        amount:
+          type: number
+          exclusiveMinimum: 0
+          description: Monto a cobrar (debe coincidir con el total del pedido)
+          example: 95000
+    PaymentSimulateResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        transaction_id:
+          type: string
+          nullable: true
+          description: ID de transaccion simulada con formato SIM-uuid. Null si el pago fallo.
+          example: SIM-a1b2c3d4-e5f6-7890-abcd-ef1234567890
+        message:
+          type: string
+          example: Pago procesado exitosamente.
+        order_status:
+          type: string
+          enum: [pendiente, pagado]
+          example: pagado
+    ShippingOption:
+      type: object
+      properties:
+        id:
+          type: string
+          example: servientrega
+        name:
+          type: string
+          example: Servientrega
+        cost:
+          type: number
+          description: Costo de envio en pesos colombianos
+          example: 15000
+        estimated_days:
+          type: integer
+          description: Dias estimados de entrega
+          example: 3
+    SalesResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            orders:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: order123jkl
+                  created_at:
+                    type: string
+                    format: date-time
+                    example: "2024-01-15T10:30:00"
+                  status:
+                    type: string
+                    enum: [pendiente, pagado, en_preparacion, enviado, entregado, cancelado]
+                    example: pagado
+                  shipping_company:
+                    type: string
+                    example: servientrega
+                  items:
+                    type: array
+                    description: Solo los items del productor autenticado
+                    items:
+                      $ref: "#/components/schemas/OrderItemSnapshot"
+            current_month_total:
+              type: number
+              description: Total acumulado de ventas del mes en curso
+              example: 450000
+            previous_month_total:
+              type: number
+              description: Total acumulado de ventas del mes anterior
+              example: 380000
+    AddressCreate:
+      type: object
+      required: [street, city, department]
+      properties:
+        street:
+          type: string
+          minLength: 1
+          description: Calle (obligatorio)
+          example: Calle 10 # 5-20
+        city:
+          type: string
+          minLength: 1
+          description: Ciudad (obligatorio)
+          example: Bogota
+        department:
+          type: string
+          minLength: 1
+          description: Departamento (obligatorio)
+          example: Cundinamarca
+        postal_code:
+          type: string
+          nullable: true
+          example: "110111"
+    AddressResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          example: addr789pqr
+        user_id:
+          type: string
+          example: abc123uid
+        street:
+          type: string
+          example: Calle 10 # 5-20
+        city:
+          type: string
+          example: Bogota
+        department:
+          type: string
+          example: Cundinamarca
+        postal_code:
+          type: string
+          nullable: true
+          example: "110111"
+        created_at:
+          type: string
+          format: date-time
+          example: "2024-01-15T10:30:00"
+  responses:
+    ValidationError:
+      description: Datos de entrada invalidos (HTTP 400)
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+          example:
+            error:
+              code: VALIDATION_ERROR
+              message: Los datos de entrada son invalidos.
+              fields:
+                - field: email
+                  message: El correo electronico no tiene un formato valido.
+                - field: password
+                  message: La contrasena debe tener al menos 8 caracteres.
+    UnauthorizedError:
+      description: No autenticado - JWT ausente o invalido (HTTP 401)
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+          example:
+            error:
+              code: UNAUTHORIZED
+              message: Token de autenticacion ausente o invalido.
+    ForbiddenError:
+      description: No autorizado - rol insuficiente o recurso ajeno (HTTP 403)
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+          example:
+            error:
+              code: FORBIDDEN
+              message: No tienes permiso para realizar esta accion.
+    NotFoundError:
+      description: Recurso no encontrado (HTTP 404)
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+          example:
+            error:
+              code: NOT_FOUND
+              message: El recurso solicitado no fue encontrado.
+    ConflictError:
+      description: Conflicto - recurso ya existe (HTTP 409)
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+          example:
+            error:
+              code: EMAIL_ALREADY_EXISTS
+              message: El correo electronico ya esta registrado.
+              fields:
+                - field: email
+                  message: El correo ya esta registrado.
+    UnprocessableError:
+      description: Entidad no procesable - transicion de estado invalida (HTTP 422)
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+          example:
+            error:
+              code: INVALID_STATUS_TRANSITION
+              message: La transicion de estado de entregado a pendiente no es valida.
+    RateLimitError:
+      description: Demasiadas solicitudes - rate limiting (HTTP 429)
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+          example:
+            error:
+              code: RATE_LIMIT_EXCEEDED
+              message: Demasiados intentos fallidos. Intenta de nuevo en 15 minutos.
+    InternalError:
+      description: Error interno del servidor (HTTP 500)
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+          example:
+            error:
+              code: INTERNAL_ERROR
+              message: Error interno del servidor. Por favor intenta de nuevo.
+    ServiceUnavailableError:
+      description: Servicio externo no disponible (HTTP 503)
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+          example:
+            error:
+              code: SERVICE_UNAVAILABLE
+              message: El servicio de envio no esta disponible temporalmente.

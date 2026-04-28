@@ -1,0 +1,227 @@
+/**
+ * auth.module.css – Estilos del módulo de autenticación.
+ *
+ * Cumple WCAG 2.1 AA:
+ *   - Contraste mínimo 4.5:1 para texto normal (RNF-002.1)
+ *   - Área mínima de toque 44×44 px (RNF-002.2)
+ *   - Fuente mínima 16px (RNF-002.3)
+ *   - Navegación por teclado con foco visible (RNF-002.4)
+ */
+
+/* Contenedor principal del formulario */
+.formContainer {
+  width: 100%;
+  max-width: 440px;
+  margin: 0 auto;
+  padding: var(--spacing-8);
+  background-color: var(--color-surface);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-md);
+}
+
+/* Título del formulario */
+.title {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+  margin-bottom: var(--spacing-2);
+  text-align: center;
+}
+
+/* Subtítulo / descripción */
+.subtitle {
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+  text-align: center;
+  margin-bottom: var(--spacing-6);
+  line-height: var(--line-height-base);
+}
+
+/* Formulario */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+}
+
+/* Grupo de campo (label + input + error) */
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
+
+/* Etiqueta */
+.label {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+}
+
+/* Input de texto */
+.input {
+  width: 100%;
+  min-height: var(--touch-target-min); /* RNF-002.2 */
+  padding: var(--spacing-3) var(--spacing-4);
+  font-size: var(--font-size-base); /* RNF-002.3 */
+  font-family: var(--font-family-base);
+  color: var(--color-text-primary);
+  background-color: var(--color-surface);
+  border: 1.5px solid #d1d5db;
+  border-radius: var(--border-radius-md);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  outline: none;
+}
+
+.input:focus {
+  border-color: var(--color-secondary);
+  box-shadow: 0 0 0 3px rgba(65, 122, 61, 0.2);
+}
+
+/* Input con error */
+.inputError {
+  border-color: var(--color-error);
+}
+
+.inputError:focus {
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.2);
+}
+
+/* Mensaje de error por campo (RNF-002.5) */
+.errorMessage {
+  font-size: var(--font-size-sm);
+  color: var(--color-error);
+  line-height: var(--line-height-base);
+}
+
+/* Hint / ayuda */
+.hint {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+/* Fieldset para grupos de radio */
+.fieldset {
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+.legend {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-2);
+}
+
+/* Grupo de opciones radio */
+.radioGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+}
+
+.radioLabel {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+  font-size: var(--font-size-base);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  min-height: var(--touch-target-min); /* RNF-002.2 */
+  padding: var(--spacing-2) var(--spacing-3);
+  border-radius: var(--border-radius-md);
+  border: 1.5px solid #d1d5db;
+  transition: border-color var(--transition-fast), background-color var(--transition-fast);
+}
+
+.radioLabel:hover {
+  border-color: var(--color-secondary);
+  background-color: rgba(65, 122, 61, 0.05);
+}
+
+.radioInput {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--color-secondary);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+/* Fila del enlace "¿Olvidaste tu contraseña?" */
+.forgotPasswordRow {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: calc(-1 * var(--spacing-2));
+}
+
+/* Error del servidor */
+.serverError {
+  padding: var(--spacing-3) var(--spacing-4);
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: var(--border-radius-md);
+  color: var(--color-error);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-base);
+}
+
+/* Botón de envío (CTA) */
+.submitButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: var(--touch-target-min); /* RNF-002.2 */
+  padding: var(--spacing-3) var(--spacing-6);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  font-family: var(--font-family-base);
+  color: #ffffff;
+  background-color: var(--color-accent);
+  border: none;
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  transition: background-color var(--transition-fast), opacity var(--transition-fast);
+  text-decoration: none;
+  margin-top: var(--spacing-2);
+}
+
+.submitButton:hover:not(:disabled) {
+  background-color: #b8860f;
+}
+
+.submitButton:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+/* Enlace */
+.link {
+  color: var(--color-secondary);
+  font-weight: var(--font-weight-medium);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.link:hover {
+  color: var(--color-primary);
+}
+
+/* Texto del pie del formulario */
+.footerText {
+  margin-top: var(--spacing-6);
+  text-align: center;
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+}
+
+/* Layout de página de autenticación */
+.authPage {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-6) var(--spacing-4);
+  background-color: var(--color-background);
+}

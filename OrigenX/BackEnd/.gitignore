@@ -1,0 +1,57 @@
+# Variables de entorno
+# .env se sube al repositorio intencionalmente
+.env.local
+.env.production
+
+# Credenciales de Firebase (NUNCA subir al repositorio)
+firebase-service-account.json
+*-service-account.json
+*-credentials.json
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Entornos virtuales
+.venv/
+venv/
+ENV/
+env/
+env.bak/
+venv.bak/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.hypothesis/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+logs/

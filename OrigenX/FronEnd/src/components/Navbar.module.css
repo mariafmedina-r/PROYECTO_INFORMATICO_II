@@ -1,0 +1,564 @@
+/**
+ * Navbar.module.css – Estilos de la barra de navegación principal.
+ *
+ * Tarea 15 – RNF-008.1
+ *
+ * WCAG 2.1 AA:
+ *   - Contraste mínimo 4.5:1 sobre fondo verde oscuro (RNF-002.1)
+ *   - Área mínima de toque 44×44 px (RNF-002.2)
+ *   - Fuente mínima 16px (RNF-002.3)
+ *   - Navegación completa por teclado: TAB, ENTER, ESC (RNF-002.4)
+ *   - Diseño responsivo 320px–1920px (RNF-006.2)
+ */
+
+/* ============================================================
+   Barra de navegación
+   ============================================================ */
+
+.navbar {
+  background-color: var(--color-primary);
+  padding: 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: var(--z-sticky);
+  box-shadow: var(--shadow-md);
+}
+
+.navInner {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  height: 64px;
+  padding: 0 var(--spacing-5);
+  gap: var(--spacing-2);
+}
+
+/* ============================================================
+   Logo
+   ============================================================ */
+
+.navLogoGroup {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+  min-width: 0;
+  flex-shrink: 0;
+}
+
+.navLogo {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  color: #ffffff;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  min-height: var(--touch-target-min);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.navLogo:hover {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.navLogo:focus-visible {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 2px;
+  border-radius: var(--border-radius-sm);
+}
+
+/* Pills de usuario al lado del logo */
+.userPills {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  flex-shrink: 0;
+}
+
+.userNamePill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  background-color: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 9999px;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: #ffffff;
+  white-space: nowrap;
+}
+
+.userRolePill {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  white-space: nowrap;
+}
+
+/* Color por rol */
+.userRolePill_CONSUMER {
+  background-color: rgba(59, 130, 246, 0.25);
+  border: 1px solid rgba(59, 130, 246, 0.45);
+  color: #bfdbfe;
+}
+
+.userRolePill_PRODUCER {
+  background-color: rgba(212, 160, 23, 0.25);
+  border: 1px solid rgba(212, 160, 23, 0.45);
+  color: #fde68a;
+}
+
+.userRolePill_ADMIN {
+  background-color: rgba(239, 68, 68, 0.25);
+  border: 1px solid rgba(239, 68, 68, 0.45);
+  color: #fecaca;
+}
+
+/* ============================================================
+   Área central: links de navegación pública
+   ============================================================ */
+
+.navCenter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-1);
+  flex: 1;
+  padding: 0 var(--spacing-3);
+}
+
+/* ============================================================
+   Área derecha: acciones de usuario
+   ============================================================ */
+
+.navRight {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-1);
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   Links de navegación (desktop) – usados en navCenter
+   ============================================================ */
+
+.navLinks {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-1);
+}
+
+.navLink {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--touch-target-min);
+  padding: 0 var(--spacing-3);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  color: rgba(255, 255, 255, 0.85);
+  text-decoration: none;
+  border-radius: var(--border-radius-md);
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+  white-space: nowrap;
+}
+
+.navLink:hover,
+.navLinkActive {
+  background-color: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+}
+
+.navLink:focus-visible,
+.navLinkActive:focus-visible {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* ============================================================
+   Link especial: Panel del productor
+   ============================================================ */
+
+.navLinkProducer {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--touch-target-min);
+  padding: 0 var(--spacing-3);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  color: #fff8e7;
+  text-decoration: none;
+  border-radius: var(--border-radius-md);
+  border: 1.5px solid rgba(212, 160, 23, 0.6);
+  background-color: rgba(212, 160, 23, 0.18);
+  transition: background-color var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
+  white-space: nowrap;
+  gap: var(--spacing-1);
+}
+
+.navLinkProducer:hover {
+  background-color: rgba(212, 160, 23, 0.32);
+  border-color: rgba(212, 160, 23, 0.9);
+  color: #ffffff;
+}
+
+.navLinkProducerActive {
+  background-color: rgba(212, 160, 23, 0.38);
+  border-color: #d4a017;
+  color: #ffffff;
+}
+
+.navLinkProducer:focus-visible {
+  outline: 3px solid #d4a017;
+  outline-offset: 2px;
+}
+
+/* Versión móvil del link de productor */
+.mobileNavLinkProducer {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+  min-height: var(--touch-target-min);
+  padding: 0 var(--spacing-3);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  color: #fff8e7;
+  text-decoration: none;
+  border-radius: var(--border-radius-md);
+  border: 1.5px solid rgba(212, 160, 23, 0.5);
+  background-color: rgba(212, 160, 23, 0.15);
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.mobileNavLinkProducer:hover,
+.mobileNavLinkProducerActive {
+  background-color: rgba(212, 160, 23, 0.3);
+  border-color: #d4a017;
+  color: #ffffff;
+}
+
+.mobileNavLinkProducer:focus-visible {
+  outline: 3px solid #d4a017;
+  outline-offset: 2px;
+}
+
+/* ============================================================
+   Botón de acción (cerrar sesión, etc.)
+   ============================================================ */
+
+.navButton {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--touch-target-min);
+  padding: 0 var(--spacing-4);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  font-family: var(--font-family-base);
+  color: rgba(255, 255, 255, 0.85);
+  background-color: transparent;
+  border: 1.5px solid rgba(255, 255, 255, 0.4);
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  transition: background-color var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
+  white-space: nowrap;
+}
+
+.navButton:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.7);
+}
+
+.navButton:focus-visible {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* ============================================================
+   Ícono del carrito con badge (Req. 12.4, RNF-008.1)
+   ============================================================ */
+
+.navCartButton {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background-color: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  color: #ffffff;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.navCartButton:hover {
+  background-color: rgba(255, 255, 255, 0.22);
+  color: #ffffff;
+}
+
+.navCartButton:focus-visible {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.navCartBadge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  background-color: var(--color-accent);
+  color: #ffffff;
+  font-size: 0.6875rem;
+  font-weight: var(--font-weight-bold);
+  border-radius: var(--border-radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  pointer-events: none;
+}
+
+/* ============================================================
+   Información del usuario autenticado
+   ============================================================ */
+
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: 0 var(--spacing-2);
+  color: rgba(255, 255, 255, 0.85);
+  font-size: var(--font-size-sm);
+  white-space: nowrap;
+}
+
+.userRole {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px var(--spacing-2);
+  background-color: rgba(255, 255, 255, 0.15);
+  border-radius: var(--border-radius-full);
+  font-size: 0.75rem;
+  font-weight: var(--font-weight-medium);
+  color: rgba(255, 255, 255, 0.9);
+  text-transform: capitalize;
+}
+
+/* ============================================================
+   Botón hamburguesa (móvil)
+   ============================================================ */
+
+.hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  width: var(--touch-target-min);
+  height: var(--touch-target-min);
+  background-color: transparent;
+  border: none;
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+  transition: background-color var(--transition-fast);
+}
+
+.hamburger:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.hamburger:focus-visible {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.hamburgerLine {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background-color: #ffffff;
+  border-radius: 2px;
+  transition: transform var(--transition-fast), opacity var(--transition-fast);
+  transform-origin: center;
+}
+
+/* Animación X cuando el menú está abierto */
+.hamburgerOpen .hamburgerLine:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.hamburgerOpen .hamburgerLine:nth-child(2) {
+  opacity: 0;
+  transform: scaleX(0);
+}
+
+.hamburgerOpen .hamburgerLine:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+/* ============================================================
+   Menú móvil (drawer)
+   ============================================================ */
+
+.mobileMenu {
+  display: none;
+  flex-direction: column;
+  background-color: var(--color-primary);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding: var(--spacing-3) var(--spacing-4) var(--spacing-4);
+  gap: var(--spacing-1);
+  /* Animación de apertura */
+  animation: slideDown 0.2s ease-out;
+}
+
+.mobileMenuOpen {
+  display: flex;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Links en el menú móvil */
+.mobileNavLink {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+  min-height: var(--touch-target-min);
+  padding: 0 var(--spacing-3);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  color: rgba(255, 255, 255, 0.85);
+  text-decoration: none;
+  border-radius: var(--border-radius-md);
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.mobileNavLink:hover,
+.mobileNavLinkActive {
+  background-color: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+}
+
+.mobileNavLink:focus-visible {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* Botón de acción en menú móvil */
+.mobileNavButton {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+  min-height: var(--touch-target-min);
+  padding: 0 var(--spacing-3);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  font-family: var(--font-family-base);
+  color: rgba(255, 255, 255, 0.85);
+  background-color: transparent;
+  border: none;
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.mobileNavButton:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+}
+
+.mobileNavButton:focus-visible {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* Divisor en menú móvil */
+.mobileDivider {
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin: var(--spacing-2) 0;
+}
+
+/* Badge del carrito en menú móvil */
+.mobileCartBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 var(--spacing-1);
+  background-color: var(--color-accent);
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: var(--font-weight-bold);
+  border-radius: var(--border-radius-full);
+  line-height: 1;
+  margin-left: auto;
+}
+
+/* ============================================================
+   Responsive: mostrar hamburguesa en móvil
+   ============================================================ */
+
+@media (max-width: 767px) {
+  .navInner {
+    justify-content: space-between;
+  }
+
+  .hamburger {
+    display: flex;
+  }
+
+  .navCenter {
+    display: none;
+  }
+
+  .navLinks {
+    display: none;
+  }
+
+  .userInfo {
+    display: none;
+  }
+
+  .userPills {
+    display: none;
+  }
+
+  /* Ocultar solo los botones de acción dentro de navRight, no el hamburger */
+  .navRight .navButton,
+  .navRight .navCartButton,
+  .navRight .navLink {
+    display: none;
+  }
+}
+
+@media (min-width: 768px) {
+  .mobileMenu {
+    display: none !important;
+  }
+}

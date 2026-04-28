@@ -1,0 +1,90 @@
+/* ============================================================
+   Marketplace Cafetero – Estilos globales
+   ============================================================ */
+
+@import './variables.css';
+
+/* Reset y base */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px; /* Base para rem – RNF-002.3 */
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-base);
+  color: var(--color-text-primary);
+  background-color: var(--color-background);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  padding-top: 64px; /* Offset para navbar fija */
+  scrollbar-gutter: stable;
+}
+
+/* Accesibilidad: foco visible para navegación por teclado (RNF-002.4) */
+:focus-visible {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* Área mínima de toque para elementos interactivos (RNF-002.2) */
+button,
+a,
+input,
+select,
+textarea,
+[role='button'] {
+  min-height: var(--touch-target-min);
+}
+
+/* Imágenes responsivas */
+img,
+video {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Tipografía */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: var(--font-weight-bold);
+  line-height: 1.25;
+  color: var(--color-text-primary);
+}
+
+a {
+  color: var(--color-secondary);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+a:hover {
+  color: var(--color-primary);
+}
+
+/* Utilidades de accesibilidad */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}

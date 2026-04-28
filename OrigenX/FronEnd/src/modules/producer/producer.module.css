@@ -1,0 +1,1709 @@
+/**
+ * producer.module.css – Estilos del módulo del productor.
+ *
+ * Tarea 14.1 – Requerimientos: 4.1, 4.2, 4.3, 5.1, 5.2, 6.1, 6.2, 7.1–7.3, 8.1, 8.2, 16.1–16.3
+ *
+ * WCAG 2.1 AA:
+ *   - Contraste mínimo 4.5:1 (RNF-002.1)
+ *   - Área mínima de toque 44×44 px (RNF-002.2)
+ *   - Fuente mínima 16px (RNF-002.3)
+ *   - Navegación por teclado con foco visible (RNF-002.4)
+ */
+
+/* ============================================================
+   Layout de página
+   ============================================================ */
+
+.page {
+  min-height: 100vh;
+  background-color: var(--color-background);
+  padding-bottom: var(--spacing-16);
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-4);
+}
+
+/* ============================================================
+   Encabezado
+   ============================================================ */
+
+.pageHeader {
+  padding: var(--spacing-8) 0 var(--spacing-4);
+}
+
+.pageTitle {
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+  margin-bottom: var(--spacing-1);
+}
+
+.pageSubtitle {
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+}
+
+/* ============================================================
+   Navegación por pestañas
+   ============================================================ */
+
+.tabNav {
+  display: flex;
+  gap: 0;
+  border-bottom: 2px solid #e5e7eb;
+  margin-bottom: var(--spacing-8);
+  overflow: hidden;
+}
+
+.tabButton {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--touch-target-min);
+  padding: var(--spacing-3) var(--spacing-6);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  font-family: var(--font-family-base);
+  color: var(--color-text-secondary);
+  background-color: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  cursor: pointer;
+  transition: color var(--transition-fast), border-color var(--transition-fast);
+  white-space: nowrap;
+}
+
+.tabButton:hover {
+  color: var(--color-primary);
+}
+
+.tabButtonActive {
+  color: var(--color-primary);
+  border-bottom-color: var(--color-primary);
+  font-weight: var(--font-weight-semibold);
+}
+
+/* ============================================================
+   Secciones de contenido
+   ============================================================ */
+
+.formSection,
+.productListSection,
+.salesSection {
+  background-color: var(--color-surface);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: var(--spacing-8);
+}
+
+.sectionTitle {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-2);
+}
+
+.sectionSubtitle {
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-6);
+}
+
+/* ============================================================
+   Formularios
+   ============================================================ */
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
+
+.label {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+}
+
+.required {
+  color: var(--color-error);
+  margin-left: 2px;
+}
+
+.input {
+  width: 100%;
+  min-height: var(--touch-target-min);
+  padding: var(--spacing-3) var(--spacing-4);
+  font-size: var(--font-size-base);
+  font-family: var(--font-family-base);
+  color: var(--color-text-primary);
+  background-color: var(--color-surface);
+  border: 1.5px solid #d1d5db;
+  border-radius: var(--border-radius-md);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  outline: none;
+  box-sizing: border-box;
+}
+
+.input:focus {
+  border-color: var(--color-secondary);
+  box-shadow: 0 0 0 3px rgba(65, 122, 61, 0.2);
+}
+
+.inputError {
+  border-color: var(--color-error);
+}
+
+.inputError:focus {
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.2);
+}
+
+.textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.errorMessage {
+  font-size: var(--font-size-sm);
+  color: var(--color-error);
+}
+
+.hint {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.serverError {
+  padding: var(--spacing-3) var(--spacing-4);
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: var(--border-radius-md);
+  color: var(--color-error);
+  font-size: var(--font-size-base);
+}
+
+.successMessage {
+  padding: var(--spacing-3) var(--spacing-4);
+  background-color: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: var(--border-radius-md);
+  color: #166534;
+  font-size: var(--font-size-base);
+}
+
+/* ============================================================
+   Botones
+   ============================================================ */
+
+.submitButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--touch-target-min);
+  padding: var(--spacing-3) var(--spacing-6);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  font-family: var(--font-family-base);
+  color: #ffffff;
+  background-color: var(--color-accent);
+  border: none;
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  transition: background-color var(--transition-fast), opacity var(--transition-fast);
+  align-self: flex-start;
+}
+
+.submitButton:hover:not(:disabled) {
+  background-color: #b8860f;
+}
+
+.submitButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.primaryButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--touch-target-min);
+  padding: var(--spacing-3) var(--spacing-5);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  font-family: var(--font-family-base);
+  color: #ffffff;
+  background-color: var(--color-primary);
+  border: none;
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.primaryButton:hover {
+  background-color: var(--color-secondary);
+}
+
+.cancelButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--touch-target-min);
+  padding: var(--spacing-3) var(--spacing-5);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  font-family: var(--font-family-base);
+  color: var(--color-text-secondary);
+  background-color: transparent;
+  border: 1.5px solid #d1d5db;
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  transition: border-color var(--transition-fast), color var(--transition-fast);
+}
+
+.cancelButton:hover {
+  border-color: var(--color-text-secondary);
+  color: var(--color-text-primary);
+}
+
+.retryButton {
+  min-height: var(--touch-target-min);
+  padding: var(--spacing-3) var(--spacing-6);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  font-family: var(--font-family-base);
+  color: #ffffff;
+  background-color: var(--color-primary);
+  border: none;
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.retryButton:hover {
+  background-color: var(--color-secondary);
+}
+
+/* ============================================================
+   Encabezado de lista con botón
+   ============================================================ */
+
+.listHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-6);
+  flex-wrap: wrap;
+  gap: var(--spacing-3);
+}
+
+/* ============================================================
+   Tabla de productos / ventas
+   ============================================================ */
+
+.tableWrapper {
+  overflow-x: auto;
+  border-radius: var(--border-radius-md);
+  border: 1px solid #e5e7eb;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-base);
+}
+
+.th {
+  padding: var(--spacing-3) var(--spacing-4);
+  text-align: left;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-secondary);
+  background-color: var(--color-background);
+  border-bottom: 1px solid #e5e7eb;
+  white-space: nowrap;
+}
+
+.thActions {
+  text-align: right;
+}
+
+.thCenter {
+  text-align: center;
+}
+
+.tr {
+  border-bottom: 1px solid #f3f4f6;
+  transition: background-color var(--transition-fast);
+}
+
+.tr:last-child {
+  border-bottom: none;
+}
+
+.tr:hover {
+  background-color: #f9fafb;
+}
+
+.td {
+  padding: var(--spacing-3) var(--spacing-4);
+  color: var(--color-text-primary);
+  vertical-align: middle;
+}
+
+.productName {
+  font-weight: var(--font-weight-medium);
+}
+
+.productPrice {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary);
+}
+
+/* ============================================================
+   Badges de estado de producto
+   ============================================================ */
+
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--spacing-1) var(--spacing-3);
+  border-radius: var(--border-radius-full);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.statusActive {
+  background-color: #dcfce7;
+  color: #166534;
+}
+
+.statusInactive {
+  background-color: #f3f4f6;
+  color: var(--color-text-secondary);
+}
+
+/* ============================================================
+   Botones de acción en tabla
+   ============================================================ */
+
+.actionButtons {
+  display: flex;
+  gap: var(--spacing-2);
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.editButton {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-1);
+  min-height: 36px;
+  padding: var(--spacing-1) var(--spacing-3);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  font-family: var(--font-family-base);
+  color: var(--color-primary);
+  background-color: transparent;
+  border: 1.5px solid var(--color-primary);
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+  white-space: nowrap;
+}
+
+.editButton:hover {
+  background-color: var(--color-primary);
+  color: #ffffff;
+}
+
+.toggleButton {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: var(--spacing-1) var(--spacing-3);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  font-family: var(--font-family-base);
+  border: 1.5px solid;
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+  white-space: nowrap;
+}
+
+.toggleButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.toggleButtonActivate {
+  color: #166534;
+  border-color: #166534;
+  background-color: transparent;
+}
+
+.toggleButtonActivate:hover:not(:disabled) {
+  background-color: #dcfce7;
+}
+
+.toggleButtonDeactivate {
+  color: #6b7280;
+  border-color: #6b7280;
+  background-color: transparent;
+}
+
+.toggleButtonDeactivate:hover:not(:disabled) {
+  background-color: #f3f4f6;
+}
+
+/* ============================================================
+   Modal / overlay del formulario de producto
+   ============================================================ */
+
+.formOverlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--z-modal, 1000);
+  padding: var(--spacing-4);
+}
+
+.formCard {
+  background-color: var(--color-surface);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-lg, 0 20px 60px rgba(0,0,0,0.3));
+  width: 100%;
+  max-width: 860px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: var(--spacing-6);
+}
+
+.formCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-6);
+}
+
+.formCardTitle {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+}
+
+.closeButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--touch-target-min);
+  height: var(--touch-target-min);
+  background-color: transparent;
+  border: none;
+  border-radius: var(--border-radius-md);
+  color: var(--color-text-secondary);
+  font-size: 1.25rem;
+  cursor: pointer;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.closeButton:hover {
+  background-color: #f3f4f6;
+  color: var(--color-text-primary);
+}
+
+.formActions {
+  display: flex;
+  gap: var(--spacing-3);
+  justify-content: flex-end;
+  margin-top: var(--spacing-2);
+}
+
+/* ============================================================
+   Gestión de imágenes
+   ============================================================ */
+
+.imageGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-3);
+  margin-bottom: var(--spacing-3);
+}
+
+.imageThumb {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  border-radius: var(--border-radius-md);
+  overflow: hidden;
+  border: 1.5px solid #e5e7eb;
+}
+
+.thumbImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.deleteImageButton {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 22px;
+  height: 22px;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--border-radius-full);
+  font-size: 0.625rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color var(--transition-fast);
+}
+
+.deleteImageButton:hover {
+  background-color: var(--color-error);
+}
+
+.fileInput {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+
+.uploadButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--touch-target-min);
+  padding: var(--spacing-2) var(--spacing-4);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  font-family: var(--font-family-base);
+  color: var(--color-primary);
+  background-color: transparent;
+  border: 1.5px dashed var(--color-primary);
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.uploadButton:hover {
+  background-color: rgba(30, 61, 43, 0.06);
+}
+
+.uploadButtonDisabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* ============================================================
+   Panel de ventas – resumen mensual
+   ============================================================ */
+
+.monthlySummary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--spacing-4);
+  margin-bottom: var(--spacing-6);
+}
+
+.summaryCard {
+  background-color: var(--color-background);
+  border-radius: var(--border-radius-md);
+  padding: var(--spacing-5);
+  border: 1px solid #e5e7eb;
+}
+
+.summaryCardLabel {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-2);
+}
+
+.summaryCardValue {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+}
+
+/* ============================================================
+   Filtro de fechas
+   ============================================================ */
+
+.dateFilterForm {
+  display: flex;
+  gap: var(--spacing-3);
+  align-items: flex-end;
+  flex-wrap: wrap;
+  margin-bottom: var(--spacing-6);
+  padding: var(--spacing-4);
+  background-color: var(--color-background);
+  border-radius: var(--border-radius-md);
+  border: 1px solid #e5e7eb;
+}
+
+.dateFilterGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
+
+.filterLabel {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+}
+
+.filterInput {
+  min-height: var(--touch-target-min);
+  padding: var(--spacing-2) var(--spacing-3);
+  font-size: var(--font-size-base);
+  font-family: var(--font-family-base);
+  color: var(--color-text-primary);
+  background-color: var(--color-surface);
+  border: 1.5px solid #d1d5db;
+  border-radius: var(--border-radius-md);
+  outline: none;
+  transition: border-color var(--transition-fast);
+}
+
+.filterInput:focus {
+  border-color: var(--color-secondary);
+  box-shadow: 0 0 0 3px rgba(65, 122, 61, 0.2);
+}
+
+.filterButton {
+  min-height: var(--touch-target-min);
+  padding: var(--spacing-2) var(--spacing-5);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  font-family: var(--font-family-base);
+  color: #ffffff;
+  background-color: var(--color-primary);
+  border: none;
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.filterButton:hover {
+  background-color: var(--color-secondary);
+}
+
+.clearFilterButton {
+  min-height: var(--touch-target-min);
+  padding: var(--spacing-2) var(--spacing-4);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  font-family: var(--font-family-base);
+  color: var(--color-text-secondary);
+  background-color: transparent;
+  border: 1.5px solid #d1d5db;
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  transition: border-color var(--transition-fast), color var(--transition-fast);
+}
+
+.clearFilterButton:hover {
+  border-color: var(--color-error);
+  color: var(--color-error);
+}
+
+/* ============================================================
+   Badges de estado de pedido (ventas)
+   ============================================================ */
+
+.orderStatusBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--spacing-1) var(--spacing-3);
+  border-radius: var(--border-radius-full);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  white-space: nowrap;
+}
+
+.orderStatus_pendiente {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.orderStatus_pagado {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+
+.orderStatus_en_preparacion {
+  background-color: #ede9fe;
+  color: #5b21b6;
+}
+
+.orderStatus_enviado {
+  background-color: #ccfbf1;
+  color: #065f46;
+}
+
+.orderStatus_entregado {
+  background-color: #dcfce7;
+  color: #166534;
+}
+
+.orderStatus_cancelado {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+/* ============================================================
+   Lista de ítems de venta
+   ============================================================ */
+
+.saleItemsList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
+
+.saleItem {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.saleTotal {
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+}
+
+.orderId {
+  font-family: monospace;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+/* ============================================================
+   Estados de carga / error / vacío
+   ============================================================ */
+
+.loadingState {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+  padding: var(--spacing-8) 0;
+}
+
+.skeletonBlock {
+  height: 60px;
+  border-radius: var(--border-radius-md);
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.errorState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-12) var(--spacing-4);
+  text-align: center;
+  gap: var(--spacing-3);
+}
+
+.errorStateIcon {
+  font-size: 2.5rem;
+}
+
+.errorStateText {
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+  max-width: 400px;
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-12) var(--spacing-4);
+  text-align: center;
+  gap: var(--spacing-3);
+}
+
+.emptyStateIcon {
+  font-size: 3rem;
+  color: var(--color-text-secondary);
+}
+
+.emptyStateTitle {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.emptyStateText {
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+  max-width: 400px;
+}
+
+/* ============================================================
+   Acceso denegado
+   ============================================================ */
+
+.accessDenied {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 64px);
+  padding: var(--spacing-8) var(--spacing-4);
+  text-align: center;
+  gap: var(--spacing-4);
+  background-color: var(--color-background);
+}
+
+.accessDeniedIcon {
+  font-size: 4rem;
+}
+
+.accessDeniedTitle {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+}
+
+.accessDeniedText {
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+  max-width: 400px;
+}
+
+/* ============================================================
+   Responsive
+   ============================================================ */
+
+@media (max-width: 640px) {
+  .formSection,
+  .productListSection,
+  .salesSection {
+    padding: var(--spacing-4);
+  }
+
+  .tabButton {
+    padding: var(--spacing-3) var(--spacing-4);
+    font-size: var(--font-size-sm);
+  }
+
+  .formActions {
+    flex-direction: column-reverse;
+  }
+
+  .submitButton,
+  .cancelButton {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .monthlySummary {
+    grid-template-columns: 1fr;
+  }
+
+  .dateFilterForm {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filterButton,
+  .clearFilterButton {
+    width: 100%;
+  }
+}
+
+/* ============================================================
+   Perfil – encabezado con botón editar y vista previa
+   ============================================================ */
+
+.sectionHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--spacing-4);
+  margin-bottom: var(--spacing-6);
+  flex-wrap: wrap;
+}
+
+.sectionHeader .sectionTitle {
+  margin-bottom: var(--spacing-1);
+}
+
+.sectionHeader .sectionSubtitle {
+  margin-bottom: 0;
+}
+
+.profilePreview {
+  background-color: var(--color-background);
+  border: 1px solid #e5e7eb;
+  border-radius: var(--border-radius-md);
+  padding: var(--spacing-6);
+}
+
+.profilePreviewGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-5);
+}
+
+.profilePreviewItem {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
+
+.profilePreviewLabel {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.profilePreviewValue {
+  font-size: var(--font-size-base);
+  color: var(--color-text-primary);
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+.emptyValue {
+  color: var(--color-text-secondary);
+  font-style: italic;
+}
+
+.infoMessage {
+  padding: var(--spacing-3) var(--spacing-4);
+  background-color: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: var(--border-radius-md);
+  color: #1e40af;
+  font-size: var(--font-size-base);
+  margin-bottom: var(--spacing-4);
+}
+
+@media (max-width: 640px) {
+  .profilePreviewGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .sectionHeader {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+/* ============================================================
+   Editor de texto enriquecido (Tiptap)
+   ============================================================ */
+
+.richEditorWrapper {
+  border: 1.5px solid #d1d5db;
+  border-radius: var(--border-radius-md);
+  overflow: hidden;
+  background-color: var(--color-surface);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.richEditorWrapper:focus-within {
+  border-color: var(--color-secondary);
+  box-shadow: 0 0 0 3px rgba(65, 122, 61, 0.18);
+}
+
+/* ── Barra de herramientas ── */
+.richToolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px;
+  padding: 6px 8px;
+  background-color: #f8f9fa;
+  border-bottom: 1.5px solid #e5e7eb;
+  user-select: none;
+}
+
+.richBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 30px;
+  padding: 0;
+  color: #4b5563;
+  background-color: transparent;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 120ms, color 120ms, border-color 120ms;
+  flex-shrink: 0;
+}
+
+.richBtn:hover:not(:disabled) {
+  background-color: #e9ecef;
+  color: #111827;
+  border-color: #d1d5db;
+}
+
+.richBtn:disabled,
+.richBtnDisabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.richBtnActive {
+  background-color: var(--color-primary, #1e3d2b);
+  color: #ffffff !important;
+  border-color: var(--color-primary, #1e3d2b);
+}
+
+.richBtnActive:hover:not(:disabled) {
+  background-color: var(--color-secondary, #417a3d);
+  border-color: var(--color-secondary, #417a3d);
+}
+
+/* Separador vertical entre grupos */
+.richSep {
+  display: inline-block;
+  width: 1px;
+  height: 20px;
+  background-color: #d1d5db;
+  margin: 0 4px;
+  flex-shrink: 0;
+}
+
+/* Botón de color de texto */
+.richColorBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 30px;
+  border-radius: 5px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: background-color 120ms, border-color 120ms;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.richColorBtn:hover {
+  background-color: #e9ecef;
+  border-color: #d1d5db;
+}
+
+.richColorPreview {
+  display: block;
+  width: 18px;
+  height: 18px;
+  border-radius: 3px;
+  border: 1.5px solid rgba(0,0,0,0.25);
+  pointer-events: none;
+}
+
+.richColorInput {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  border: none;
+  padding: 0;
+}
+
+/* ── Área de edición ── */
+.richEditorContent {
+  min-height: 180px;
+  max-height: 420px;
+  overflow-y: auto;
+  padding: 12px 16px;
+  font-size: var(--font-size-base, 1rem);
+  font-family: var(--font-family-base, sans-serif);
+  color: var(--color-text-primary);
+  background-color: var(--color-surface);
+  outline: none;
+  line-height: 1.75;
+  caret-color: var(--color-primary);
+}
+
+/* Placeholder */
+.richEditorContent p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  color: #9ca3af;
+  pointer-events: none;
+  float: left;
+  height: 0;
+}
+
+/* Tipografía dentro del editor */
+.richEditorContent h1 { font-size: 1.5rem;  font-weight: 800; line-height: 1.2; margin: 1rem 0 0.4rem; color: var(--color-primary); }
+.richEditorContent h2 { font-size: 1.25rem; font-weight: 700; line-height: 1.3; margin: 0.8rem 0 0.3rem; color: var(--color-primary); }
+.richEditorContent h3 { font-size: 1.1rem;  font-weight: 600; line-height: 1.4; margin: 0.6rem 0 0.25rem; }
+.richEditorContent p  { margin: 0 0 0.6rem; }
+.richEditorContent ul,
+.richEditorContent ol { padding-left: 1.6rem; margin: 0.4rem 0 0.6rem; }
+.richEditorContent li { margin-bottom: 0.3rem; }
+.richEditorContent strong { font-weight: 700; }
+.richEditorContent em     { font-style: italic; }
+.richEditorContent u      { text-decoration: underline; }
+.richEditorContent s      { text-decoration: line-through; }
+.richEditorContent mark   { background-color: #fef08a; border-radius: 2px; padding: 0 2px; }
+.richEditorContent blockquote {
+  border-left: 3px solid var(--color-accent, #d4a017);
+  margin: 0.6rem 0;
+  padding: 0.4rem 0 0.4rem 1rem;
+  color: #6b7280;
+  font-style: italic;
+}
+
+/* ── Vista previa del HTML guardado ── */
+.richPreview { line-height: 1.7; white-space: normal; }
+.richPreview h1 { font-size: 1.4rem;  font-weight: 800; margin: 0.8rem 0 0.3rem; color: var(--color-primary); }
+.richPreview h2 { font-size: 1.2rem;  font-weight: 700; margin: 0.6rem 0 0.25rem; color: var(--color-primary); }
+.richPreview h3 { font-size: 1.05rem; font-weight: 600; margin: 0.5rem 0 0.2rem; }
+.richPreview p  { margin: 0 0 0.5rem; }
+.richPreview ul,
+.richPreview ol { padding-left: 1.5rem; margin: 0.3rem 0 0.5rem; }
+.richPreview li { margin-bottom: 0.2rem; }
+.richPreview mark { background-color: #fef08a; border-radius: 2px; padding: 0 2px; }
+.richPreview blockquote {
+  border-left: 3px solid var(--color-accent, #d4a017);
+  margin: 0.5rem 0;
+  padding: 0.3rem 0 0.3rem 1rem;
+  color: #6b7280;
+  font-style: italic;
+}
+
+/* ============================================================
+   Zona de drag & drop para imágenes
+   ============================================================ */
+
+.dropZone {
+  border: 2px dashed #d1d5db;
+  border-radius: var(--border-radius-md);
+  padding: var(--spacing-4);
+  background-color: #fafafa;
+  transition: border-color 150ms, background-color 150ms;
+  cursor: default;
+  min-height: 120px;
+  box-sizing: border-box;
+}
+
+.dropZone:hover {
+  border-color: var(--color-primary);
+  background-color: rgba(30, 61, 43, 0.03);
+}
+
+.dropZoneActive {
+  border-color: var(--color-secondary, #417a3d);
+  background-color: rgba(65, 122, 61, 0.07);
+  box-shadow: 0 0 0 3px rgba(65, 122, 61, 0.15);
+}
+
+.dropZoneFull {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.dropZoneHint {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-4) 0 var(--spacing-2);
+  text-align: center;
+}
+
+.dropZoneIcon {
+  width: 36px;
+  height: 36px;
+  color: #9ca3af;
+  flex-shrink: 0;
+}
+
+.dropZoneActive .dropZoneIcon {
+  color: var(--color-secondary);
+}
+
+.dropZoneHintText {
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+}
+
+.dropZoneLink {
+  color: var(--color-primary);
+  font-weight: var(--font-weight-semibold);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.dropZoneLink:hover {
+  color: var(--color-secondary);
+}
+
+.dropZoneCounter {
+  font-size: var(--font-size-sm);
+  color: #9ca3af;
+}
+
+.dropZoneFullMsg {
+  text-align: center;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  padding: var(--spacing-2) 0;
+  margin: 0;
+}
+
+.profileImages {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-3);
+  margin-bottom: var(--spacing-5);
+}
+
+.profileImg {
+  width: 140px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: var(--border-radius-md);
+  border: 1.5px solid #e5e7eb;
+}
+
+@media (max-width: 640px) {
+  .profileImg {
+    width: 100px;
+    height: 75px;
+  }
+}
+
+/* ============================================================
+   Campos de correo con checkbox de visibilidad
+   ============================================================ */
+
+.emailRow {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--spacing-4);
+  flex-wrap: wrap;
+}
+
+.emailField {
+  flex: 1;
+  min-width: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
+
+.inputReadonly {
+  background-color: #f3f4f6;
+  color: var(--color-text-secondary);
+  cursor: not-allowed;
+}
+
+.checkLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  cursor: pointer;
+  padding-bottom: 10px; /* alinear con el input */
+  white-space: nowrap;
+  user-select: none;
+}
+
+.checkLabelDisabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.checkInput {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--color-primary);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.checkLabelDisabled .checkInput {
+  cursor: not-allowed;
+}
+
+.checkText {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+/* Badges de visibilidad en vista previa */
+.visibilityBadge {
+  margin-left: var(--spacing-2);
+  font-size: var(--font-size-sm);
+  color: #166534;
+  font-weight: var(--font-weight-medium);
+}
+
+.visibilityBadgeHidden {
+  margin-left: var(--spacing-2);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  font-style: italic;
+}
+
+@media (max-width: 640px) {
+  .emailRow {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .checkLabel {
+    padding-bottom: 0;
+  }
+}
+
+/* ============================================================
+   Fila de campos en línea (ej. finca + región)
+   ============================================================ */
+
+.fieldRow {
+  display: flex;
+  gap: var(--spacing-4);
+  align-items: flex-start;
+}
+
+.fieldRow > .fieldGroup {
+  flex: 1;
+}
+
+@media (max-width: 540px) {
+  .fieldRow {
+    flex-direction: column;
+  }
+  .fieldRow > .fieldGroup {
+    flex: unset;
+    width: 100% !important;
+  }
+}
+
+/* ============================================================
+   Acciones del encabezado de sección
+   ============================================================ */
+
+.sectionHeaderActions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-4);
+  flex-wrap: wrap;
+}
+
+/* ============================================================
+   Toggle de visibilidad en catálogo
+   ============================================================ */
+
+.visibilityToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  cursor: pointer;
+  user-select: none;
+}
+
+.visibilityToggleDisabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.visibilityToggleInput {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.visibilityToggleTrack {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 22px;
+  background-color: #d1d5db;
+  border-radius: 999px;
+  transition: background-color 200ms;
+  flex-shrink: 0;
+}
+
+.visibilityToggleInput:checked + .visibilityToggleTrack {
+  background-color: var(--color-secondary, #417a3d);
+}
+
+.visibilityToggleThumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 16px;
+  height: 16px;
+  background-color: #ffffff;
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  transition: transform 200ms;
+}
+
+.visibilityToggleInput:checked + .visibilityToggleTrack .visibilityToggleThumb {
+  transform: translateX(18px);
+}
+
+.visibilityToggleLabel {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+
+.visibilityToggleInput:checked ~ .visibilityToggleLabel {
+  color: var(--color-secondary, #417a3d);
+}
+
+@media (max-width: 540px) {
+  .sectionHeaderActions {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/* ============================================================
+   Toggle switch genérico (reemplaza checkboxes normales)
+   ============================================================ */
+
+.toggleSwitch {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  user-select: none;
+  padding-bottom: 10px; /* alinear con el input */
+  flex-shrink: 0;
+}
+
+.toggleSwitchDisabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.toggleSwitchInput {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.toggleSwitchTrack {
+  position: relative;
+  display: inline-block;
+  width: 36px;
+  height: 20px;
+  background-color: #d1d5db;
+  border-radius: 999px;
+  transition: background-color 180ms;
+  flex-shrink: 0;
+}
+
+.toggleSwitchInput:checked + .toggleSwitchTrack {
+  background-color: var(--color-secondary, #417a3d);
+}
+
+.toggleSwitchThumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  background-color: #ffffff;
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  transition: transform 180ms;
+}
+
+.toggleSwitchInput:checked + .toggleSwitchTrack .toggleSwitchThumb {
+  transform: translateX(16px);
+}
+
+.toggleSwitchLabel {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+
+.toggleSwitchInput:checked ~ .toggleSwitchLabel {
+  color: var(--color-secondary, #417a3d);
+  font-weight: var(--font-weight-medium);
+}
+
+
+/* ============================================================
+   Información del cliente en tabla de ventas
+   ============================================================ */
+
+.consumerInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.consumerName {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.consumerEmail {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.consumerAddress {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  font-style: italic;
+}
+
+
+/* ============================================================
+   Badge de stock en tabla de productos
+   ============================================================ */
+
+.stockAvailable {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2rem;
+  padding: 0.15rem 0.6rem;
+  border-radius: var(--border-radius-full);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  background-color: #dcfce7;
+  color: #166534;
+}
+
+.stockEmpty {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2rem;
+  padding: 0.15rem 0.6rem;
+  border-radius: var(--border-radius-full);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+
+/* ============================================================
+   Ventas — tarjetas móvil
+   ============================================================ */
+
+/* La tabla se muestra en desktop, las tarjetas en móvil */
+.salesTableWrapper {
+  display: block;
+  overflow-x: auto;
+  border-radius: var(--border-radius-md);
+  border: 1px solid #e5e7eb;
+}
+
+.saleCardList {
+  display: none;
+  flex-direction: column;
+  gap: var(--spacing-4);
+}
+
+@media (max-width: 640px) {
+  .salesTableWrapper {
+    display: none;
+  }
+
+  .saleCardList {
+    display: flex;
+  }
+}
+
+.saleCard {
+  background-color: var(--color-surface);
+  border: 1px solid #e5e7eb;
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+  box-shadow: var(--shadow-sm);
+}
+
+.saleCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-2);
+}
+
+.saleCardMeta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-2);
+  flex-wrap: wrap;
+}
+
+.saleCardDate {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+
+.saleCardSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+  padding-top: var(--spacing-2);
+  border-top: 1px solid #f3f4f6;
+}
+
+.saleCardLabel {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
