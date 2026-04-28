@@ -4,8 +4,8 @@
 Este proyecto corresponde al desarrollo de un sistema tipo marketplace cafetero, cuyo objetivo es conectar productores de café colombiano con consumidores finales mediante una plataforma digital.
 
 ## 👥 Equipo de trabajo
-- Edward Rubio Rodríguez – Developer  
-- Francisco Steven Tabares Ussa – DevOps + apoyo general
+- Edward Rubio Rodríguez / Francisco Steven Tabares Ussa – Developer  
+- Edward Rubio Rodríguez  – DevOps + apoyo general
 - Leonardo Martínez Franco – Product Owner  
 - María Fernanda Medina Ramírez – QA Engineer + Documentación  
 
