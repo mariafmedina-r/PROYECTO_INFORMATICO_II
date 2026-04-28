@@ -20,8 +20,8 @@ Universidad Autónoma de Occidente · Ingeniería Informática · 2026
 
 | Rol | Nombre |
 |-----|--------|
-| Developer | Edward Rubio Rodríguez |
-| DevOps + Apoyo general |  Francisco Steven Tabares Ussa|
+| Developer | Edward Rubio Rodríguez + Francisco Steven Tabares Ussa |
+| DevOps + Apoyo general |  Edward Rubio Rodríguez |
 | Product Owner | Leonardo Martínez Franco |
 | QA Engineer + Documentación | Maria Fernanda Medina Ramirez |
 
