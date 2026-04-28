@@ -1,4 +1,4 @@
-# Marketplace Cafetero – Backend Python (FastAPI)
+# Conexión Cafetera – Backend Python (FastAPI)
 # Instalar con: pip install -r requirements.txt
 
 # Framework HTTP

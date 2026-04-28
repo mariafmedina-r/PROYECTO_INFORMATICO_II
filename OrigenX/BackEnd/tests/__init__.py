@@ -1,1 +1,1 @@
-# Tests package for Marketplace Cafetero backend
+# Tests package for Conexión Cafetera backend

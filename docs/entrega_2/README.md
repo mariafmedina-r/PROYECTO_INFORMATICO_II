@@ -1,7 +1,7 @@
 # Entrega 2
 
 ## Descripción
-Análisis comparativo de soluciones para el sistema Marketplace Cafetero.
+Análisis comparativo de soluciones para el sistema Conexión Cafetera.
 
 ## 📊 Contenido
 - Documento de análisis y justificación

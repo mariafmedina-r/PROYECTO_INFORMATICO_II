@@ -1,7 +1,7 @@
 # PROYECTO INFORMATICO II
 
 ##  Descripción
-Este proyecto corresponde al desarrollo de un sistema tipo marketplace cafetero, cuyo objetivo es conectar productores de café colombiano con consumidores finales mediante una plataforma digital.
+Este proyecto corresponde al desarrollo de un sistema tipo Conexión Cafetera, cuyo objetivo es conectar productores de café colombiano con consumidores finales mediante una plataforma digital.
 
 ## 👥 Equipo de trabajo
 - Edward Rubio Rodríguez / Francisco Steven Tabares Ussa – Developer  

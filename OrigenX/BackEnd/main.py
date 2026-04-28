@@ -1,5 +1,5 @@
 """
-Marketplace Cafetero – Backend API
+Conexión Cafetera – Backend API
 Punto de entrada principal de la aplicación FastAPI.
 
 Arquitectura en capas (RNF-007.1):
