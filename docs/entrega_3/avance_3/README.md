@@ -153,16 +153,11 @@ Esta carpeta corresponde a la versión final del sistema implementado, incluyend
 Las demás carpetas del repositorio (docs, entregas, etc.) contienen la documentación y evidencias del proceso de desarrollo.
 
 ---
-
----
 ## Video del sistema
 
 En el siguiente enlace se puede visualizar el video de presentación funcional del sistema, donde se evidencia el funcionamiento del MVP, los módulos implementados y el flujo completo de uso:
 
 👉 [Enlace al video de la aplicación]  
-
----
-
 
 ---
 
