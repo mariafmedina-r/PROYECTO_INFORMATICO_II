@@ -1,4 +1,4 @@
-#  Entrega 3 - Avance 2 (Versión 2 – OrigenX / Conexión Cafetera)
+#  Entrega 3 - Avance 3 (Versión 2 – OrigenX / Conexión Cafetera)
 
 ##  Descripción
 
