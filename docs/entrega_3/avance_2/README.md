@@ -1,91 +1,160 @@
-# Entrega 3 - Avance 2
+#  Entrega 3 - Avance 2 (Versión 2 – OrigenX / Conexión Cafetera)
 
-## Descripción
+##  Descripción
 
-Este directorio contiene el segundo avance de la Entrega 3 del proyecto **Café Origen**, enfocado en la implementación técnica del MVP, ejecución de sprints y validación mediante pruebas funcionales.
+Este directorio contiene el segundo avance de la Entrega 3 del proyecto **Café Origen**, correspondiente a la **versión evolucionada del sistema (OrigenX)**.
 
-## Contenido
+En esta versión se presenta la **reimplementación completa del MVP**, su validación mediante pruebas y la consolidación del flujo funcional del sistema.
 
-- Documento del avance en formato PDF
-- Archivo Excel con pruebas funcionales y no funcionales
+A diferencia del avance anterior, esta entrega refleja un sistema **completamente funcional, estable y validado**, resultado de un proceso iterativo de desarrollo y mejora continua.
 
-## Objetivo del avance
+---
 
-Evidenciar el progreso técnico del sistema mediante:
+##  Contenido
 
-- Implementación del MVP
-- Ejecución de los sprints definidos
-- Validación del sistema mediante pruebas
-- Identificación de errores y oportunidades de mejora
+- Documento del avance (Entrega III - Avance II - Versión Café OrigenX) en formato PDF  
+- Archivo Excel con pruebas funcionales y no funcionales (Pruebas Versión Café OrigenX)
+- Evidencias de gestión (GitHub Projects)  
 
-A diferencia del avance anterior, este se enfoca en la ejecución real del sistema y su comportamiento en un entorno de desarrollo. :contentReference[oaicite:1]{index=1}
+---
 
-## Arquitectura del sistema
+##  Objetivo del avance
 
-El sistema se desarrolla bajo una arquitectura cliente-servidor:
+Evidenciar el estado actual del sistema mediante:
 
-- Frontend: React + Vite
-- Backend: FastAPI (Python)
-- Base de datos: SQLite
+- Implementación completa del MVP  
+- Ejecución y cierre de los sprints  
+- Validación mediante pruebas funcionales y no funcionales  
+- Corrección de hallazgos identificados  
 
-El sistema permite la interacción entre usuario, productos y catálogo mediante consumo de API REST.
+---
 
-## Estado del MVP
+##  Arquitectura del sistema
 
-Actualmente el sistema presenta:
+El sistema se desarrolla bajo una arquitectura cliente-servidor desacoplada:
 
-- Registro y login: Implementado
-- Gestión de productos: Implementado (con observaciones)
-- Catálogo: Parcialmente implementado
-- Carrito y pagos: En desarrollo
+- **Frontend:** React 18 + Vite  
+- **Backend:** FastAPI (Python)  
+- **Base de datos:** Firebase Firestore  
+- **Autenticación:** Firebase Authentication  
+- **Almacenamiento:** Firebase Storage  
 
-## Pruebas realizadas
+La comunicación se realiza mediante API REST.
+
+---
+
+##  Estado del sistema (MVP)
+
+El sistema se encuentra completamente implementado:
+
+-  Registro e inicio de sesión  
+-  Gestión de roles  
+-  Gestión de productos  
+-  Catálogo con filtros y búsqueda  
+-  Carrito de compras  
+-  Generación de pedidos  
+-  Proceso de pago (simulado)  
+
+---
+
+##  Pruebas realizadas
 
 Se ejecutaron pruebas funcionales y no funcionales para validar:
 
-- Autenticación de usuarios
-- Gestión de productos
-- Visualización de catálogo
-- Proceso de compra (parcial)
+- Autenticación y control de acceso  
+- Gestión de productos  
+- Catálogo y filtros  
+- Carrito y proceso de compra  
+- Pedidos y pagos simulados  
+- Usabilidad, rendimiento y compatibilidad  
 
-### Resultados
+---
 
-- Total de pruebas: 33
-- Aprobadas: 20
-- Fallidas: 13
-- Pendientes: 12 
+##  Resultados
 
-## Principales hallazgos
+###  Pruebas funcionales
 
-- Problemas en manejo de roles y sesiones
-- Limitaciones en gestión de imágenes
-- Fallos en filtros del catálogo
-- Validaciones incompletas en formularios
-- Flujo de compra aún no implementado completamente
+- Total: **32**  
+- Aprobadas: **32**  
+- Fallidas en ejecución inicial: **3**  
+- Éxito final: **100%**
 
-## Tecnologías utilizadas
+###  Pruebas no funcionales
 
-- React + Vite
-- FastAPI
-- SQLAlchemy
-- SQLite
-- GitHub
-- Visual Studio Code
+- Total: **17**  
+- Aprobadas: **17**  
+- Éxito: **100%**
 
-## Gestión del proyecto
+---
 
-El proyecto se gestiona mediante GitHub Projects, permitiendo:
+##  Principales hallazgos
 
-- Seguimiento de tareas por sprint
-- Visualización del estado del desarrollo
-- Control del avance del equipo
+Durante la ejecución inicial se identificaron:
 
-## Limitaciones actuales
+-  Problemas en navegación entre roles  
+-  Restricciones en selección de regiones  
+-  Fallos en carga inicial de imágenes  
 
-- Funcionalidades incompletas en catálogo y compra
-- Falta de integración real de pagos
-- Validaciones y experiencia de usuario en mejora
+ Todos fueron corregidos y validados en reejecución.
 
-## Repositorio
+---
 
-https://github.com/mariafmedina-r/PROYECTO_INFORMATICO_II
+##  Tecnologías utilizadas
+
+- React + Vite  
+- FastAPI  
+- Firebase (Firestore, Auth, Storage)  
+- GitHub  
+- Visual Studio Code  
+
+---
+
+##  Gestión del proyecto
+
+El proyecto se gestionó mediante **GitHub Projects**, permitiendo:
+
+- Seguimiento de tareas por sprint  
+- Control del avance  
+- Trazabilidad de requerimientos  
+
+---
+
+##  Despliegue (entorno de prueba)
+
+El sistema fue ejecutado en entorno local validando su funcionamiento completo.
+
+###  Accesos
+
+- Backend: http://127.0.0.1:8000  
+- Docs API: http://127.0.0.1:8000/docs  
+- Frontend: http://localhost:5173  
+
+---
+
+##  Repositorio
+
+El código fuente está disponible en:
+
+ https://github.com/mariafmedina-r/PROYECTO_INFORMATICO_II  
+
+---
+
+##  Estado del proyecto
+
+ Sistema completo, funcional y validado  
+ Pruebas aprobadas al 100%  
+ Flujo end-to-end implementado  
+
+---
+##  Equipo de trabajo
+
+| Integrante | Rol | Responsabilidad |
+|----------|------|---------------|
+| **Edward Rubio Rodríguez** |  Developer / DevOps | Desarrollo completo del sistema, integración con Firebase y despliegue |
+| **Francisco Stiven Tabares Ussa** |  Developer (fase inicial) | Participación en la implementación inicial |
+| **Leonardo Martínez Franco** |  Product Owner | Gestión de requerimientos y validación funcional |
+| **María Fernanda Medina Ramírez** |  QA Engineer / Documentación | Diseño y ejecución de pruebas, documentación del sistema |
+
+---
+
+ *El equipo demostró capacidad de adaptación ante cambios en el desarrollo, logrando la reimplementación y consolidación del sistema en su versión final funcional.*
