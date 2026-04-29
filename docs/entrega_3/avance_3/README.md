@@ -137,6 +137,23 @@ El código fuente está disponible en:
 
  https://github.com/mariafmedina-r/PROYECTO_INFORMATICO_II  
 
+ ## Estructura del repositorio
+
+Dentro del repositorio, el código fuente del sistema desarrollado (OrigenX) se encuentra organizado en la siguiente ruta:
+
+- **OrigenX/** → Contiene el proyecto completo (frontend y backend)
+
+Esta carpeta corresponde a la versión final del sistema implementado, incluyendo:
+
+- Backend (FastAPI)
+- Frontend (React + Vite)
+- Integración con Firebase
+- Lógica de negocio y estructura modular del sistema
+
+Las demás carpetas del repositorio (docs, entregas, etc.) contienen la documentación y evidencias del proceso de desarrollo.
+
+---
+
 ---
 ## Video del sistema
 
@@ -145,6 +162,8 @@ En el siguiente enlace se puede visualizar el video de presentación funcional d
 👉 [Enlace al video de la aplicación]  
 
 ---
+
+
 ---
 
 ##  Estado del proyecto
