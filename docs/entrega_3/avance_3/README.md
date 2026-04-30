@@ -157,7 +157,7 @@ Las demás carpetas del repositorio (docs, entregas, etc.) contienen la document
 
 En el siguiente enlace se puede visualizar el video de presentación funcional del sistema, donde se evidencia el funcionamiento del MVP, los módulos implementados y el flujo completo de uso:
 
-👉 [Enlace al video de la aplicación]  
+[ [Enlace al video de la aplicación] ](https://uao-my.sharepoint.com/:f:/g/personal/maria_f_medina_uao_edu_co/IgBvm8gWyUZQTZ6af24PvKy0AXCCmIEryk4NVi6sILlLp4U?e=cccWX4) 
 
 ---
 
